@@ -166,8 +166,11 @@ def ImageOutFormatAttr : AnyStrAttrOf<["FLOAT32", "UINT8"]>;
 def Yuv2rgbFormulaAttr : AnyStrAttrOf<["_601_limited", "_601_full"]>;
 def GELUModeAttr : AnyStrAttrOf<["normal", "tanh", "sigm"]>;
 def RopeModeAttr : AnyStrAttrOf<["interleaved_pairs", "contiguous_halves"]>;
-def KVCacheFormatAttr : AnyStrAttrOf<["Q4_0", "Q4_1", "Q8_0", "Q8_1", "FP8"]>;
+def KVCacheFormatAttr : AnyStrAttrOf<["Q4_0", "Q4_1", "Q8_0", "Q8_1", "FP8", "KV4", "KV8"]>;
 def DqTypeAttr : AnyStrAttrOf<["NONE", "F16", "BF16", "INT8", "INT4", "F8E4M3", "F4"]>;
+def PhaseAttr : AnyStrAttrOf<["prefill", "decode"]>;
+def QuantSchemeAttr : AnyStrAttrOf<["W4A8", "W4A8KV4", "W8A8", "A16W8", "W4A16", "W8A16"]>;
+def WeightFormatAttr : AnyStrAttrOf<["Q4_0", "Q4_1", "Q8_0", "Q8_1", "Q4_K", "Q6_K", "Q2_K", "Q3_K", "Q5_K", "Q8_K"]>;
 
 //===----------------------------------------------------------------------===//
 // TOP Types.
@@ -388,7 +391,9 @@ def Top_A16MatMulOp : Top_Op<"A16MatMul"> {
     DefaultValuedAttr<BoolAttr, "false">:$right_transpose,
     DefaultValuedAttr<I64Attr, "128">:$q_group_size,
     DefaultValuedAttr<I64Attr, "8">:$weight_bits,
-    DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$dq_type
+    DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$dq_type,
+    OptionalAttr<QuantSchemeAttr>:$quant_scheme,
+    OptionalAttr<WeightFormatAttr>:$weight_format
   );
 
   let results = (outs AnyTensor:$output);
@@ -683,7 +688,11 @@ def Top_AttentionOp : Top_Op<"Attention"> {
     DefaultValuedAttr<I64Attr, "0">:$dim,
     DefaultValuedAttr<F64ArrayAttr, "{1.0}">:$scale_param,
     DefaultValuedAttr<I64ArrayAttr, "{0}">:$zp_param,
-    DefaultValuedAttr<I64Attr, "0">:$has_bias
+    DefaultValuedAttr<I64Attr, "0">:$has_bias,
+    DefaultValuedAttr<I64Attr, "0">:$num_kv_heads,
+    DefaultValuedAttr<I64Attr, "0">:$head_dim,
+    DefaultValuedAttr<BoolAttr, "true">:$causal,
+    OptionalAttr<PhaseAttr>:$phase
   );
 
   let results = (outs AnyTensor:$output);
@@ -2283,7 +2292,9 @@ def Top_FAttentionOp : Top_Op<"FAttention"> {
     I64Attr:$dim,
     I64Attr:$mq,
     I64Attr:$mk,
-    DefaultValuedAttr<BoolAttr, "true">:$keep_dims
+    DefaultValuedAttr<BoolAttr, "true">:$keep_dims,
+    DefaultValuedAttr<BoolAttr, "true">:$causal,
+    OptionalAttr<PhaseAttr>:$phase
   );
 
   let results = (outs AnyTensor:$output);
@@ -3828,7 +3839,9 @@ def Top_MatMulOp : Top_Op<"MatMul", [SupportFuseRelu]> {
     OptionalAttr<F64Attr>:$out_int8_scale,
     OptionalAttr<F64Attr>:$out_int8_zp,
     DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$dq_type,
-    DefaultValuedAttr<I64Attr, "0">:$q_group_size
+    DefaultValuedAttr<I64Attr, "0">:$q_group_size,
+    OptionalAttr<QuantSchemeAttr>:$quant_scheme,
+    OptionalAttr<WeightFormatAttr>:$weight_format
   );
 
   let results = (outs AnyTensor:$output);
@@ -6851,6 +6864,197 @@ def Top_Yuv2rgbFormulaOp : Top_Op<"Yuv2rgbFormula"> {
     DefaultValuedAttr<RoundModeAttr, "\"HalfAwayFromZero\"">:$round_mode
   );
 
+  let results = (outs AnyTensor:$output);
+}
+
+//===----------------------------------------------------------------------===//
+// ADA300 LLM Semantic Ops
+//===----------------------------------------------------------------------===//
+
+def Top_QKVProjOp : Top_Op<"QKVProj"> {
+  let summary = "Fused QKV projection operator";
+  let description = [{
+    Computes Q, K, V linear projections from a hidden-state input tensor using
+    a single fused weight matrix. Retains head-count and quantization metadata
+    for downstream attention lowering and tiling decisions. Supports
+    grouped-query attention (GQA) via separate num_heads and num_kv_heads.
+
+    output shapes:
+      query  : [batch, seq, num_heads    * head_dim]
+      key    : [batch, seq, num_kv_heads * head_dim]
+      value  : [batch, seq, num_kv_heads * head_dim]
+  }];
+  let arguments = (ins
+    AnyTensor:$input,
+    AnyTensor:$weight,
+    AnyTensorOrNone:$bias,
+    I64Attr:$num_heads,
+    DefaultValuedAttr<I64Attr, "0">:$num_kv_heads,
+    I64Attr:$head_dim,
+    OptionalAttr<QuantSchemeAttr>:$quant_scheme,
+    OptionalAttr<WeightFormatAttr>:$weight_format,
+    DefaultValuedAttr<I64Attr, "64">:$group_size
+  );
+  let results = (outs
+    AnyTensor:$query,
+    AnyTensor:$key,
+    AnyTensor:$value
+  );
+}
+
+def Top_PrefillAttentionOp : Top_Op<"PrefillAttention"> {
+  let summary = "Prefill-mode scaled dot-product attention operator";
+  let description = [{
+    Computes scaled dot-product attention for the prefill phase where the full
+    input sequence Q, K, V tensors are available simultaneously. Supports
+    grouped-query attention (GQA) via separate num_heads and num_kv_heads.
+    The causal flag enables autoregressive masking.
+
+    math:
+      output = softmax(Q * K^T / sqrt(head_dim) + mask) * V
+  }];
+  let arguments = (ins
+    AnyTensor:$query,
+    AnyTensor:$key,
+    AnyTensor:$value,
+    AnyTensorOrNone:$mask,
+    I64Attr:$num_heads,
+    DefaultValuedAttr<I64Attr, "0">:$num_kv_heads,
+    I64Attr:$head_dim,
+    DefaultValuedAttr<BoolAttr, "true">:$causal,
+    DefaultValuedAttr<RopeModeAttr, "\"interleaved_pairs\"">:$rope_mode,
+    OptionalAttr<QuantSchemeAttr>:$quant_scheme,
+    OptionalAttr<KVCacheFormatAttr>:$kv_format,
+    OptionalAttr<PhaseAttr>:$phase
+  );
+  let results = (outs AnyTensor:$output);
+}
+
+def Top_DecodeAttentionOp : Top_Op<"DecodeAttention"> {
+  let summary = "Decode-mode attention operator with KV-cache inputs";
+  let description = [{
+    Computes attention for a single decode step. Takes the current-token
+    Q, K, V projections together with historical k_cache and v_cache tensors.
+    The kv_format attribute controls the low-bit storage format of the cache.
+    position carries the current sequence position index for RoPE and cache
+    slot selection.
+
+    math:
+      k_full = concat(k_cache, key, dim=seq)
+      v_full = concat(v_cache, value, dim=seq)
+      output = softmax(query * k_full^T / sqrt(head_dim)) * v_full
+  }];
+  let arguments = (ins
+    AnyTensor:$query,
+    AnyTensor:$key,
+    AnyTensor:$value,
+    AnyTensor:$k_cache,
+    AnyTensor:$v_cache,
+    AnyTensor:$position,
+    I64Attr:$num_heads,
+    DefaultValuedAttr<I64Attr, "0">:$num_kv_heads,
+    I64Attr:$head_dim,
+    DefaultValuedAttr<BoolAttr, "true">:$causal,
+    DefaultValuedAttr<RopeModeAttr, "\"interleaved_pairs\"">:$rope_mode,
+    KVCacheFormatAttr:$kv_format,
+    DefaultValuedAttr<I64Attr, "64">:$group_size
+  );
+  let results = (outs AnyTensor:$output);
+}
+
+def Top_GatedMLPOp : Top_Op<"GatedMLP"> {
+  let summary = "Gated MLP operator (gate_proj * act(up_proj) then down_proj)";
+  let description = [{
+    Fuses the standard LLM MLP block. gate_proj and up_proj are computed in
+    parallel; their results are element-wise multiplied after applying the
+    gate activation (default: SiLU), then down_proj produces the output.
+
+    math:
+      hidden = act(input * weight_gate^T) * (input * weight_up^T)
+      output = hidden * weight_down^T
+
+    Carries quantization metadata for joint weight-lowering decisions.
+  }];
+  let arguments = (ins
+    AnyTensor:$input,
+    AnyTensor:$weight_gate,
+    AnyTensor:$weight_up,
+    AnyTensor:$weight_down,
+    AnyTensorOrNone:$bias_gate,
+    AnyTensorOrNone:$bias_up,
+    AnyTensorOrNone:$bias_down,
+    DefaultValuedAttr<BoolAttr, "true">:$right_transpose_gate,
+    DefaultValuedAttr<BoolAttr, "true">:$right_transpose_up,
+    DefaultValuedAttr<BoolAttr, "false">:$right_transpose_down,
+    DefaultValuedAttr<GELUModeAttr, "\"normal\"">:$act_mode,
+    OptionalAttr<QuantSchemeAttr>:$quant_scheme,
+    OptionalAttr<WeightFormatAttr>:$weight_format,
+    DefaultValuedAttr<I64Attr, "64">:$group_size
+  );
+  let results = (outs AnyTensor:$output);
+}
+
+def Top_MoERouterOp : Top_Op<"MoERouter"> {
+  let summary = "Mixture-of-Experts router operator";
+  let description = [{
+    Computes router logits from the hidden state by projecting through
+    router_weight, then selects the top-k expert indices and their softmax
+    routing weights. The outputs drive MoEDispatch for token routing.
+
+    math:
+      logits  = input * router_weight^T + router_bias
+      indices = top_k(softmax(logits), expert_topk)   // [batch, seq, expert_topk]
+      weights = softmax(logits)[indices]               // [batch, seq, expert_topk]
+  }];
+  let arguments = (ins
+    AnyTensor:$input,
+    AnyTensor:$router_weight,
+    AnyTensorOrNone:$router_bias,
+    I64Attr:$num_experts,
+    DefaultValuedAttr<I64Attr, "2">:$expert_topk
+  );
+  let results = (outs
+    AnyTensor:$expert_indices,
+    AnyTensor:$expert_weights
+  );
+}
+
+def Top_MoEDispatchOp : Top_Op<"MoEDispatch"> {
+  let summary = "Mixture-of-Experts token-to-expert dispatch operator";
+  let description = [{
+    Routes input tokens to selected experts according to the routing indices
+    produced by MoERouter. Each expert receives a contiguous sub-tensor of
+    the tokens assigned to it. token_counts carries the number of tokens
+    routed to each expert for use by MoECombine.
+  }];
+  let arguments = (ins
+    AnyTensor:$input,
+    AnyTensor:$expert_indices,
+    AnyTensor:$expert_weights,
+    I64Attr:$num_experts,
+    DefaultValuedAttr<I64Attr, "2">:$expert_topk
+  );
+  let results = (outs
+    AnyTensor:$dispatched_tokens,
+    AnyTensor:$token_counts
+  );
+}
+
+def Top_MoECombineOp : Top_Op<"MoECombine"> {
+  let summary = "Mixture-of-Experts expert output combine operator";
+  let description = [{
+    Combines expert output tensors back into a single output tensor by
+    accumulating weighted expert contributions for each token according
+    to the routing weights from MoERouter.
+  }];
+  let arguments = (ins
+    AnyTensor:$expert_outputs,
+    AnyTensor:$expert_indices,
+    AnyTensor:$expert_weights,
+    AnyTensor:$token_counts,
+    I64Attr:$num_experts,
+    DefaultValuedAttr<I64Attr, "2">:$expert_topk
+  );
   let results = (outs AnyTensor:$output);
 }
 
