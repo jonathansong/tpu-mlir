@@ -43,3 +43,7 @@ htmlcov/
 *.swp
 *.swo
 *~
+
+# Secret ADA300 hardware documentation - do not publish
+docs/developer_manual/ADA300_NPU_ISA.md
+docs/developer_manual/ADA300_hw_arch.md
