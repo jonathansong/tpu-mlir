@@ -396,14 +396,166 @@ def Tpu_Yuv2rgbFormulaAttr : EnumAttr<Tpu_Dialect, Tpu_Yuv2rgbFormula, "yuv2rgb_
 
 def Tpu_BufferType : I32EnumAttr<"BufferType",
     "buffer op type", [
-      I32EnumAttrCase<"GMEM",    0>,
-      I32EnumAttrCase<"L2",      1>,
+      I32EnumAttrCase<"GMEM",       0>,
+      I32EnumAttrCase<"L2",         1>,
+      I32EnumAttrCase<"ASRAM_PING", 2>,
+      I32EnumAttrCase<"ASRAM_PONG", 3>,
+      I32EnumAttrCase<"WSRAM_PING", 4>,
+      I32EnumAttrCase<"WSRAM_PONG", 5>,
+      I32EnumAttrCase<"RSRAM",      6>,
     ]> {
   let genSpecializedAttr = 0;
   let cppNamespace = "::tpu_mlir::tpu";
 }
 
 def Tpu_BufferTypeAttr : EnumAttr<Tpu_Dialect, Tpu_BufferType, "buffer_type">;
+
+//===----------------------------------------------------------------------===//
+// ADA300 Enums and Attributes.
+//===----------------------------------------------------------------------===//
+
+def Tpu_SramKind : I32EnumAttr<"SramKind",
+    "ADA300 SRAM kind", [
+      I32EnumAttrCase<"asram", 0>,
+      I32EnumAttrCase<"wsram", 1>,
+      I32EnumAttrCase<"rsram", 2>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_SramKindAttr : EnumAttr<Tpu_Dialect, Tpu_SramKind, "sram_kind">;
+
+def Tpu_PingPong : I32EnumAttr<"PingPong",
+    "ADA300 ping-pong buffer side", [
+      I32EnumAttrCase<"ping", 0>,
+      I32EnumAttrCase<"pong", 1>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_PingPongAttr : EnumAttr<Tpu_Dialect, Tpu_PingPong, "pp">;
+
+def Tpu_DmaEngine : I32EnumAttr<"DmaEngine",
+    "ADA300 DMA engine selection", [
+      I32EnumAttrCase<"odma0", 0>,
+      I32EnumAttrCase<"odma1", 1>,
+      I32EnumAttrCase<"vlsu",  2>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_DmaEngineAttr : EnumAttr<Tpu_Dialect, Tpu_DmaEngine, "dma_engine">;
+
+def Tpu_TcTarget : I32EnumAttr<"TcTarget",
+    "ADA300 tensor core output destination", [
+      I32EnumAttrCase<"gmm", 0>,
+      I32EnumAttrCase<"gmv", 1>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_TcTargetAttr : EnumAttr<Tpu_Dialect, Tpu_TcTarget, "tc_target">;
+
+def Tpu_TcMode : I32EnumAttr<"TcMode",
+    "ADA300 tensor core computation mode", [
+      I32EnumAttrCase<"inner", 0>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_TcModeAttr : EnumAttr<Tpu_Dialect, Tpu_TcMode, "tc_mode">;
+
+def Tpu_PwnlKind : I32EnumAttr<"PwnlKind",
+    "ADA300 piecewise-nonlinear function kind", [
+      I32EnumAttrCase<"exp",        0>,
+      I32EnumAttrCase<"sqrt",       1>,
+      I32EnumAttrCase<"rsqrt",      2>,
+      I32EnumAttrCase<"sigmoid",    3>,
+      I32EnumAttrCase<"log",        4>,
+      I32EnumAttrCase<"sin",        5>,
+      I32EnumAttrCase<"cos",        6>,
+      I32EnumAttrCase<"reciprocal", 7>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_PwnlKindAttr : EnumAttr<Tpu_Dialect, Tpu_PwnlKind, "pwnl_kind">;
+
+def Tpu_KVCacheFormat : I32EnumAttr<"KVCacheFormat",
+    "ADA300 KV-cache quantization format", [
+      I32EnumAttrCase<"KV4",  0>,
+      I32EnumAttrCase<"KV8",  1>,
+      I32EnumAttrCase<"FP8",  2>,
+      I32EnumAttrCase<"none", 3>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_KVCacheFormatAttr : EnumAttr<Tpu_Dialect, Tpu_KVCacheFormat, "kv_format">;
+
+def Tpu_WeightFormat : I32EnumAttr<"WeightFormat",
+    "ADA300 low-bit weight packing format", [
+      I32EnumAttrCase<"Q4_0", 0>,
+      I32EnumAttrCase<"Q4_1", 1>,
+      I32EnumAttrCase<"Q8_0", 2>,
+      I32EnumAttrCase<"Q8_1", 3>,
+      I32EnumAttrCase<"Q4_K", 4>,
+      I32EnumAttrCase<"Q6_K", 5>,
+      I32EnumAttrCase<"Q2_K", 6>,
+      I32EnumAttrCase<"Q3_K", 7>,
+      I32EnumAttrCase<"Q5_K", 8>,
+      I32EnumAttrCase<"Q8_K", 9>,
+      I32EnumAttrCase<"none", 10>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_WeightFormatAttr : EnumAttr<Tpu_Dialect, Tpu_WeightFormat, "weight_format">;
+
+def Tpu_QuantScheme : I32EnumAttr<"QuantScheme",
+    "ADA300 quantization scheme", [
+      I32EnumAttrCase<"W4A8",    0>,
+      I32EnumAttrCase<"W4A8KV4", 1>,
+      I32EnumAttrCase<"W8A8",    2>,
+      I32EnumAttrCase<"A16W8",   3>,
+      I32EnumAttrCase<"W4A16",   4>,
+      I32EnumAttrCase<"W8A16",   5>,
+      I32EnumAttrCase<"none",    6>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_QuantSchemeAttr : EnumAttr<Tpu_Dialect, Tpu_QuantScheme, "quant_scheme">;
+
+def Tpu_Phase : I32EnumAttr<"Phase",
+    "LLM inference phase", [
+      I32EnumAttrCase<"prefill", 0>,
+      I32EnumAttrCase<"decode",  1>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_PhaseAttr : EnumAttr<Tpu_Dialect, Tpu_Phase, "phase">;
+
+def Tpu_QuantSrcType : I32EnumAttr<"QuantSrcType",
+    "ADA300 quantization activation source type", [
+      I32EnumAttrCase<"f16",  0>,
+      I32EnumAttrCase<"bf16", 1>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_QuantSrcTypeAttr : EnumAttr<Tpu_Dialect, Tpu_QuantSrcType, "quant_src_type">;
+
+def Tpu_QuantDstType : I32EnumAttr<"QuantDstType",
+    "ADA300 quantization destination type", [
+      I32EnumAttrCase<"int8",  0>,
+      I32EnumAttrCase<"int16", 1>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_QuantDstTypeAttr : EnumAttr<Tpu_Dialect, Tpu_QuantDstType, "quant_dst_type">;
 
 //===----------------------------------------------------------------------===//
 // Tpu Types.
@@ -505,7 +657,9 @@ def Tpu_A16MatMulOp : Tpu_Op<"A16MatMul",
     DefaultValuedAttr<I64Attr, "0">:$q_group_size,
     OptionalAttr<BoolAttr>:$multicore,
     OptionalAttr<BoolAttr>:$do_core_parallel,
-    DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$dq_type
+    DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$dq_type,
+    OptionalAttr<Tpu_QuantSchemeAttr>:$quant_scheme,
+    OptionalAttr<Tpu_WeightFormatAttr>:$weight_format
   );
 
   let hasCanonicalizer = 1;
@@ -775,7 +929,10 @@ def Tpu_AttentionOp : Tpu_Op<"Attention", [
     I64Attr:$head,
     I64Attr:$dim,
     DefaultValuedAttr<I64Attr, "0">:$has_bias,
-    OptionalAttr<BoolAttr>:$multicore
+    OptionalAttr<BoolAttr>:$multicore,
+    DefaultValuedAttr<I64Attr, "0">:$num_kv_heads,
+    OptionalAttr<Tpu_KVCacheFormatAttr>:$kv_format,
+    OptionalAttr<Tpu_PhaseAttr>:$phase
   );
 
   let results = (outs AnyTensor:$output);
@@ -2780,7 +2937,9 @@ def Tpu_FAttentionOp : Tpu_Op<"FAttention", [
     I64Attr:$mq,
     I64Attr:$mk,
     DefaultValuedAttr<BoolAttr, "true">:$keep_dims,
-    OptionalAttr<BoolAttr>:$multicore
+    OptionalAttr<BoolAttr>:$multicore,
+    DefaultValuedAttr<BoolAttr, "true">:$causal,
+    OptionalAttr<Tpu_PhaseAttr>:$phase
   );
 
   let results = (outs AnyTensor:$output);
@@ -4618,7 +4777,9 @@ def Tpu_MatMulOp : Tpu_Op<"MatMul", [
     OptionalAttr<BoolAttr>:$multicore,
     OptionalAttr<BoolAttr>:$do_core_parallel,
     DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$dq_type,
-    DefaultValuedAttr<I64Attr, "0">:$q_group_size
+    DefaultValuedAttr<I64Attr, "0">:$q_group_size,
+    OptionalAttr<Tpu_QuantSchemeAttr>:$quant_scheme,
+    OptionalAttr<Tpu_WeightFormatAttr>:$weight_format
   );
 
   let results = (outs AnyRankedTensor:$output);
@@ -8083,6 +8244,542 @@ def Tpu_Yuv2rgbFormulaOp : Tpu_Op<"Yuv2rgbFormula"> {
     OptionalAttr<BoolAttr>:$multicore
   );
 
+  let results = (outs AnyRankedTensor:$output);
+}
+
+
+//===----------------------------------------------------------------------===//
+// ADA300 Ops - Base Class.
+//===----------------------------------------------------------------------===//
+
+// Base class for ADA300-specific executable ops. These ops do not participate
+// in the standard GlobalGenInterface / InferenceInterface pipeline yet; they
+// are added as the ADA300 backend matures.
+class Tpu_ADA300Op<string mnemonic, list<Trait> traits = []> :
+    Tpu_BaseOp<"ada300_" # mnemonic, traits>;
+
+//===----------------------------------------------------------------------===//
+// ADA300 Tensor Core Ops.
+//===----------------------------------------------------------------------===//
+
+def Tpu_ADA300TcConfigOp : Tpu_ADA300Op<"tc_config"> {
+  let summary = "ADA300 tensor core configuration";
+  let description = [{
+    Produces an SSA config token that carries ADA300 tensor core tile parameters.
+    Tensor core ops (gmm/gmma/gmv/gmva) consume this token to declare their
+    execution configuration. Using an explicit SSA value instead of an op
+    attribute gives verifiers, CSE, and rewrite patterns a precise dependency.
+  }];
+  let arguments = (ins
+    Tpu_TcTargetAttr:$target,
+    Tpu_TcModeAttr:$mode,
+    I64Attr:$row_size,
+    I64Attr:$col_size,
+    I64Attr:$acc_size,
+    I64Attr:$blk_cnt_a,
+    I64Attr:$blk_cnt_w,
+    StrAttr:$act_type,
+    StrAttr:$weight_type,
+    StrAttr:$out_type
+  );
+  // The result is an opaque rank-1 i32 token that carries the config as an
+  // SSA dependency.  Actual encoding is resolved at instruction selection.
+  let results = (outs AnyRankedTensor:$config);
+}
+
+def Tpu_ADA300GmmOp : Tpu_ADA300Op<"gmm"> {
+  let summary = "ADA300 tensor core: C = A * W (SRAM output)";
+  let description = [{
+    Corresponds to ISA form `gmm.mm`.  Multiplies activation A by weight W and
+    writes the result to a SRAM (RSRAM) output buffer. Requires a matching
+    tc_config token whose target is `gmm`.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$config,
+    AnyRankedTensor:$act,
+    AnyRankedTensor:$weight
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300GmmaOp : Tpu_ADA300Op<"gmma"> {
+  let summary = "ADA300 tensor core: C += A * W (SRAM output)";
+  let description = [{
+    Corresponds to ISA form `gmma.mm`.  Accumulates A * W into an existing
+    SRAM accumulator (RSRAM).
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$config,
+    AnyRankedTensor:$act,
+    AnyRankedTensor:$weight,
+    AnyRankedTensor:$acc
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300GmmaTransOp : Tpu_ADA300Op<"gmma_trans"> {
+  let summary = "ADA300 tensor core: C += A * W^T (SRAM output)";
+  let description = [{
+    Corresponds to ISA form `gmma.mt`.  Accumulates A * W^T into an existing
+    SRAM accumulator.  The `.mt` variant transposes the weight tile.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$config,
+    AnyRankedTensor:$act,
+    AnyRankedTensor:$weight,
+    AnyRankedTensor:$acc
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300GmvOp : Tpu_ADA300Op<"gmv"> {
+  let summary = "ADA300 tensor core: C = A * W (vector register output)";
+  let description = [{
+    Corresponds to ISA form `gmv.mm`.  Multiplies A by W and writes the result
+    directly into a vector register instead of SRAM.  Requires a tc_config
+    token whose target is `gmv`.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$config,
+    AnyRankedTensor:$act,
+    AnyRankedTensor:$weight
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300GmvaOp : Tpu_ADA300Op<"gmva"> {
+  let summary = "ADA300 tensor core: C += A * W (vector register output)";
+  let description = [{
+    Corresponds to ISA form `gmva.mm`.  Accumulates A * W into an existing
+    vector register accumulator.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$config,
+    AnyRankedTensor:$act,
+    AnyRankedTensor:$weight,
+    AnyRankedTensor:$acc
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300GmvaTransOp : Tpu_ADA300Op<"gmva_trans"> {
+  let summary = "ADA300 tensor core: C += A * W^T (vector register output)";
+  let description = [{
+    Corresponds to ISA form `gmva.mt`.  Accumulates A * W^T into an existing
+    vector register accumulator.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$config,
+    AnyRankedTensor:$act,
+    AnyRankedTensor:$weight,
+    AnyRankedTensor:$acc
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+//===----------------------------------------------------------------------===//
+// ADA300 Vector Ops.
+//===----------------------------------------------------------------------===//
+
+def Tpu_ADA300VfaddOp : Tpu_ADA300Op<"vfadd"> {
+  let summary = "ADA300 vector floating-point add (vfadd.vv, 3 cycles)";
+  let arguments = (ins AnyRankedTensor:$lhs, AnyRankedTensor:$rhs);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfsubOp : Tpu_ADA300Op<"vfsub"> {
+  let summary = "ADA300 vector floating-point subtract (vfsub.vv, 3 cycles)";
+  let arguments = (ins AnyRankedTensor:$lhs, AnyRankedTensor:$rhs);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfmulOp : Tpu_ADA300Op<"vfmul"> {
+  let summary = "ADA300 vector floating-point multiply (vfmul.vv, 3 cycles)";
+  let arguments = (ins AnyRankedTensor:$lhs, AnyRankedTensor:$rhs);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfminOp : Tpu_ADA300Op<"vfmin"> {
+  let summary = "ADA300 vector floating-point minimum (vfmin.vv, 3 cycles)";
+  let arguments = (ins AnyRankedTensor:$lhs, AnyRankedTensor:$rhs);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfmaxOp : Tpu_ADA300Op<"vfmax"> {
+  let summary = "ADA300 vector floating-point maximum (vfmax.vv, 3 cycles)";
+  let arguments = (ins AnyRankedTensor:$lhs, AnyRankedTensor:$rhs);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VslideupOp : Tpu_ADA300Op<"vslideup"> {
+  let summary = "ADA300 vector slide-up by scalar offset (vslideup.vs, 3 cycles)";
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    I64Attr:$offset
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VslidedownOp : Tpu_ADA300Op<"vslidedown"> {
+  let summary = "ADA300 vector slide-down by scalar offset (vslidedown.vs, 3 cycles)";
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    I64Attr:$offset
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfpwnlOp : Tpu_ADA300Op<"vfpwnl"> {
+  let summary = "ADA300 piecewise-nonlinear function approximation (vfpwnl.*, 8 cycles)";
+  let description = [{
+    Applies a hardware piecewise-nonlinear (PWNL) approximation to each element
+    of the source vector register.  The `kind` attribute selects one of the 8
+    native ISA functions.  The `segments` attribute must be 16 or 31.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    Tpu_PwnlKindAttr:$kind,
+    DefaultValuedAttr<I64Attr, "16">:$segments,
+    StrAttr:$input_type,
+    StrAttr:$output_type
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfmulCvtOp : Tpu_ADA300Op<"vfmul_cvt"> {
+  let summary = "ADA300 fused vector multiply with type conversion (vfmul.{low/high}.*.*.*.vv, 3 cycles)";
+  let description = [{
+    Multiplies two vector operands and converts the result to the output type.
+    The `half` attribute selects which half of the output vector is written
+    (low = lower elements, high = upper elements).
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$lhs,
+    AnyRankedTensor:$rhs,
+    StrAttr:$half,
+    StrAttr:$src_type,
+    StrAttr:$dst_type
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfcvtOp : Tpu_ADA300Op<"vfcvt"> {
+  let summary = "ADA300 vector floating-point type conversion (vfcvt.*, 3 cycles)";
+  let description = [{
+    Converts the source vector register between floating-point types.  For
+    conversions that widen (e.g. f16 -> f32), two ops with `half = low` and
+    `half = high` are required to cover all elements.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    StrAttr:$half,
+    StrAttr:$src_type,
+    StrAttr:$dst_type
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VrepeatOp : Tpu_ADA300Op<"vrepeat"> {
+  let summary = "ADA300 broadcast scalar into vector register (vrepeat.vs, 3 cycles)";
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    I64Attr:$count
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VpickOp : Tpu_ADA300Op<"vpick"> {
+  let summary = "ADA300 extract element from vector register (vpick.vs, 1 cycle)";
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    I64Attr:$index
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VsetOp : Tpu_ADA300Op<"vset"> {
+  let summary = "ADA300 insert scalar into vector register (vset.ss, 3 cycles)";
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    AnyRankedTensor:$scalar,
+    I64Attr:$index
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfbredsumOp : Tpu_ADA300Op<"vfbredsum"> {
+  let summary = "ADA300 vector floating-point reduce-sum (vfbredsum.v, 6 cycles)";
+  let arguments = (ins AnyRankedTensor:$src);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfbredminOp : Tpu_ADA300Op<"vfbredmin"> {
+  let summary = "ADA300 vector floating-point reduce-min (vfbredmin.v, 3 cycles)";
+  let arguments = (ins AnyRankedTensor:$src);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VfbredmaxOp : Tpu_ADA300Op<"vfbredmax"> {
+  let summary = "ADA300 vector floating-point reduce-max (vfbredmax.v, 3 cycles)";
+  let arguments = (ins AnyRankedTensor:$src);
+  let results = (outs AnyRankedTensor:$output);
+}
+
+//===----------------------------------------------------------------------===//
+// ADA300 Memory Ops.
+//===----------------------------------------------------------------------===//
+
+def Tpu_ADA300SramAllocOp : Tpu_ADA300Op<"sram_alloc"> {
+  let summary = "ADA300 logical SRAM region allocation";
+  let description = [{
+    Allocates a logical SRAM region of the given shape and element type.  The
+    `sram_kind` attribute selects ASRAM, WSRAM, or RSRAM; the optional `pp`
+    attribute selects the ping or pong side for ASRAM/WSRAM.
+    The result is an opaque tensor that serves as a handle to the SRAM region.
+  }];
+  let arguments = (ins
+    I64ArrayAttr:$shape,
+    StrAttr:$elem_type,
+    Tpu_SramKindAttr:$sram_kind,
+    OptionalAttr<Tpu_PingPongAttr>:$pp
+  );
+  let results = (outs AnyRankedTensor:$sram);
+}
+
+def Tpu_ADA300SramViewOp : Tpu_ADA300Op<"sram_view"> {
+  let summary = "ADA300 tile/view into a SRAM allocation";
+  let description = [{
+    Returns a sub-region view of an existing SRAM allocation.  Used to extract
+    a specific tile from a larger SRAM buffer for feeding into tensor core or
+    vector ops.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$sram,
+    I64ArrayAttr:$offsets,
+    I64ArrayAttr:$sizes,
+    I64ArrayAttr:$strides
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300DmaLoadOp : Tpu_ADA300Op<"dma_load"> {
+  let summary = "ADA300 DMA: global memory -> SRAM";
+  let description = [{
+    Loads data from global memory (LPDDR / HBM) into an SRAM region.
+    The `engine` attribute selects the DMA engine:
+      - odma0: may access WSRAM ping/pong and RSRAM.
+      - odma1: may access ASRAM ping/pong and RSRAM.
+      - vlsu:  may access WSRAM, ASRAM, and RSRAM.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$src,
+    AnyRankedTensor:$dst_sram,
+    Tpu_DmaEngineAttr:$engine
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300DmaStoreOp : Tpu_ADA300Op<"dma_store"> {
+  let summary = "ADA300 DMA: SRAM -> global memory";
+  let description = [{
+    Stores data from an SRAM region back to global memory.
+    The `engine` attribute follows the same access rules as dma_load.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$src_sram,
+    AnyRankedTensor:$dst,
+    Tpu_DmaEngineAttr:$engine
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300VloadOp : Tpu_ADA300Op<"vload"> {
+  let summary = "ADA300 load SRAM data into vector register";
+  let arguments = (ins AnyRankedTensor:$sram);
+  let results = (outs AnyRankedTensor:$vreg);
+}
+
+def Tpu_ADA300VstoreOp : Tpu_ADA300Op<"vstore"> {
+  let summary = "ADA300 store vector register to SRAM";
+  let arguments = (ins
+    AnyRankedTensor:$vreg,
+    AnyRankedTensor:$sram
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+//===----------------------------------------------------------------------===//
+// ADA300 Sync Ops.
+//===----------------------------------------------------------------------===//
+
+// Sync ops are scalar barriers.  They carry no tensor operands and produce no
+// tensor results; they exist solely to express ordering constraints in the IR.
+
+def Tpu_ADA300SyncTcOp : Tpu_ADA300Op<"sync_tc"> {
+  let summary = "ADA300 barrier: wait for tensor core completion";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncVectorOp : Tpu_ADA300Op<"sync_vector"> {
+  let summary = "ADA300 barrier: wait for vector pipeline completion";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncResultOp : Tpu_ADA300Op<"sync_result"> {
+  let summary = "ADA300 barrier: wait for result SRAM visibility";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncActPingOp : Tpu_ADA300Op<"sync_act_ping"> {
+  let summary = "ADA300 barrier: wait for ASRAM ping side";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncActPongOp : Tpu_ADA300Op<"sync_act_pong"> {
+  let summary = "ADA300 barrier: wait for ASRAM pong side";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncWhtPingOp : Tpu_ADA300Op<"sync_wht_ping"> {
+  let summary = "ADA300 barrier: wait for WSRAM ping side";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncWhtPongOp : Tpu_ADA300Op<"sync_wht_pong"> {
+  let summary = "ADA300 barrier: wait for WSRAM pong side";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncSramAllOp : Tpu_ADA300Op<"sync_sram_all"> {
+  let summary = "ADA300 barrier: wait for all SRAM resources";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncOdma0Op : Tpu_ADA300Op<"sync_odma0"> {
+  let summary = "ADA300 barrier: wait for odma0 DMA engine completion";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncOdma1Op : Tpu_ADA300Op<"sync_odma1"> {
+  let summary = "ADA300 barrier: wait for odma1 DMA engine completion";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+def Tpu_ADA300SyncAllOp : Tpu_ADA300Op<"sync_all"> {
+  let summary = "ADA300 full memory barrier";
+  let arguments = (ins);
+  let results = (outs);
+}
+
+//===----------------------------------------------------------------------===//
+// ADA300 Quantization Ops.
+//===----------------------------------------------------------------------===//
+
+def Tpu_ADA300QuantActOp : Tpu_ADA300Op<"quant_act"> {
+  let summary = "ADA300 activation quantization: FP16/BF16 -> INT8/INT16";
+  let description = [{
+    Quantizes a floating-point activation tensor to a low-bit integer tensor
+    using per-group scaling.  The `src_type` selects f16 or bf16; the
+    `dst_type` selects int8 or int16.  A `group_size` of 0 means per-channel.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$input,
+    Tpu_QuantSrcTypeAttr:$src_type,
+    Tpu_QuantDstTypeAttr:$dst_type,
+    DefaultValuedAttr<I64Attr, "64">:$group_size
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300DequantWeightOp : Tpu_ADA300Op<"dequant_weight"> {
+  let summary = "ADA300 weight dequantization: packed INT4 -> INT8 or FP16/BF16";
+  let description = [{
+    Expands a packed low-bit weight tensor into a higher-precision format.
+    The `src_format` attribute describes the packing layout (Q4_0, Q4_1, etc.)
+    and drives the decode logic (scale, zero-point, and sub-block metadata).
+    The `dst_type` attribute selects the target precision.
+    K-quant formats (Q2_K through Q8_K) use a 256-element super-block;
+    ordinary formats (Q4_0, Q4_1, Q8_0, Q8_1) use 64-element blocks.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$input,
+    Tpu_WeightFormatAttr:$src_format,
+    StrAttr:$dst_type,
+    DefaultValuedAttr<I64Attr, "64">:$group_size
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300DequantKvOp : Tpu_ADA300Op<"dequant_kv"> {
+  let summary = "ADA300 KV-cache dequantization: KV4/KV8 -> FP16/BF16";
+  let description = [{
+    Expands a quantized KV-cache tensor to the working precision for attention
+    computation.  The `src_format` selects KV4, KV8, or FP8.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$input,
+    Tpu_KVCacheFormatAttr:$src_format,
+    StrAttr:$dst_type
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300RequantOp : Tpu_ADA300Op<"requant"> {
+  let summary = "ADA300 accumulator requantization";
+  let description = [{
+    Requantizes an INT16/INT32 accumulator result to the output precision after
+    a tensor core matmul.  This op is distinct from the generic Tpu_RequantIntOp
+    and Tpu_RequantFpOp to avoid confusion during the ADA300 migration path.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$input,
+    AnyRankedTensor:$scale,
+    AnyTensorOrNone:$zp,
+    StrAttr:$dst_type,
+    DefaultValuedAttr<Tpu_RoundModeAttr,
+        "tpu::RoundMode::HalfAwayFromZero">:$round_mode
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300PackOp : Tpu_ADA300Op<"pack"> {
+  let summary = "ADA300 pack tensor into low-bit representation";
+  let description = [{
+    Packs a higher-precision tensor into a low-bit packed format.  The
+    `dst_format` attribute selects the target packing layout.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$input,
+    AnyRankedTensor:$scale,
+    AnyTensorOrNone:$zp,
+    Tpu_WeightFormatAttr:$dst_format,
+    DefaultValuedAttr<I64Attr, "64">:$group_size
+  );
+  let results = (outs AnyRankedTensor:$output);
+}
+
+def Tpu_ADA300UnpackOp : Tpu_ADA300Op<"unpack"> {
+  let summary = "ADA300 unpack low-bit tensor to higher precision";
+  let description = [{
+    Unpacks a low-bit packed tensor back to a higher-precision representation.
+    Mirrors Tpu_ADA300PackOp.
+  }];
+  let arguments = (ins
+    AnyRankedTensor:$input,
+    Tpu_WeightFormatAttr:$src_format,
+    StrAttr:$dst_type,
+    DefaultValuedAttr<I64Attr, "64">:$group_size
+  );
   let results = (outs AnyRankedTensor:$output);
 }
 
