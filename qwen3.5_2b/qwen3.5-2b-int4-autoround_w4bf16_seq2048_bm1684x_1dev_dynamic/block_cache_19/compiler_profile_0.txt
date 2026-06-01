@@ -1,0 +1,803 @@
+--------------------------------------
+s: start time, b: bd_id, g: gdma_id, e: end time, t: cmd cost time, dr: direction, sz: memsize, bw: bandwidth
+--------------------------------------
+ENGINE_BD                                                                                      ENGINE_GDMA                                                                                    
+                                                                                               RMSNorm_49|GDMA_TENSOR|s:0|b:0|g:1|e:302|t:303|dr:0|sz:4096|bw:12.59                           
+                                                                                               RMSNorm_49|GDMA_TENSOR|s:303|b:0|g:2|e:605|t:303|dr:0|sz:4096|bw:12.59                         
+RMSNorm_49|AR|s:606|b:1|g:2|e:733|t:128                                                                                                                                                       
+RMSNorm_49|AR|s:734|b:2|g:2|e:861|t:128                                                                                                                                                       
+RMSNorm_49|PorD|s:862|b:3|g:2|e:2909|t:2048                                                                                                                                                   
+RMSNorm_49|AR|s:2910|b:4|g:2|e:2910|t:1                                                                                                                                                       
+RMSNorm_49|SFU|s:2911|b:5|g:2|e:2940|t:30                                                                                                                                                     
+RMSNorm_49|FUSED_CMP|s:2941|b:6|g:2|e:2942|t:2                                                                                                                                                
+RMSNorm_49|AR|s:2943|b:7|g:2|e:3070|t:128                                                                                                                                                     
+RMSNorm_49|AR|s:3071|b:8|g:2|e:3198|t:128                                                                                                                                                     
+RMSNorm_49|LANE_BC|s:3199|b:9|g:2|e:3326|t:128                                                                                                                                                
+RMSNorm_49|AR|s:3327|b:10|g:2|e:3454|t:128                                                                                                                                                    
+                                                                                               RMSNorm_49|GDMA_TENSOR|s:3455|b:10|g:3|e:3853|t:399|dr:1|sz:4096|bw:9.56                       
+                                                                                               A16MatMul_50|GDMA_TENSOR|s:3854|b:10|g:4|e:4156|t:303|dr:0|sz:4096|bw:12.59                    
+                                                                                               A16MatMul_50|GDMA_TENSOR|s:4157|b:10|g:5|e:23568|t:19412|dr:0|sz:1048576|bw:50.31              
+                                                                                               A16MatMul_50|GDMA_TENSOR|s:23569|b:10|g:6|e:25994|t:2426|dr:0|sz:131072|bw:50.32               
+                                                                                               A16MatMul_50|GDMA_TENSOR|s:25995|b:10|g:7|e:27207|t:1213|dr:0|sz:65536|bw:50.32                
+A16MatMul_50|AR|s:27208|b:11|g:7|e:27719|t:512                                                 A16MatMul_50|GDMA_TENSOR|s:27208|b:10|g:8|e:46619|t:19412|dr:0|sz:1048576|bw:50.31             
+A16MatMul_50|AR|s:27720|b:12|g:7|e:28231|t:512                                                                                                                                                
+A16MatMul_50|AR|s:28232|b:13|g:7|e:28743|t:512                                                                                                                                                
+A16MatMul_50|AR|s:28744|b:14|g:7|e:29767|t:1024                                                                                                                                               
+A16MatMul_50|AR|s:29768|b:15|g:7|e:30791|t:1024                                                                                                                                               
+A16MatMul_50|TRANS|s:30792|b:16|g:7|e:30855|t:64                                                                                                                                              
+A16MatMul_50|MM2|s:30856|b:17|g:7|e:31879|t:1024                                                                                                                                              
+A16MatMul_50|TRANS|s:31880|b:18|g:7|e:31911|t:32                                                                                                                                              
+A16MatMul_50|AR|s:46620|b:19|g:8|e:47131|t:512                                                 A16MatMul_50|GDMA_TENSOR|s:46620|b:18|g:9|e:46718|t:99|dr:1|sz:2048|bw:19.27                   
+A16MatMul_50|AR|s:47132|b:20|g:8|e:47643|t:512                                                 A16MatMul_50|GDMA_TENSOR|s:46719|b:18|g:10|e:66130|t:19412|dr:0|sz:1048576|bw:50.31            
+A16MatMul_50|AR|s:47644|b:21|g:8|e:48155|t:512                                                                                                                                                
+A16MatMul_50|AR|s:48156|b:22|g:8|e:49179|t:1024                                                                                                                                               
+A16MatMul_50|AR|s:49180|b:23|g:8|e:50203|t:1024                                                                                                                                               
+A16MatMul_50|MM2|s:50204|b:24|g:8|e:51227|t:1024                                                                                                                                              
+A16MatMul_50|TRANS|s:51228|b:25|g:8|e:51259|t:32                                                                                                                                              
+A16MatMul_50|AR|s:66131|b:26|g:10|e:66642|t:512                                                A16MatMul_50|GDMA_TENSOR|s:66131|b:25|g:11|e:66229|t:99|dr:1|sz:2048|bw:19.27                  
+A16MatMul_50|AR|s:66643|b:27|g:10|e:67154|t:512                                                A16MatMul_50|GDMA_TENSOR|s:66230|b:25|g:12|e:85641|t:19412|dr:0|sz:1048576|bw:50.31            
+A16MatMul_50|AR|s:67155|b:28|g:10|e:67666|t:512                                                                                                                                               
+A16MatMul_50|AR|s:67667|b:29|g:10|e:68690|t:1024                                                                                                                                              
+A16MatMul_50|AR|s:68691|b:30|g:10|e:69714|t:1024                                                                                                                                              
+A16MatMul_50|MM2|s:69715|b:31|g:10|e:70738|t:1024                                                                                                                                             
+A16MatMul_50|TRANS|s:70739|b:32|g:10|e:70770|t:32                                                                                                                                             
+A16MatMul_50|AR|s:85642|b:33|g:12|e:86153|t:512                                                A16MatMul_50|GDMA_TENSOR|s:85642|b:32|g:13|e:85740|t:99|dr:1|sz:2048|bw:19.27                  
+A16MatMul_50|AR|s:86154|b:34|g:12|e:86665|t:512                                                                                                                                               
+A16MatMul_50|AR|s:86666|b:35|g:12|e:87177|t:512                                                                                                                                               
+A16MatMul_50|AR|s:87178|b:36|g:12|e:88201|t:1024                                                                                                                                              
+A16MatMul_50|AR|s:88202|b:37|g:12|e:89225|t:1024                                                                                                                                              
+A16MatMul_50|MM2|s:89226|b:38|g:12|e:90249|t:1024                                                                                                                                             
+A16MatMul_50|TRANS|s:90250|b:39|g:12|e:90281|t:32                                                                                                                                             
+                                                                                               A16MatMul_50|GDMA_TENSOR|s:90282|b:39|g:14|e:90380|t:99|dr:1|sz:2048|bw:19.27                  
+                                                                                               Load_53|GDMA_TENSOR|s:90381|b:39|g:15|e:90683|t:303|dr:0|sz:8192|bw:25.18                      
+Slice_54|AR|s:90684|b:40|g:15|e:90747|t:64                                                                                                                                                    
+Slice_56|AR|s:90748|b:41|g:15|e:90811|t:64                                                     Store_55|GDMA_TENSOR|s:90748|b:40|g:16|e:91146|t:399|dr:1|sz:4096|bw:9.56                      
+Cast_57|AR|s:91147|b:42|g:16|e:91274|t:128                                                                                                                                                    
+                                                                                               Store_58|GDMA_TENSOR|s:91275|b:42|g:17|e:91673|t:399|dr:1|sz:8192|bw:19.12                     
+                                                                                               Active_61|GDMA_MATRIX|s:91674|b:42|g:18|e:91955|t:282|dr:0|sz:8192|bw:27.05                    
+Active_61|STATIC_BC|s:91956|b:43|g:18|e:91956|t:1                                                                                                                                             
+Active_61|AR|s:91957|b:44|g:18|e:91958|t:2                                                                                                                                                    
+Active_61|AR|s:91959|b:45|g:18|e:91962|t:4                                                                                                                                                    
+Active_61|AR|s:91963|b:46|g:18|e:91964|t:2                                                                                                                                                    
+Active_61|AR|s:91965|b:47|g:18|e:91966|t:2                                                                                                                                                    
+Active_61|AR|s:91967|b:48|g:18|e:91968|t:2                                                                                                                                                    
+Active_61|AR|s:91969|b:49|g:18|e:91970|t:2                                                                                                                                                    
+Active_61|AR|s:91971|b:50|g:18|e:91974|t:4                                                                                                                                                    
+Active_61|AR|s:91975|b:51|g:18|e:91976|t:2                                                                                                                                                    
+Active_61|AR|s:91977|b:52|g:18|e:91977|t:1                                                                                                                                                    
+Active_61|AR|s:91978|b:53|g:18|e:91978|t:1                                                                                                                                                    
+Active_61|AR|s:91979|b:54|g:18|e:91980|t:2                                                                                                                                                    
+Active_61|SFU|s:91981|b:55|g:18|e:92000|t:20                                                                                                                                                  
+Active_61|AR|s:92001|b:56|g:18|e:92004|t:4                                                                                                                                                    
+Active_61|AR|s:92005|b:57|g:18|e:92006|t:2                                                                                                                                                    
+Active_61|AR|s:92007|b:58|g:18|e:92068|t:62                                                                                                                                                   
+                                                                                               Active_61|GDMA_MATRIX|s:92069|b:58|g:19|e:92440|t:372|dr:1|sz:8192|bw:20.51                    
+                                                                                               A16MatMul_62|GDMA_TENSOR|s:92441|b:58|g:20|e:92743|t:303|dr:0|sz:4096|bw:12.59                 
+                                                                                               A16MatMul_62|GDMA_TENSOR|s:92744|b:58|g:21|e:102449|t:9706|dr:0|sz:524288|bw:50.31             
+                                                                                               A16MatMul_62|GDMA_TENSOR|s:102450|b:58|g:22|e:102752|t:303|dr:0|sz:16384|bw:50.36              
+                                                                                               A16MatMul_62|GDMA_TENSOR|s:102753|b:58|g:23|e:103358|t:606|dr:0|sz:8192|bw:12.59               
+A16MatMul_62|AR|s:103359|b:59|g:23|e:103614|t:256                                                                                                                                             
+A16MatMul_62|AR|s:103615|b:60|g:23|e:103870|t:256                                                                                                                                             
+A16MatMul_62|AR|s:103871|b:61|g:23|e:104126|t:256                                                                                                                                             
+A16MatMul_62|AR|s:104127|b:62|g:23|e:104638|t:512                                                                                                                                             
+A16MatMul_62|AR|s:104639|b:63|g:23|e:105150|t:512                                                                                                                                             
+A16MatMul_62|TRANS|s:105151|b:64|g:23|e:105214|t:64                                                                                                                                           
+A16MatMul_62|MM2|s:105215|b:65|g:23|e:105726|t:512                                                                                                                                            
+A16MatMul_62|TRANS|s:105727|b:66|g:23|e:105742|t:16                                                                                                                                           
+                                                                                               A16MatMul_62|GDMA_TENSOR|s:105743|b:66|g:24|e:105841|t:99|dr:1|sz:1024|bw:9.63                 
+                                                                                               A16MatMul_63|GDMA_TENSOR|s:105842|b:66|g:25|e:106144|t:303|dr:0|sz:4096|bw:12.59               
+                                                                                               A16MatMul_63|GDMA_TENSOR|s:106145|b:66|g:26|e:115850|t:9706|dr:0|sz:524288|bw:50.31            
+                                                                                               A16MatMul_63|GDMA_TENSOR|s:115851|b:66|g:27|e:116153|t:303|dr:0|sz:16384|bw:50.36              
+                                                                                               A16MatMul_63|GDMA_TENSOR|s:116154|b:66|g:28|e:116759|t:606|dr:0|sz:8192|bw:12.59               
+A16MatMul_63|AR|s:116760|b:67|g:28|e:117015|t:256                                                                                                                                             
+A16MatMul_63|AR|s:117016|b:68|g:28|e:117271|t:256                                                                                                                                             
+A16MatMul_63|AR|s:117272|b:69|g:28|e:117527|t:256                                                                                                                                             
+A16MatMul_63|AR|s:117528|b:70|g:28|e:118039|t:512                                                                                                                                             
+A16MatMul_63|AR|s:118040|b:71|g:28|e:118551|t:512                                                                                                                                             
+A16MatMul_63|TRANS|s:118552|b:72|g:28|e:118615|t:64                                                                                                                                           
+A16MatMul_63|MM2|s:118616|b:73|g:28|e:119127|t:512                                                                                                                                            
+A16MatMul_63|TRANS|s:119128|b:74|g:28|e:119143|t:16                                                                                                                                           
+                                                                                               A16MatMul_63|GDMA_TENSOR|s:119144|b:74|g:29|e:119242|t:99|dr:1|sz:1024|bw:9.63                 
+                                                                                               Load_67|GDMA_TENSOR|s:119243|b:74|g:30|e:119545|t:303|dr:0|sz:4096|bw:12.59                    
+                                                                                               Load_68|GDMA_TENSOR|s:119546|b:74|g:31|e:119582|t:37|dr:0|sz:512|bw:12.89                      
+RMSNorm_71|AR|s:119583|b:75|g:31|e:119598|t:16                                                 Load_69|GDMA_TENSOR|s:119583|b:74|g:32|e:119657|t:75|dr:0|sz:1024|bw:12.72                     
+RMSNorm_71|AR|s:119599|b:76|g:31|e:119614|t:16                                                 Load_70|GDMA_TENSOR|s:119658|b:74|g:33|e:119694|t:37|dr:0|sz:512|bw:12.89                      
+RMSNorm_71|PorD|s:119615|b:77|g:31|e:119630|t:16                                                                                                                                              
+RMSNorm_71|PorD|s:119631|b:78|g:31|e:119646|t:16                                                                                                                                              
+RMSNorm_71|AR|s:119647|b:79|g:31|e:119647|t:1                                                                                                                                                 
+RMSNorm_71|SFU|s:119648|b:80|g:31|e:119677|t:30                                                                                                                                               
+RMSNorm_71|FUSED_CMP|s:119678|b:81|g:31|e:119679|t:2                                                                                                                                          
+RMSNorm_71|AR|s:119680|b:82|g:31|e:119695|t:16                                                                                                                                                
+RMSNorm_71|AR|s:119696|b:83|g:31|e:119727|t:32                                                                                                                                                
+RMSNorm_71|AR|s:119728|b:84|g:31|e:119743|t:16                                                                                                                                                
+RMSNorm_71|LANE_BC|s:119744|b:85|g:31|e:119751|t:8                                                                                                                                            
+RMSNorm_71|AR|s:119752|b:86|g:31|e:119783|t:32                                                                                                                                                
+RMSNorm_73|AR|s:119784|b:87|g:33|e:119799|t:16                                                 Store_72|GDMA_TENSOR|s:119784|b:86|g:34|e:120182|t:399|dr:1|sz:4096|bw:9.56                    
+RMSNorm_73|AR|s:119800|b:88|g:33|e:119815|t:16                                                                                                                                                
+RMSNorm_73|PorD|s:119816|b:89|g:33|e:119831|t:16                                                                                                                                              
+RMSNorm_73|PorD|s:119832|b:90|g:33|e:119847|t:16                                                                                                                                              
+RMSNorm_73|AR|s:119848|b:91|g:33|e:119848|t:1                                                                                                                                                 
+RMSNorm_73|SFU|s:119849|b:92|g:33|e:119878|t:30                                                                                                                                               
+RMSNorm_73|FUSED_CMP|s:119879|b:93|g:33|e:119880|t:2                                                                                                                                          
+RMSNorm_73|AR|s:119881|b:94|g:33|e:119896|t:16                                                                                                                                                
+RMSNorm_73|AR|s:119897|b:95|g:33|e:119928|t:32                                                                                                                                                
+RMSNorm_73|AR|s:119929|b:96|g:33|e:119944|t:16                                                                                                                                                
+RMSNorm_73|LANE_BC|s:119945|b:97|g:33|e:119952|t:8                                                                                                                                            
+RMSNorm_73|AR|s:119953|b:98|g:33|e:119984|t:32                                                                                                                                                
+                                                                                               Store_74|GDMA_TENSOR|s:120183|b:98|g:35|e:120281|t:99|dr:1|sz:1024|bw:9.63                     
+                                                                                               Gather_77|GDMA_BROADCAST|s:120282|b:98|g:36|e:120294|t:13|dr:0|sz:12|bw:0.86                   
+Gather_77|AR|s:120295|b:99|g:36|e:120295|t:1                                                                                                                                                  
+Gather_77|FUSED_CMP|s:120296|b:100|g:36|e:120297|t:2                                                                                                                                          
+                                                                                               Gather_77|GDMA_GATHER|s:120298|b:100|g:37|e:120300|t:3|dr:2|sz:192|bw:59.60                    
+                                                                                               Gather_79|GDMA_BROADCAST|s:120301|b:100|g:38|e:120582|t:282|dr:0|sz:256|bw:0.85                
+Gather_79|AR|s:120583|b:101|g:38|e:120586|t:4                                                                                                                                                 
+Gather_79|FUSED_CMP|s:120587|b:102|g:38|e:120594|t:8                                                                                                                                          
+                                                                                               Gather_79|GDMA_GATHER|s:120595|b:102|g:39|e:120596|t:2|dr:2|sz:128|bw:59.60                    
+                                                                                               Gather_81|GDMA_BROADCAST|s:120597|b:102|g:40|e:120609|t:13|dr:0|sz:12|bw:0.86                  
+Gather_81|AR|s:120610|b:103|g:40|e:120610|t:1                                                                                                                                                 
+Gather_81|FUSED_CMP|s:120611|b:104|g:40|e:120612|t:2                                                                                                                                          
+                                                                                               Gather_81|GDMA_GATHER|s:120613|b:104|g:41|e:120615|t:3|dr:2|sz:192|bw:59.60                    
+                                                                                               Gather_83|GDMA_BROADCAST|s:120616|b:104|g:42|e:120897|t:282|dr:0|sz:256|bw:0.85                
+Gather_83|AR|s:120898|b:105|g:42|e:120901|t:4                                                                                                                                                 
+Gather_83|FUSED_CMP|s:120902|b:106|g:42|e:120909|t:8                                                                                                                                          
+                                                                                               Gather_83|GDMA_GATHER|s:120910|b:106|g:43|e:120911|t:2|dr:2|sz:128|bw:59.60                    
+                                                                                               Load_86|GDMA_TENSOR|s:120912|b:106|g:44|e:121214|t:303|dr:0|sz:4096|bw:12.59                   
+Slice_87|AR|s:121215|b:107|g:44|e:121230|t:16                                                                                                                                                 
+Slice_90|AR|s:121231|b:108|g:44|e:121278|t:48                                                  Load_88|GDMA_TENSOR|s:121231|b:107|g:45|e:121248|t:18|dr:0|sz:128|bw:6.62                      
+                                                                                               Load_89|GDMA_TENSOR|s:121249|b:107|g:46|e:121266|t:18|dr:0|sz:128|bw:6.62                      
+Rope_91|AR|s:121279|b:109|g:46|e:121286|t:8                                                                                                                                                   
+Rope_91|AR|s:121287|b:110|g:46|e:121294|t:8                                                                                                                                                   
+Rope_91|AR|s:121295|b:111|g:46|e:121310|t:16                                                                                                                                                  
+Rope_91|AR|s:121311|b:112|g:46|e:121326|t:16                                                                                                                                                  
+Rope_91|AR|s:121327|b:113|g:46|e:121342|t:16                                                                                                                                                  
+Concat_93|AR|s:121343|b:114|g:46|e:121358|t:16                                                 Load_92|GDMA_TENSOR|s:121343|b:113|g:47|e:121417|t:75|dr:0|sz:1024|bw:12.72                    
+Concat_93|AR|s:121359|b:115|g:46|e:121406|t:48                                                                                                                                                
+Slice_94|AR|s:121418|b:116|g:47|e:121421|t:4                                                                                                                                                  
+Slice_96|AR|s:121422|b:117|g:47|e:121433|t:12                                                  Store_95|GDMA_TENSOR|s:121422|b:116|g:48|e:121820|t:399|dr:1|sz:4096|bw:9.56                   
+Rope_97|AR|s:121434|b:118|g:47|e:121435|t:2                                                                                                                                                   
+Rope_97|AR|s:121436|b:119|g:47|e:121437|t:2                                                                                                                                                   
+Rope_97|AR|s:121438|b:120|g:47|e:121441|t:4                                                                                                                                                   
+Rope_97|AR|s:121442|b:121|g:47|e:121445|t:4                                                                                                                                                   
+Rope_97|AR|s:121446|b:122|g:47|e:121449|t:4                                                                                                                                                   
+Concat_98|AR|s:121821|b:123|g:48|e:121824|t:4                                                                                                                                                 
+Concat_98|AR|s:121825|b:124|g:48|e:121836|t:12                                                                                                                                                
+                                                                                               Store_99|GDMA_TENSOR|s:121837|b:124|g:49|e:121935|t:99|dr:1|sz:1024|bw:9.63                    
+FAttention_104|STATIC_BC|s:121936|b:125|g:49|e:121936|t:1                                                                                                                                     
+                                                                                               FAttention_104|GDMA_TENSOR|s:121937|b:125|g:50|e:122239|t:303|dr:0|sz:4096|bw:12.59            
+FAttention_104|AR|s:122240|b:126|g:50|e:122247|t:8                                                                                                                                            
+FAttention_104|AR|s:122248|b:127|g:50|e:122255|t:8                                                                                                                                            
+FAttention_104|AR|s:122256|b:128|g:50|e:122383|t:128                                                                                                                                          
+                                                                                               FAttention_104|GDMA_TENSOR|s:122384|b:128|g:51|e:128752|t:6369|dr:0|sz:344064|bw:50.31         
+                                                                                               FAttention_104|GDMA_TENSOR|s:128753|b:128|g:52|e:135121|t:6369|dr:0|sz:344064|bw:50.31         
+                                                                                               FAttention_104|GDMA_TENSOR|s:135122|b:128|g:53|e:135145|t:24|dr:0|sz:672|bw:26.08              
+FAttention_104|MM2|s:135146|b:129|g:53|e:135817|t:672                                          FAttention_104|GDMA_TENSOR|s:135146|b:128|g:54|e:141514|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:135818|b:130|g:53|e:136489|t:672                                          FAttention_104|GDMA_TENSOR|s:141515|b:128|g:55|e:147883|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:136490|b:131|g:53|e:137161|t:672                                          FAttention_104|GDMA_TENSOR|s:147884|b:128|g:56|e:147907|t:24|dr:0|sz:672|bw:26.08              
+FAttention_104|MM2|s:137162|b:132|g:53|e:137833|t:672                                                                                                                                         
+FAttention_104|MM2|s:137834|b:133|g:53|e:138505|t:672                                                                                                                                         
+FAttention_104|MM2|s:138506|b:134|g:53|e:139177|t:672                                                                                                                                         
+FAttention_104|MM2|s:139178|b:135|g:53|e:139849|t:672                                                                                                                                         
+FAttention_104|MM2|s:139850|b:136|g:53|e:140521|t:672                                                                                                                                         
+FAttention_104|AR|s:140522|b:137|g:53|e:140857|t:336                                                                                                                                          
+FAttention_104|AR|s:140858|b:138|g:53|e:140878|t:21                                                                                                                                           
+FAttention_104|AR|s:140879|b:139|g:53|e:141214|t:336                                                                                                                                          
+FAttention_104|PorD|s:141215|b:140|g:53|e:141382|t:168                                                                                                                                        
+FAttention_104|PorD|s:141383|b:141|g:53|e:141510|t:128                                                                                                                                        
+FAttention_104|AR|s:141511|b:142|g:53|e:141518|t:8                                                                                                                                            
+FAttention_104|AR|s:141519|b:143|g:53|e:141526|t:8                                                                                                                                            
+FAttention_104|AR|s:141527|b:144|g:53|e:141534|t:8                                                                                                                                            
+FAttention_104|AR|s:141535|b:145|g:53|e:141542|t:8                                                                                                                                            
+FAttention_104|AR|s:141543|b:146|g:53|e:141550|t:8                                                                                                                                            
+FAttention_104|AR|s:141551|b:147|g:53|e:141558|t:8                                                                                                                                            
+FAttention_104|AR|s:141559|b:148|g:53|e:141566|t:8                                                                                                                                            
+FAttention_104|AR|s:141567|b:149|g:53|e:141574|t:8                                                                                                                                            
+FAttention_104|AR|s:141575|b:150|g:53|e:141582|t:8                                                                                                                                            
+FAttention_104|AR|s:141583|b:151|g:53|e:141590|t:8                                                                                                                                            
+FAttention_104|AR|s:141591|b:152|g:53|e:141598|t:8                                                                                                                                            
+FAttention_104|AR|s:141599|b:153|g:53|e:141606|t:8                                                                                                                                            
+FAttention_104|AR|s:141607|b:154|g:53|e:141614|t:8                                                                                                                                            
+FAttention_104|SFU|s:141615|b:155|g:53|e:141694|t:80                                                                                                                                          
+FAttention_104|AR|s:141695|b:156|g:53|e:141702|t:8                                                                                                                                            
+FAttention_104|AR|s:141703|b:157|g:53|e:141958|t:256                                                                                                                                          
+FAttention_104|AR|s:141959|b:158|g:53|e:141966|t:8                                                                                                                                            
+FAttention_104|AR|s:141967|b:159|g:53|e:142134|t:168                                                                                                                                          
+FAttention_104|AR|s:142135|b:160|g:53|e:142302|t:168                                                                                                                                          
+FAttention_104|AR|s:142303|b:161|g:53|e:142470|t:168                                                                                                                                          
+FAttention_104|AR|s:142471|b:162|g:53|e:142638|t:168                                                                                                                                          
+FAttention_104|AR|s:142639|b:163|g:53|e:142806|t:168                                                                                                                                          
+FAttention_104|AR|s:142807|b:164|g:53|e:142974|t:168                                                                                                                                          
+FAttention_104|AR|s:142975|b:165|g:53|e:143142|t:168                                                                                                                                          
+FAttention_104|AR|s:143143|b:166|g:53|e:143310|t:168                                                                                                                                          
+FAttention_104|AR|s:143311|b:167|g:53|e:143398|t:88                                                                                                                                           
+FAttention_104|AR|s:143399|b:168|g:53|e:143486|t:88                                                                                                                                           
+FAttention_104|AR|s:143487|b:169|g:53|e:143654|t:168                                                                                                                                          
+FAttention_104|SFU|s:143655|b:170|g:53|e:145334|t:1680                                                                                                                                        
+FAttention_104|AR|s:145335|b:171|g:53|e:145502|t:168                                                                                                                                          
+FAttention_104|PorD|s:145503|b:172|g:53|e:145670|t:168                                                                                                                                        
+FAttention_104|PorD|s:145671|b:173|g:53|e:145798|t:128                                                                                                                                        
+FAttention_104|AR|s:145799|b:174|g:53|e:145806|t:8                                                                                                                                            
+FAttention_104|AR|s:145807|b:175|g:53|e:145974|t:168                                                                                                                                          
+FAttention_104|MM2|s:145975|b:176|g:53|e:146678|t:704                                                                                                                                         
+FAttention_104|MM2|s:146679|b:177|g:53|e:147382|t:704                                                                                                                                         
+FAttention_104|MM2|s:147383|b:178|g:53|e:148086|t:704                                                                                                                                         
+FAttention_104|MM2|s:148087|b:179|g:53|e:148790|t:704                                                                                                                                         
+FAttention_104|MM2|s:148791|b:180|g:53|e:149494|t:704                                                                                                                                         
+FAttention_104|MM2|s:149495|b:181|g:53|e:150198|t:704                                                                                                                                         
+FAttention_104|MM2|s:150199|b:182|g:53|e:150902|t:704                                                                                                                                         
+FAttention_104|MM2|s:150903|b:183|g:53|e:151606|t:704                                                                                                                                         
+FAttention_104|AR|s:151607|b:184|g:53|e:151862|t:256                                                                                                                                          
+FAttention_104|MM2|s:151863|b:185|g:56|e:152534|t:672                                          FAttention_104|GDMA_TENSOR|s:151863|b:184|g:57|e:158231|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:152535|b:186|g:56|e:153206|t:672                                          FAttention_104|GDMA_TENSOR|s:158232|b:184|g:58|e:164600|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:153207|b:187|g:56|e:153878|t:672                                          FAttention_104|GDMA_TENSOR|s:164601|b:184|g:59|e:164624|t:24|dr:0|sz:672|bw:26.08              
+FAttention_104|MM2|s:153879|b:188|g:56|e:154550|t:672                                                                                                                                         
+FAttention_104|MM2|s:154551|b:189|g:56|e:155222|t:672                                                                                                                                         
+FAttention_104|MM2|s:155223|b:190|g:56|e:155894|t:672                                                                                                                                         
+FAttention_104|MM2|s:155895|b:191|g:56|e:156566|t:672                                                                                                                                         
+FAttention_104|MM2|s:156567|b:192|g:56|e:157238|t:672                                                                                                                                         
+FAttention_104|AR|s:157239|b:193|g:56|e:157574|t:336                                                                                                                                          
+FAttention_104|AR|s:157575|b:194|g:56|e:157595|t:21                                                                                                                                           
+FAttention_104|AR|s:157596|b:195|g:56|e:157931|t:336                                                                                                                                          
+FAttention_104|PorD|s:157932|b:196|g:56|e:158099|t:168                                                                                                                                        
+FAttention_104|PorD|s:158100|b:197|g:56|e:158227|t:128                                                                                                                                        
+FAttention_104|AR|s:158228|b:198|g:56|e:158235|t:8                                                                                                                                            
+FAttention_104|AR|s:158236|b:199|g:56|e:158243|t:8                                                                                                                                            
+FAttention_104|AR|s:158244|b:200|g:56|e:158251|t:8                                                                                                                                            
+FAttention_104|AR|s:158252|b:201|g:56|e:158259|t:8                                                                                                                                            
+FAttention_104|AR|s:158260|b:202|g:56|e:158267|t:8                                                                                                                                            
+FAttention_104|AR|s:158268|b:203|g:56|e:158275|t:8                                                                                                                                            
+FAttention_104|AR|s:158276|b:204|g:56|e:158283|t:8                                                                                                                                            
+FAttention_104|AR|s:158284|b:205|g:56|e:158291|t:8                                                                                                                                            
+FAttention_104|AR|s:158292|b:206|g:56|e:158299|t:8                                                                                                                                            
+FAttention_104|AR|s:158300|b:207|g:56|e:158307|t:8                                                                                                                                            
+FAttention_104|AR|s:158308|b:208|g:56|e:158315|t:8                                                                                                                                            
+FAttention_104|AR|s:158316|b:209|g:56|e:158323|t:8                                                                                                                                            
+FAttention_104|AR|s:158324|b:210|g:56|e:158331|t:8                                                                                                                                            
+FAttention_104|SFU|s:158332|b:211|g:56|e:158411|t:80                                                                                                                                          
+FAttention_104|AR|s:158412|b:212|g:56|e:158419|t:8                                                                                                                                            
+FAttention_104|AR|s:158420|b:213|g:56|e:158675|t:256                                                                                                                                          
+FAttention_104|AR|s:158676|b:214|g:56|e:158683|t:8                                                                                                                                            
+FAttention_104|AR|s:158684|b:215|g:56|e:158851|t:168                                                                                                                                          
+FAttention_104|AR|s:158852|b:216|g:56|e:159019|t:168                                                                                                                                          
+FAttention_104|AR|s:159020|b:217|g:56|e:159187|t:168                                                                                                                                          
+FAttention_104|AR|s:159188|b:218|g:56|e:159355|t:168                                                                                                                                          
+FAttention_104|AR|s:159356|b:219|g:56|e:159523|t:168                                                                                                                                          
+FAttention_104|AR|s:159524|b:220|g:56|e:159691|t:168                                                                                                                                          
+FAttention_104|AR|s:159692|b:221|g:56|e:159859|t:168                                                                                                                                          
+FAttention_104|AR|s:159860|b:222|g:56|e:160027|t:168                                                                                                                                          
+FAttention_104|AR|s:160028|b:223|g:56|e:160115|t:88                                                                                                                                           
+FAttention_104|AR|s:160116|b:224|g:56|e:160203|t:88                                                                                                                                           
+FAttention_104|AR|s:160204|b:225|g:56|e:160371|t:168                                                                                                                                          
+FAttention_104|SFU|s:160372|b:226|g:56|e:162051|t:1680                                                                                                                                        
+FAttention_104|AR|s:162052|b:227|g:56|e:162219|t:168                                                                                                                                          
+FAttention_104|PorD|s:162220|b:228|g:56|e:162387|t:168                                                                                                                                        
+FAttention_104|PorD|s:162388|b:229|g:56|e:162515|t:128                                                                                                                                        
+FAttention_104|AR|s:162516|b:230|g:56|e:162523|t:8                                                                                                                                            
+FAttention_104|AR|s:162524|b:231|g:56|e:162691|t:168                                                                                                                                          
+FAttention_104|MM2|s:162692|b:232|g:56|e:163395|t:704                                                                                                                                         
+FAttention_104|MM2|s:163396|b:233|g:56|e:164099|t:704                                                                                                                                         
+FAttention_104|MM2|s:164100|b:234|g:56|e:164803|t:704                                                                                                                                         
+FAttention_104|MM2|s:164804|b:235|g:56|e:165507|t:704                                                                                                                                         
+FAttention_104|MM2|s:165508|b:236|g:56|e:166211|t:704                                                                                                                                         
+FAttention_104|MM2|s:166212|b:237|g:56|e:166915|t:704                                                                                                                                         
+FAttention_104|MM2|s:166916|b:238|g:56|e:167619|t:704                                                                                                                                         
+FAttention_104|MM2|s:167620|b:239|g:56|e:168323|t:704                                                                                                                                         
+FAttention_104|AR|s:168324|b:240|g:56|e:168579|t:256                                                                                                                                          
+FAttention_104|MM2|s:168580|b:241|g:59|e:169251|t:672                                          FAttention_104|GDMA_TENSOR|s:168580|b:240|g:60|e:174948|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:169252|b:242|g:59|e:169923|t:672                                          FAttention_104|GDMA_TENSOR|s:174949|b:240|g:61|e:181317|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:169924|b:243|g:59|e:170595|t:672                                          FAttention_104|GDMA_TENSOR|s:181318|b:240|g:62|e:181341|t:24|dr:0|sz:672|bw:26.08              
+FAttention_104|MM2|s:170596|b:244|g:59|e:171267|t:672                                                                                                                                         
+FAttention_104|MM2|s:171268|b:245|g:59|e:171939|t:672                                                                                                                                         
+FAttention_104|MM2|s:171940|b:246|g:59|e:172611|t:672                                                                                                                                         
+FAttention_104|MM2|s:172612|b:247|g:59|e:173283|t:672                                                                                                                                         
+FAttention_104|MM2|s:173284|b:248|g:59|e:173955|t:672                                                                                                                                         
+FAttention_104|AR|s:173956|b:249|g:59|e:174291|t:336                                                                                                                                          
+FAttention_104|AR|s:174292|b:250|g:59|e:174312|t:21                                                                                                                                           
+FAttention_104|AR|s:174313|b:251|g:59|e:174648|t:336                                                                                                                                          
+FAttention_104|PorD|s:174649|b:252|g:59|e:174816|t:168                                                                                                                                        
+FAttention_104|PorD|s:174817|b:253|g:59|e:174944|t:128                                                                                                                                        
+FAttention_104|AR|s:174945|b:254|g:59|e:174952|t:8                                                                                                                                            
+FAttention_104|AR|s:174953|b:255|g:59|e:174960|t:8                                                                                                                                            
+FAttention_104|AR|s:174961|b:256|g:59|e:174968|t:8                                                                                                                                            
+FAttention_104|AR|s:174969|b:257|g:59|e:174976|t:8                                                                                                                                            
+FAttention_104|AR|s:174977|b:258|g:59|e:174984|t:8                                                                                                                                            
+FAttention_104|AR|s:174985|b:259|g:59|e:174992|t:8                                                                                                                                            
+FAttention_104|AR|s:174993|b:260|g:59|e:175000|t:8                                                                                                                                            
+FAttention_104|AR|s:175001|b:261|g:59|e:175008|t:8                                                                                                                                            
+FAttention_104|AR|s:175009|b:262|g:59|e:175016|t:8                                                                                                                                            
+FAttention_104|AR|s:175017|b:263|g:59|e:175024|t:8                                                                                                                                            
+FAttention_104|AR|s:175025|b:264|g:59|e:175032|t:8                                                                                                                                            
+FAttention_104|AR|s:175033|b:265|g:59|e:175040|t:8                                                                                                                                            
+FAttention_104|AR|s:175041|b:266|g:59|e:175048|t:8                                                                                                                                            
+FAttention_104|SFU|s:175049|b:267|g:59|e:175128|t:80                                                                                                                                          
+FAttention_104|AR|s:175129|b:268|g:59|e:175136|t:8                                                                                                                                            
+FAttention_104|AR|s:175137|b:269|g:59|e:175392|t:256                                                                                                                                          
+FAttention_104|AR|s:175393|b:270|g:59|e:175400|t:8                                                                                                                                            
+FAttention_104|AR|s:175401|b:271|g:59|e:175568|t:168                                                                                                                                          
+FAttention_104|AR|s:175569|b:272|g:59|e:175736|t:168                                                                                                                                          
+FAttention_104|AR|s:175737|b:273|g:59|e:175904|t:168                                                                                                                                          
+FAttention_104|AR|s:175905|b:274|g:59|e:176072|t:168                                                                                                                                          
+FAttention_104|AR|s:176073|b:275|g:59|e:176240|t:168                                                                                                                                          
+FAttention_104|AR|s:176241|b:276|g:59|e:176408|t:168                                                                                                                                          
+FAttention_104|AR|s:176409|b:277|g:59|e:176576|t:168                                                                                                                                          
+FAttention_104|AR|s:176577|b:278|g:59|e:176744|t:168                                                                                                                                          
+FAttention_104|AR|s:176745|b:279|g:59|e:176832|t:88                                                                                                                                           
+FAttention_104|AR|s:176833|b:280|g:59|e:176920|t:88                                                                                                                                           
+FAttention_104|AR|s:176921|b:281|g:59|e:177088|t:168                                                                                                                                          
+FAttention_104|SFU|s:177089|b:282|g:59|e:178768|t:1680                                                                                                                                        
+FAttention_104|AR|s:178769|b:283|g:59|e:178936|t:168                                                                                                                                          
+FAttention_104|PorD|s:178937|b:284|g:59|e:179104|t:168                                                                                                                                        
+FAttention_104|PorD|s:179105|b:285|g:59|e:179232|t:128                                                                                                                                        
+FAttention_104|AR|s:179233|b:286|g:59|e:179240|t:8                                                                                                                                            
+FAttention_104|AR|s:179241|b:287|g:59|e:179408|t:168                                                                                                                                          
+FAttention_104|MM2|s:179409|b:288|g:59|e:180112|t:704                                                                                                                                         
+FAttention_104|MM2|s:180113|b:289|g:59|e:180816|t:704                                                                                                                                         
+FAttention_104|MM2|s:180817|b:290|g:59|e:181520|t:704                                                                                                                                         
+FAttention_104|MM2|s:181521|b:291|g:59|e:182224|t:704                                                                                                                                         
+FAttention_104|MM2|s:182225|b:292|g:59|e:182928|t:704                                                                                                                                         
+FAttention_104|MM2|s:182929|b:293|g:59|e:183632|t:704                                                                                                                                         
+FAttention_104|MM2|s:183633|b:294|g:59|e:184336|t:704                                                                                                                                         
+FAttention_104|MM2|s:184337|b:295|g:59|e:185040|t:704                                                                                                                                         
+FAttention_104|AR|s:185041|b:296|g:59|e:185296|t:256                                                                                                                                          
+FAttention_104|MM2|s:185297|b:297|g:62|e:185968|t:672                                          FAttention_104|GDMA_TENSOR|s:185297|b:296|g:63|e:191665|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:185969|b:298|g:62|e:186640|t:672                                          FAttention_104|GDMA_TENSOR|s:191666|b:296|g:64|e:198034|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:186641|b:299|g:62|e:187312|t:672                                          FAttention_104|GDMA_TENSOR|s:198035|b:296|g:65|e:198058|t:24|dr:0|sz:672|bw:26.08              
+FAttention_104|MM2|s:187313|b:300|g:62|e:187984|t:672                                                                                                                                         
+FAttention_104|MM2|s:187985|b:301|g:62|e:188656|t:672                                                                                                                                         
+FAttention_104|MM2|s:188657|b:302|g:62|e:189328|t:672                                                                                                                                         
+FAttention_104|MM2|s:189329|b:303|g:62|e:190000|t:672                                                                                                                                         
+FAttention_104|MM2|s:190001|b:304|g:62|e:190672|t:672                                                                                                                                         
+FAttention_104|AR|s:190673|b:305|g:62|e:191008|t:336                                                                                                                                          
+FAttention_104|AR|s:191009|b:306|g:62|e:191029|t:21                                                                                                                                           
+FAttention_104|AR|s:191030|b:307|g:62|e:191365|t:336                                                                                                                                          
+FAttention_104|PorD|s:191366|b:308|g:62|e:191533|t:168                                                                                                                                        
+FAttention_104|PorD|s:191534|b:309|g:62|e:191661|t:128                                                                                                                                        
+FAttention_104|AR|s:191662|b:310|g:62|e:191669|t:8                                                                                                                                            
+FAttention_104|AR|s:191670|b:311|g:62|e:191677|t:8                                                                                                                                            
+FAttention_104|AR|s:191678|b:312|g:62|e:191685|t:8                                                                                                                                            
+FAttention_104|AR|s:191686|b:313|g:62|e:191693|t:8                                                                                                                                            
+FAttention_104|AR|s:191694|b:314|g:62|e:191701|t:8                                                                                                                                            
+FAttention_104|AR|s:191702|b:315|g:62|e:191709|t:8                                                                                                                                            
+FAttention_104|AR|s:191710|b:316|g:62|e:191717|t:8                                                                                                                                            
+FAttention_104|AR|s:191718|b:317|g:62|e:191725|t:8                                                                                                                                            
+FAttention_104|AR|s:191726|b:318|g:62|e:191733|t:8                                                                                                                                            
+FAttention_104|AR|s:191734|b:319|g:62|e:191741|t:8                                                                                                                                            
+FAttention_104|AR|s:191742|b:320|g:62|e:191749|t:8                                                                                                                                            
+FAttention_104|AR|s:191750|b:321|g:62|e:191757|t:8                                                                                                                                            
+FAttention_104|AR|s:191758|b:322|g:62|e:191765|t:8                                                                                                                                            
+FAttention_104|SFU|s:191766|b:323|g:62|e:191845|t:80                                                                                                                                          
+FAttention_104|AR|s:191846|b:324|g:62|e:191853|t:8                                                                                                                                            
+FAttention_104|AR|s:191854|b:325|g:62|e:192109|t:256                                                                                                                                          
+FAttention_104|AR|s:192110|b:326|g:62|e:192117|t:8                                                                                                                                            
+FAttention_104|AR|s:192118|b:327|g:62|e:192285|t:168                                                                                                                                          
+FAttention_104|AR|s:192286|b:328|g:62|e:192453|t:168                                                                                                                                          
+FAttention_104|AR|s:192454|b:329|g:62|e:192621|t:168                                                                                                                                          
+FAttention_104|AR|s:192622|b:330|g:62|e:192789|t:168                                                                                                                                          
+FAttention_104|AR|s:192790|b:331|g:62|e:192957|t:168                                                                                                                                          
+FAttention_104|AR|s:192958|b:332|g:62|e:193125|t:168                                                                                                                                          
+FAttention_104|AR|s:193126|b:333|g:62|e:193293|t:168                                                                                                                                          
+FAttention_104|AR|s:193294|b:334|g:62|e:193461|t:168                                                                                                                                          
+FAttention_104|AR|s:193462|b:335|g:62|e:193549|t:88                                                                                                                                           
+FAttention_104|AR|s:193550|b:336|g:62|e:193637|t:88                                                                                                                                           
+FAttention_104|AR|s:193638|b:337|g:62|e:193805|t:168                                                                                                                                          
+FAttention_104|SFU|s:193806|b:338|g:62|e:195485|t:1680                                                                                                                                        
+FAttention_104|AR|s:195486|b:339|g:62|e:195653|t:168                                                                                                                                          
+FAttention_104|PorD|s:195654|b:340|g:62|e:195821|t:168                                                                                                                                        
+FAttention_104|PorD|s:195822|b:341|g:62|e:195949|t:128                                                                                                                                        
+FAttention_104|AR|s:195950|b:342|g:62|e:195957|t:8                                                                                                                                            
+FAttention_104|AR|s:195958|b:343|g:62|e:196125|t:168                                                                                                                                          
+FAttention_104|MM2|s:196126|b:344|g:62|e:196829|t:704                                                                                                                                         
+FAttention_104|MM2|s:196830|b:345|g:62|e:197533|t:704                                                                                                                                         
+FAttention_104|MM2|s:197534|b:346|g:62|e:198237|t:704                                                                                                                                         
+FAttention_104|MM2|s:198238|b:347|g:62|e:198941|t:704                                                                                                                                         
+FAttention_104|MM2|s:198942|b:348|g:62|e:199645|t:704                                                                                                                                         
+FAttention_104|MM2|s:199646|b:349|g:62|e:200349|t:704                                                                                                                                         
+FAttention_104|MM2|s:200350|b:350|g:62|e:201053|t:704                                                                                                                                         
+FAttention_104|MM2|s:201054|b:351|g:62|e:201757|t:704                                                                                                                                         
+FAttention_104|AR|s:201758|b:352|g:62|e:202013|t:256                                                                                                                                          
+FAttention_104|MM2|s:202014|b:353|g:65|e:202685|t:672                                          FAttention_104|GDMA_TENSOR|s:202014|b:352|g:66|e:208382|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:202686|b:354|g:65|e:203357|t:672                                          FAttention_104|GDMA_TENSOR|s:208383|b:352|g:67|e:214751|t:6369|dr:0|sz:344064|bw:50.31         
+FAttention_104|MM2|s:203358|b:355|g:65|e:204029|t:672                                          FAttention_104|GDMA_TENSOR|s:214752|b:352|g:68|e:214775|t:24|dr:0|sz:672|bw:26.08              
+FAttention_104|MM2|s:204030|b:356|g:65|e:204701|t:672                                                                                                                                         
+FAttention_104|MM2|s:204702|b:357|g:65|e:205373|t:672                                                                                                                                         
+FAttention_104|MM2|s:205374|b:358|g:65|e:206045|t:672                                                                                                                                         
+FAttention_104|MM2|s:206046|b:359|g:65|e:206717|t:672                                                                                                                                         
+FAttention_104|MM2|s:206718|b:360|g:65|e:207389|t:672                                                                                                                                         
+FAttention_104|AR|s:207390|b:361|g:65|e:207725|t:336                                                                                                                                          
+FAttention_104|AR|s:207726|b:362|g:65|e:207746|t:21                                                                                                                                           
+FAttention_104|AR|s:207747|b:363|g:65|e:208082|t:336                                                                                                                                          
+FAttention_104|PorD|s:208083|b:364|g:65|e:208250|t:168                                                                                                                                        
+FAttention_104|PorD|s:208251|b:365|g:65|e:208378|t:128                                                                                                                                        
+FAttention_104|AR|s:208379|b:366|g:65|e:208386|t:8                                                                                                                                            
+FAttention_104|AR|s:208387|b:367|g:65|e:208394|t:8                                                                                                                                            
+FAttention_104|AR|s:208395|b:368|g:65|e:208402|t:8                                                                                                                                            
+FAttention_104|AR|s:208403|b:369|g:65|e:208410|t:8                                                                                                                                            
+FAttention_104|AR|s:208411|b:370|g:65|e:208418|t:8                                                                                                                                            
+FAttention_104|AR|s:208419|b:371|g:65|e:208426|t:8                                                                                                                                            
+FAttention_104|AR|s:208427|b:372|g:65|e:208434|t:8                                                                                                                                            
+FAttention_104|AR|s:208435|b:373|g:65|e:208442|t:8                                                                                                                                            
+FAttention_104|AR|s:208443|b:374|g:65|e:208450|t:8                                                                                                                                            
+FAttention_104|AR|s:208451|b:375|g:65|e:208458|t:8                                                                                                                                            
+FAttention_104|AR|s:208459|b:376|g:65|e:208466|t:8                                                                                                                                            
+FAttention_104|AR|s:208467|b:377|g:65|e:208474|t:8                                                                                                                                            
+FAttention_104|AR|s:208475|b:378|g:65|e:208482|t:8                                                                                                                                            
+FAttention_104|SFU|s:208483|b:379|g:65|e:208562|t:80                                                                                                                                          
+FAttention_104|AR|s:208563|b:380|g:65|e:208570|t:8                                                                                                                                            
+FAttention_104|AR|s:208571|b:381|g:65|e:208826|t:256                                                                                                                                          
+FAttention_104|AR|s:208827|b:382|g:65|e:208834|t:8                                                                                                                                            
+FAttention_104|AR|s:208835|b:383|g:65|e:209002|t:168                                                                                                                                          
+FAttention_104|AR|s:209003|b:384|g:65|e:209170|t:168                                                                                                                                          
+FAttention_104|AR|s:209171|b:385|g:65|e:209338|t:168                                                                                                                                          
+FAttention_104|AR|s:209339|b:386|g:65|e:209506|t:168                                                                                                                                          
+FAttention_104|AR|s:209507|b:387|g:65|e:209674|t:168                                                                                                                                          
+FAttention_104|AR|s:209675|b:388|g:65|e:209842|t:168                                                                                                                                          
+FAttention_104|AR|s:209843|b:389|g:65|e:210010|t:168                                                                                                                                          
+FAttention_104|AR|s:210011|b:390|g:65|e:210178|t:168                                                                                                                                          
+FAttention_104|AR|s:210179|b:391|g:65|e:210266|t:88                                                                                                                                           
+FAttention_104|AR|s:210267|b:392|g:65|e:210354|t:88                                                                                                                                           
+FAttention_104|AR|s:210355|b:393|g:65|e:210522|t:168                                                                                                                                          
+FAttention_104|SFU|s:210523|b:394|g:65|e:212202|t:1680                                                                                                                                        
+FAttention_104|AR|s:212203|b:395|g:65|e:212370|t:168                                                                                                                                          
+FAttention_104|PorD|s:212371|b:396|g:65|e:212538|t:168                                                                                                                                        
+FAttention_104|PorD|s:212539|b:397|g:65|e:212666|t:128                                                                                                                                        
+FAttention_104|AR|s:212667|b:398|g:65|e:212674|t:8                                                                                                                                            
+FAttention_104|AR|s:212675|b:399|g:65|e:212842|t:168                                                                                                                                          
+FAttention_104|MM2|s:212843|b:400|g:65|e:213546|t:704                                                                                                                                         
+FAttention_104|MM2|s:213547|b:401|g:65|e:214250|t:704                                                                                                                                         
+FAttention_104|MM2|s:214251|b:402|g:65|e:214954|t:704                                                                                                                                         
+FAttention_104|MM2|s:214955|b:403|g:65|e:215658|t:704                                                                                                                                         
+FAttention_104|MM2|s:215659|b:404|g:65|e:216362|t:704                                                                                                                                         
+FAttention_104|MM2|s:216363|b:405|g:65|e:217066|t:704                                                                                                                                         
+FAttention_104|MM2|s:217067|b:406|g:65|e:217770|t:704                                                                                                                                         
+FAttention_104|MM2|s:217771|b:407|g:65|e:218474|t:704                                                                                                                                         
+FAttention_104|AR|s:218475|b:408|g:65|e:218730|t:256                                                                                                                                          
+FAttention_104|MM2|s:218731|b:409|g:68|e:219402|t:672                                          FAttention_104|GDMA_TENSOR|s:218731|b:408|g:69|e:219355|t:625|dr:0|sz:33792|bw:50.35           
+FAttention_104|MM2|s:219403|b:410|g:68|e:220074|t:672                                          FAttention_104|GDMA_TENSOR|s:219356|b:408|g:70|e:219980|t:625|dr:0|sz:33792|bw:50.35           
+FAttention_104|MM2|s:220075|b:411|g:68|e:220746|t:672                                          FAttention_104|GDMA_TENSOR|s:219981|b:408|g:71|e:219989|t:9|dr:0|sz:66|bw:6.83                 
+FAttention_104|MM2|s:220747|b:412|g:68|e:221418|t:672                                                                                                                                         
+FAttention_104|MM2|s:221419|b:413|g:68|e:222090|t:672                                                                                                                                         
+FAttention_104|MM2|s:222091|b:414|g:68|e:222762|t:672                                                                                                                                         
+FAttention_104|MM2|s:222763|b:415|g:68|e:223434|t:672                                                                                                                                         
+FAttention_104|MM2|s:223435|b:416|g:68|e:224106|t:672                                                                                                                                         
+FAttention_104|AR|s:224107|b:417|g:68|e:224442|t:336                                                                                                                                          
+FAttention_104|AR|s:224443|b:418|g:68|e:224463|t:21                                                                                                                                           
+FAttention_104|AR|s:224464|b:419|g:68|e:224799|t:336                                                                                                                                          
+FAttention_104|PorD|s:224800|b:420|g:68|e:224967|t:168                                                                                                                                        
+FAttention_104|PorD|s:224968|b:421|g:68|e:225095|t:128                                                                                                                                        
+FAttention_104|AR|s:225096|b:422|g:68|e:225103|t:8                                                                                                                                            
+FAttention_104|AR|s:225104|b:423|g:68|e:225111|t:8                                                                                                                                            
+FAttention_104|AR|s:225112|b:424|g:68|e:225119|t:8                                                                                                                                            
+FAttention_104|AR|s:225120|b:425|g:68|e:225127|t:8                                                                                                                                            
+FAttention_104|AR|s:225128|b:426|g:68|e:225135|t:8                                                                                                                                            
+FAttention_104|AR|s:225136|b:427|g:68|e:225143|t:8                                                                                                                                            
+FAttention_104|AR|s:225144|b:428|g:68|e:225151|t:8                                                                                                                                            
+FAttention_104|AR|s:225152|b:429|g:68|e:225159|t:8                                                                                                                                            
+FAttention_104|AR|s:225160|b:430|g:68|e:225167|t:8                                                                                                                                            
+FAttention_104|AR|s:225168|b:431|g:68|e:225175|t:8                                                                                                                                            
+FAttention_104|AR|s:225176|b:432|g:68|e:225183|t:8                                                                                                                                            
+FAttention_104|AR|s:225184|b:433|g:68|e:225191|t:8                                                                                                                                            
+FAttention_104|AR|s:225192|b:434|g:68|e:225199|t:8                                                                                                                                            
+FAttention_104|SFU|s:225200|b:435|g:68|e:225279|t:80                                                                                                                                          
+FAttention_104|AR|s:225280|b:436|g:68|e:225287|t:8                                                                                                                                            
+FAttention_104|AR|s:225288|b:437|g:68|e:225543|t:256                                                                                                                                          
+FAttention_104|AR|s:225544|b:438|g:68|e:225551|t:8                                                                                                                                            
+FAttention_104|AR|s:225552|b:439|g:68|e:225719|t:168                                                                                                                                          
+FAttention_104|AR|s:225720|b:440|g:68|e:225887|t:168                                                                                                                                          
+FAttention_104|AR|s:225888|b:441|g:68|e:226055|t:168                                                                                                                                          
+FAttention_104|AR|s:226056|b:442|g:68|e:226223|t:168                                                                                                                                          
+FAttention_104|AR|s:226224|b:443|g:68|e:226391|t:168                                                                                                                                          
+FAttention_104|AR|s:226392|b:444|g:68|e:226559|t:168                                                                                                                                          
+FAttention_104|AR|s:226560|b:445|g:68|e:226727|t:168                                                                                                                                          
+FAttention_104|AR|s:226728|b:446|g:68|e:226895|t:168                                                                                                                                          
+FAttention_104|AR|s:226896|b:447|g:68|e:226983|t:88                                                                                                                                           
+FAttention_104|AR|s:226984|b:448|g:68|e:227071|t:88                                                                                                                                           
+FAttention_104|AR|s:227072|b:449|g:68|e:227239|t:168                                                                                                                                          
+FAttention_104|SFU|s:227240|b:450|g:68|e:228919|t:1680                                                                                                                                        
+FAttention_104|AR|s:228920|b:451|g:68|e:229087|t:168                                                                                                                                          
+FAttention_104|PorD|s:229088|b:452|g:68|e:229255|t:168                                                                                                                                        
+FAttention_104|PorD|s:229256|b:453|g:68|e:229383|t:128                                                                                                                                        
+FAttention_104|AR|s:229384|b:454|g:68|e:229391|t:8                                                                                                                                            
+FAttention_104|AR|s:229392|b:455|g:68|e:229559|t:168                                                                                                                                          
+FAttention_104|MM2|s:229560|b:456|g:68|e:230263|t:704                                                                                                                                         
+FAttention_104|MM2|s:230264|b:457|g:68|e:230967|t:704                                                                                                                                         
+FAttention_104|MM2|s:230968|b:458|g:68|e:231671|t:704                                                                                                                                         
+FAttention_104|MM2|s:231672|b:459|g:68|e:232375|t:704                                                                                                                                         
+FAttention_104|MM2|s:232376|b:460|g:68|e:233079|t:704                                                                                                                                         
+FAttention_104|MM2|s:233080|b:461|g:68|e:233783|t:704                                                                                                                                         
+FAttention_104|MM2|s:233784|b:462|g:68|e:234487|t:704                                                                                                                                         
+FAttention_104|MM2|s:234488|b:463|g:68|e:235191|t:704                                                                                                                                         
+FAttention_104|AR|s:235192|b:464|g:68|e:235447|t:256                                                                                                                                          
+FAttention_104|MM2|s:235448|b:465|g:71|e:235519|t:72                                                                                                                                          
+FAttention_104|MM2|s:235520|b:466|g:71|e:235591|t:72                                                                                                                                          
+FAttention_104|MM2|s:235592|b:467|g:71|e:235663|t:72                                                                                                                                          
+FAttention_104|MM2|s:235664|b:468|g:71|e:235735|t:72                                                                                                                                          
+FAttention_104|MM2|s:235736|b:469|g:71|e:235807|t:72                                                                                                                                          
+FAttention_104|MM2|s:235808|b:470|g:71|e:235879|t:72                                                                                                                                          
+FAttention_104|MM2|s:235880|b:471|g:71|e:235951|t:72                                                                                                                                          
+FAttention_104|MM2|s:235952|b:472|g:71|e:236023|t:72                                                                                                                                          
+FAttention_104|AR|s:236024|b:473|g:71|e:236071|t:48                                                                                                                                           
+FAttention_104|AR|s:236072|b:474|g:71|e:236074|t:3                                                                                                                                            
+FAttention_104|AR|s:236075|b:475|g:71|e:236122|t:48                                                                                                                                           
+FAttention_104|AR|s:236123|b:476|g:71|e:236130|t:8                                                                                                                                            
+FAttention_104|PorD|s:236131|b:477|g:71|e:236154|t:24                                                                                                                                         
+FAttention_104|PorD|s:236155|b:478|g:71|e:236282|t:128                                                                                                                                        
+FAttention_104|AR|s:236283|b:479|g:71|e:236290|t:8                                                                                                                                            
+FAttention_104|AR|s:236291|b:480|g:71|e:236298|t:8                                                                                                                                            
+FAttention_104|AR|s:236299|b:481|g:71|e:236306|t:8                                                                                                                                            
+FAttention_104|AR|s:236307|b:482|g:71|e:236314|t:8                                                                                                                                            
+FAttention_104|AR|s:236315|b:483|g:71|e:236322|t:8                                                                                                                                            
+FAttention_104|AR|s:236323|b:484|g:71|e:236330|t:8                                                                                                                                            
+FAttention_104|AR|s:236331|b:485|g:71|e:236338|t:8                                                                                                                                            
+FAttention_104|AR|s:236339|b:486|g:71|e:236346|t:8                                                                                                                                            
+FAttention_104|AR|s:236347|b:487|g:71|e:236354|t:8                                                                                                                                            
+FAttention_104|AR|s:236355|b:488|g:71|e:236362|t:8                                                                                                                                            
+FAttention_104|AR|s:236363|b:489|g:71|e:236370|t:8                                                                                                                                            
+FAttention_104|AR|s:236371|b:490|g:71|e:236378|t:8                                                                                                                                            
+FAttention_104|AR|s:236379|b:491|g:71|e:236386|t:8                                                                                                                                            
+FAttention_104|SFU|s:236387|b:492|g:71|e:236466|t:80                                                                                                                                          
+FAttention_104|AR|s:236467|b:493|g:71|e:236474|t:8                                                                                                                                            
+FAttention_104|AR|s:236475|b:494|g:71|e:236730|t:256                                                                                                                                          
+FAttention_104|AR|s:236731|b:495|g:71|e:236738|t:8                                                                                                                                            
+FAttention_104|AR|s:236739|b:496|g:71|e:236762|t:24                                                                                                                                           
+FAttention_104|AR|s:236763|b:497|g:71|e:236786|t:24                                                                                                                                           
+FAttention_104|AR|s:236787|b:498|g:71|e:236810|t:24                                                                                                                                           
+FAttention_104|AR|s:236811|b:499|g:71|e:236834|t:24                                                                                                                                           
+FAttention_104|AR|s:236835|b:500|g:71|e:236858|t:24                                                                                                                                           
+FAttention_104|AR|s:236859|b:501|g:71|e:236882|t:24                                                                                                                                           
+FAttention_104|AR|s:236883|b:502|g:71|e:236906|t:24                                                                                                                                           
+FAttention_104|AR|s:236907|b:503|g:71|e:236930|t:24                                                                                                                                           
+FAttention_104|AR|s:236931|b:504|g:71|e:236946|t:16                                                                                                                                           
+FAttention_104|AR|s:236947|b:505|g:71|e:236962|t:16                                                                                                                                           
+FAttention_104|AR|s:236963|b:506|g:71|e:236986|t:24                                                                                                                                           
+FAttention_104|SFU|s:236987|b:507|g:71|e:237226|t:240                                                                                                                                         
+FAttention_104|AR|s:237227|b:508|g:71|e:237250|t:24                                                                                                                                           
+FAttention_104|AR|s:237251|b:509|g:71|e:237258|t:8                                                                                                                                            
+FAttention_104|PorD|s:237259|b:510|g:71|e:237282|t:24                                                                                                                                         
+FAttention_104|PorD|s:237283|b:511|g:71|e:237410|t:128                                                                                                                                        
+FAttention_104|AR|s:237411|b:512|g:71|e:237418|t:8                                                                                                                                            
+FAttention_104|AR|s:237419|b:513|g:71|e:237442|t:24                                                                                                                                           
+FAttention_104|MM2|s:237443|b:514|g:71|e:237570|t:128                                                                                                                                         
+FAttention_104|MM2|s:237571|b:515|g:71|e:237698|t:128                                                                                                                                         
+FAttention_104|MM2|s:237699|b:516|g:71|e:237826|t:128                                                                                                                                         
+FAttention_104|MM2|s:237827|b:517|g:71|e:237954|t:128                                                                                                                                         
+FAttention_104|MM2|s:237955|b:518|g:71|e:238082|t:128                                                                                                                                         
+FAttention_104|MM2|s:238083|b:519|g:71|e:238210|t:128                                                                                                                                         
+FAttention_104|MM2|s:238211|b:520|g:71|e:238338|t:128                                                                                                                                         
+FAttention_104|MM2|s:238339|b:521|g:71|e:238466|t:128                                                                                                                                         
+FAttention_104|AR|s:238467|b:522|g:71|e:238722|t:256                                                                                                                                          
+FAttention_104|AR|s:238723|b:523|g:71|e:238970|t:248                                                                                                                                          
+FAttention_104|AR|s:238971|b:524|g:71|e:239226|t:256                                                                                                                                          
+FAttention_104|AR|s:239227|b:525|g:71|e:239354|t:128                                                                                                                                          
+                                                                                               FAttention_104|GDMA_TENSOR|s:239355|b:525|g:72|e:239753|t:399|dr:1|sz:4096|bw:9.56             
+                                                                                               Load_107|GDMA_TENSOR|s:239754|b:525|g:73|e:240056|t:303|dr:0|sz:8192|bw:25.18                  
+Cast_109|AR|s:240057|b:526|g:73|e:240184|t:128                                                 Load_108|GDMA_TENSOR|s:240057|b:525|g:74|e:240359|t:303|dr:0|sz:4096|bw:12.59                  
+Mul_110|AR|s:240360|b:527|g:74|e:240487|t:128                                                                                                                                                 
+                                                                                               Store_111|GDMA_TENSOR|s:240488|b:527|g:75|e:240886|t:399|dr:1|sz:4096|bw:9.56                  
+                                                                                               A16MatMul_114|GDMA_TENSOR|s:240887|b:527|g:76|e:241189|t:303|dr:0|sz:4096|bw:12.59             
+                                                                                               A16MatMul_114|GDMA_TENSOR|s:241190|b:527|g:77|e:260601|t:19412|dr:0|sz:1048576|bw:50.31        
+                                                                                               A16MatMul_114|GDMA_TENSOR|s:260602|b:527|g:78|e:261814|t:1213|dr:0|sz:65536|bw:50.32           
+                                                                                               A16MatMul_114|GDMA_TENSOR|s:261815|b:527|g:79|e:262420|t:606|dr:0|sz:32768|bw:50.36            
+A16MatMul_114|AR|s:262421|b:528|g:79|e:262932|t:512                                            A16MatMul_114|GDMA_TENSOR|s:262421|b:527|g:80|e:281832|t:19412|dr:0|sz:1048576|bw:50.31        
+A16MatMul_114|AR|s:262933|b:529|g:79|e:263444|t:512                                                                                                                                           
+A16MatMul_114|AR|s:263445|b:530|g:79|e:263956|t:512                                                                                                                                           
+A16MatMul_114|AR|s:263957|b:531|g:79|e:264980|t:1024                                                                                                                                          
+A16MatMul_114|AR|s:264981|b:532|g:79|e:266004|t:1024                                                                                                                                          
+A16MatMul_114|TRANS|s:266005|b:533|g:79|e:266068|t:64                                                                                                                                         
+A16MatMul_114|MM2|s:266069|b:534|g:79|e:267092|t:1024                                                                                                                                         
+A16MatMul_114|TRANS|s:267093|b:535|g:79|e:267124|t:32                                                                                                                                         
+A16MatMul_114|AR|s:281833|b:536|g:80|e:282344|t:512                                            A16MatMul_114|GDMA_TENSOR|s:281833|b:535|g:81|e:282031|t:199|dr:1|sz:2048|bw:9.58              
+A16MatMul_114|AR|s:282345|b:537|g:80|e:282856|t:512                                                                                                                                           
+A16MatMul_114|AR|s:282857|b:538|g:80|e:283368|t:512                                                                                                                                           
+A16MatMul_114|AR|s:283369|b:539|g:80|e:284392|t:1024                                                                                                                                          
+A16MatMul_114|AR|s:284393|b:540|g:80|e:285416|t:1024                                                                                                                                          
+A16MatMul_114|MM2|s:285417|b:541|g:80|e:286440|t:1024                                                                                                                                         
+A16MatMul_114|TRANS|s:286441|b:542|g:80|e:286472|t:32                                                                                                                                         
+                                                                                               A16MatMul_114|GDMA_TENSOR|s:286473|b:542|g:82|e:286671|t:199|dr:1|sz:2048|bw:9.58              
+                                                                                               Load_116|GDMA_TENSOR|s:286672|b:542|g:83|e:286974|t:303|dr:0|sz:4096|bw:12.59                  
+                                                                                               Load_117|GDMA_TENSOR|s:286975|b:542|g:84|e:287277|t:303|dr:0|sz:4096|bw:12.59                  
+Add_119|AR|s:287278|b:543|g:84|e:287405|t:128                                                  Load_118|GDMA_TENSOR|s:287278|b:542|g:85|e:287580|t:303|dr:0|sz:4096|bw:12.59                  
+RMSNorm_121|AR|s:287581|b:544|g:85|e:287708|t:128                                              Store_120|GDMA_TENSOR|s:287581|b:543|g:86|e:287979|t:399|dr:1|sz:4096|bw:9.56                  
+RMSNorm_121|AR|s:287709|b:545|g:85|e:287836|t:128                                                                                                                                             
+RMSNorm_121|PorD|s:287837|b:546|g:85|e:287964|t:128                                                                                                                                           
+RMSNorm_121|PorD|s:287965|b:547|g:85|e:287980|t:16                                                                                                                                            
+RMSNorm_121|AR|s:287981|b:548|g:85|e:287981|t:1                                                                                                                                               
+RMSNorm_121|SFU|s:287982|b:549|g:85|e:288011|t:30                                                                                                                                             
+RMSNorm_121|FUSED_CMP|s:288012|b:550|g:85|e:288013|t:2                                                                                                                                        
+RMSNorm_121|AR|s:288014|b:551|g:85|e:288141|t:128                                                                                                                                             
+RMSNorm_121|AR|s:288142|b:552|g:85|e:288397|t:256                                                                                                                                             
+RMSNorm_121|AR|s:288398|b:553|g:85|e:288525|t:128                                                                                                                                             
+RMSNorm_121|LANE_BC|s:288526|b:554|g:85|e:288589|t:64                                                                                                                                         
+RMSNorm_121|AR|s:288590|b:555|g:85|e:288845|t:256                                                                                                                                             
+                                                                                               Store_122|GDMA_TENSOR|s:288846|b:555|g:87|e:289244|t:399|dr:1|sz:4096|bw:9.56                  
+                                                                                               A16MatMul_125|GDMA_TENSOR|s:289245|b:555|g:88|e:289547|t:303|dr:0|sz:4096|bw:12.59             
+                                                                                               A16MatMul_125|GDMA_TENSOR|s:289548|b:555|g:89|e:308959|t:19412|dr:0|sz:1048576|bw:50.31        
+                                                                                               A16MatMul_125|GDMA_TENSOR|s:308960|b:555|g:90|e:312598|t:3639|dr:0|sz:196608|bw:50.32          
+                                                                                               A16MatMul_125|GDMA_TENSOR|s:312599|b:555|g:91|e:314417|t:1819|dr:0|sz:98304|bw:50.33           
+A16MatMul_125|AR|s:314418|b:556|g:91|e:314929|t:512                                            A16MatMul_125|GDMA_TENSOR|s:314418|b:555|g:92|e:333829|t:19412|dr:0|sz:1048576|bw:50.31        
+A16MatMul_125|AR|s:314930|b:557|g:91|e:315441|t:512                                                                                                                                           
+A16MatMul_125|AR|s:315442|b:558|g:91|e:315953|t:512                                                                                                                                           
+A16MatMul_125|AR|s:315954|b:559|g:91|e:316977|t:1024                                                                                                                                          
+A16MatMul_125|AR|s:316978|b:560|g:91|e:318001|t:1024                                                                                                                                          
+A16MatMul_125|TRANS|s:318002|b:561|g:91|e:318065|t:64                                                                                                                                         
+A16MatMul_125|MM2|s:318066|b:562|g:91|e:319089|t:1024                                                                                                                                         
+A16MatMul_125|TRANS|s:319090|b:563|g:91|e:319121|t:32                                                                                                                                         
+A16MatMul_125|AR|s:333830|b:564|g:92|e:334341|t:512                                            A16MatMul_125|GDMA_TENSOR|s:333830|b:563|g:93|e:333895|t:66|dr:1|sz:2048|bw:28.90              
+A16MatMul_125|AR|s:334342|b:565|g:92|e:334853|t:512                                            A16MatMul_125|GDMA_TENSOR|s:333896|b:563|g:94|e:353307|t:19412|dr:0|sz:1048576|bw:50.31        
+A16MatMul_125|AR|s:334854|b:566|g:92|e:335365|t:512                                                                                                                                           
+A16MatMul_125|AR|s:335366|b:567|g:92|e:336389|t:1024                                                                                                                                          
+A16MatMul_125|AR|s:336390|b:568|g:92|e:337413|t:1024                                                                                                                                          
+A16MatMul_125|MM2|s:337414|b:569|g:92|e:338437|t:1024                                                                                                                                         
+A16MatMul_125|TRANS|s:338438|b:570|g:92|e:338469|t:32                                                                                                                                         
+A16MatMul_125|AR|s:353308|b:571|g:94|e:353819|t:512                                            A16MatMul_125|GDMA_TENSOR|s:353308|b:570|g:95|e:353373|t:66|dr:1|sz:2048|bw:28.90              
+A16MatMul_125|AR|s:353820|b:572|g:94|e:354331|t:512                                            A16MatMul_125|GDMA_TENSOR|s:353374|b:570|g:96|e:372785|t:19412|dr:0|sz:1048576|bw:50.31        
+A16MatMul_125|AR|s:354332|b:573|g:94|e:354843|t:512                                                                                                                                           
+A16MatMul_125|AR|s:354844|b:574|g:94|e:355867|t:1024                                                                                                                                          
+A16MatMul_125|AR|s:355868|b:575|g:94|e:356891|t:1024                                                                                                                                          
+A16MatMul_125|MM2|s:356892|b:576|g:94|e:357915|t:1024                                                                                                                                         
+A16MatMul_125|TRANS|s:357916|b:577|g:94|e:357947|t:32                                                                                                                                         
+A16MatMul_125|AR|s:372786|b:578|g:96|e:373297|t:512                                            A16MatMul_125|GDMA_TENSOR|s:372786|b:577|g:97|e:372851|t:66|dr:1|sz:2048|bw:28.90              
+A16MatMul_125|AR|s:373298|b:579|g:96|e:373809|t:512                                            A16MatMul_125|GDMA_TENSOR|s:372852|b:577|g:98|e:392263|t:19412|dr:0|sz:1048576|bw:50.31        
+A16MatMul_125|AR|s:373810|b:580|g:96|e:374321|t:512                                                                                                                                           
+A16MatMul_125|AR|s:374322|b:581|g:96|e:375345|t:1024                                                                                                                                          
+A16MatMul_125|AR|s:375346|b:582|g:96|e:376369|t:1024                                                                                                                                          
+A16MatMul_125|MM2|s:376370|b:583|g:96|e:377393|t:1024                                                                                                                                         
+A16MatMul_125|TRANS|s:377394|b:584|g:96|e:377425|t:32                                                                                                                                         
+A16MatMul_125|AR|s:392264|b:585|g:98|e:392775|t:512                                            A16MatMul_125|GDMA_TENSOR|s:392264|b:584|g:99|e:392329|t:66|dr:1|sz:2048|bw:28.90              
+A16MatMul_125|AR|s:392776|b:586|g:98|e:393287|t:512                                            A16MatMul_125|GDMA_TENSOR|s:392330|b:584|g:100|e:411741|t:19412|dr:0|sz:1048576|bw:50.31       
+A16MatMul_125|AR|s:393288|b:587|g:98|e:393799|t:512                                                                                                                                           
+A16MatMul_125|AR|s:393800|b:588|g:98|e:394823|t:1024                                                                                                                                          
+A16MatMul_125|AR|s:394824|b:589|g:98|e:395847|t:1024                                                                                                                                          
+A16MatMul_125|MM2|s:395848|b:590|g:98|e:396871|t:1024                                                                                                                                         
+A16MatMul_125|TRANS|s:396872|b:591|g:98|e:396903|t:32                                                                                                                                         
+A16MatMul_125|AR|s:411742|b:592|g:100|e:412253|t:512                                           A16MatMul_125|GDMA_TENSOR|s:411742|b:591|g:101|e:411807|t:66|dr:1|sz:2048|bw:28.90             
+A16MatMul_125|AR|s:412254|b:593|g:100|e:412765|t:512                                                                                                                                          
+A16MatMul_125|AR|s:412766|b:594|g:100|e:413277|t:512                                                                                                                                          
+A16MatMul_125|AR|s:413278|b:595|g:100|e:414301|t:1024                                                                                                                                         
+A16MatMul_125|AR|s:414302|b:596|g:100|e:415325|t:1024                                                                                                                                         
+A16MatMul_125|MM2|s:415326|b:597|g:100|e:416349|t:1024                                                                                                                                        
+A16MatMul_125|TRANS|s:416350|b:598|g:100|e:416381|t:32                                                                                                                                        
+                                                                                               A16MatMul_125|GDMA_TENSOR|s:416382|b:598|g:102|e:416447|t:66|dr:1|sz:2048|bw:28.90             
+                                                                                               Cast_126|GDMA_MATRIX|s:416448|b:598|g:103|e:416729|t:282|dr:0|sz:12288|bw:40.58                
+Cast_126|AR|s:416730|b:599|g:103|e:416735|t:6                                                                                                                                                 
+                                                                                               Cast_126|GDMA_MATRIX|s:416736|b:599|g:104|e:417293|t:558|dr:1|sz:24576|bw:41.02                
+                                                                                               Active_127|GDMA_MATRIX|s:417294|b:599|g:105|e:417716|t:423|dr:0|sz:24576|bw:54.11              
+Active_127|STATIC_BC|s:417717|b:600|g:105|e:417717|t:1                                                                                                                                        
+Active_127|AR|s:417718|b:601|g:105|e:417723|t:6                                                                                                                                               
+Active_127|AR|s:417724|b:602|g:105|e:417735|t:12                                                                                                                                              
+Active_127|AR|s:417736|b:603|g:105|e:417741|t:6                                                                                                                                               
+Active_127|AR|s:417742|b:604|g:105|e:417747|t:6                                                                                                                                               
+Active_127|AR|s:417748|b:605|g:105|e:417753|t:6                                                                                                                                               
+Active_127|AR|s:417754|b:606|g:105|e:417759|t:6                                                                                                                                               
+Active_127|AR|s:417760|b:607|g:105|e:417771|t:12                                                                                                                                              
+Active_127|AR|s:417772|b:608|g:105|e:417777|t:6                                                                                                                                               
+Active_127|AR|s:417778|b:609|g:105|e:417780|t:3                                                                                                                                               
+Active_127|AR|s:417781|b:610|g:105|e:417783|t:3                                                                                                                                               
+Active_127|AR|s:417784|b:611|g:105|e:417789|t:6                                                                                                                                               
+Active_127|SFU|s:417790|b:612|g:105|e:417849|t:60                                                                                                                                             
+Active_127|AR|s:417850|b:613|g:105|e:417861|t:12                                                                                                                                              
+Active_127|AR|s:417862|b:614|g:105|e:417867|t:6                                                                                                                                               
+Active_127|AR|s:417868|b:615|g:105|e:418053|t:186                                                                                                                                             
+Active_127|AR|s:418054|b:616|g:105|e:418065|t:12                                                                                                                                              
+                                                                                               Active_127|GDMA_MATRIX|s:418066|b:616|g:106|e:418623|t:558|dr:1|sz:24576|bw:41.02              
+                                                                                               Cast_128|GDMA_MATRIX|s:418624|b:616|g:107|e:419046|t:423|dr:0|sz:24576|bw:54.11                
+Cast_128|AR|s:419047|b:617|g:107|e:419052|t:6                                                                                                                                                 
+                                                                                               Cast_128|GDMA_MATRIX|s:419053|b:617|g:108|e:419424|t:372|dr:1|sz:12288|bw:30.76                
+                                                                                               A16MatMul_129|GDMA_TENSOR|s:419425|b:617|g:109|e:419727|t:303|dr:0|sz:4096|bw:12.59            
+                                                                                               A16MatMul_129|GDMA_TENSOR|s:419728|b:617|g:110|e:439139|t:19412|dr:0|sz:1048576|bw:50.31       
+                                                                                               A16MatMul_129|GDMA_TENSOR|s:439140|b:617|g:111|e:442778|t:3639|dr:0|sz:196608|bw:50.32         
+                                                                                               A16MatMul_129|GDMA_TENSOR|s:442779|b:617|g:112|e:444597|t:1819|dr:0|sz:98304|bw:50.33          
+A16MatMul_129|AR|s:444598|b:618|g:112|e:445109|t:512                                           A16MatMul_129|GDMA_TENSOR|s:444598|b:617|g:113|e:464009|t:19412|dr:0|sz:1048576|bw:50.31       
+A16MatMul_129|AR|s:445110|b:619|g:112|e:445621|t:512                                                                                                                                          
+A16MatMul_129|AR|s:445622|b:620|g:112|e:446133|t:512                                                                                                                                          
+A16MatMul_129|AR|s:446134|b:621|g:112|e:447157|t:1024                                                                                                                                         
+A16MatMul_129|AR|s:447158|b:622|g:112|e:448181|t:1024                                                                                                                                         
+A16MatMul_129|TRANS|s:448182|b:623|g:112|e:448245|t:64                                                                                                                                        
+A16MatMul_129|MM2|s:448246|b:624|g:112|e:449269|t:1024                                                                                                                                        
+A16MatMul_129|TRANS|s:449270|b:625|g:112|e:449301|t:32                                                                                                                                        
+A16MatMul_129|AR|s:464010|b:626|g:113|e:464521|t:512                                           A16MatMul_129|GDMA_TENSOR|s:464010|b:625|g:114|e:464075|t:66|dr:1|sz:2048|bw:28.90             
+A16MatMul_129|AR|s:464522|b:627|g:113|e:465033|t:512                                           A16MatMul_129|GDMA_TENSOR|s:464076|b:625|g:115|e:483487|t:19412|dr:0|sz:1048576|bw:50.31       
+A16MatMul_129|AR|s:465034|b:628|g:113|e:465545|t:512                                                                                                                                          
+A16MatMul_129|AR|s:465546|b:629|g:113|e:466569|t:1024                                                                                                                                         
+A16MatMul_129|AR|s:466570|b:630|g:113|e:467593|t:1024                                                                                                                                         
+A16MatMul_129|MM2|s:467594|b:631|g:113|e:468617|t:1024                                                                                                                                        
+A16MatMul_129|TRANS|s:468618|b:632|g:113|e:468649|t:32                                                                                                                                        
+A16MatMul_129|AR|s:483488|b:633|g:115|e:483999|t:512                                           A16MatMul_129|GDMA_TENSOR|s:483488|b:632|g:116|e:483553|t:66|dr:1|sz:2048|bw:28.90             
+A16MatMul_129|AR|s:484000|b:634|g:115|e:484511|t:512                                           A16MatMul_129|GDMA_TENSOR|s:483554|b:632|g:117|e:502965|t:19412|dr:0|sz:1048576|bw:50.31       
+A16MatMul_129|AR|s:484512|b:635|g:115|e:485023|t:512                                                                                                                                          
+A16MatMul_129|AR|s:485024|b:636|g:115|e:486047|t:1024                                                                                                                                         
+A16MatMul_129|AR|s:486048|b:637|g:115|e:487071|t:1024                                                                                                                                         
+A16MatMul_129|MM2|s:487072|b:638|g:115|e:488095|t:1024                                                                                                                                        
+A16MatMul_129|TRANS|s:488096|b:639|g:115|e:488127|t:32                                                                                                                                        
+A16MatMul_129|AR|s:502966|b:640|g:117|e:503477|t:512                                           A16MatMul_129|GDMA_TENSOR|s:502966|b:639|g:118|e:503031|t:66|dr:1|sz:2048|bw:28.90             
+A16MatMul_129|AR|s:503478|b:641|g:117|e:503989|t:512                                           A16MatMul_129|GDMA_TENSOR|s:503032|b:639|g:119|e:522443|t:19412|dr:0|sz:1048576|bw:50.31       
+A16MatMul_129|AR|s:503990|b:642|g:117|e:504501|t:512                                                                                                                                          
+A16MatMul_129|AR|s:504502|b:643|g:117|e:505525|t:1024                                                                                                                                         
+A16MatMul_129|AR|s:505526|b:644|g:117|e:506549|t:1024                                                                                                                                         
+A16MatMul_129|MM2|s:506550|b:645|g:117|e:507573|t:1024                                                                                                                                        
+A16MatMul_129|TRANS|s:507574|b:646|g:117|e:507605|t:32                                                                                                                                        
+A16MatMul_129|AR|s:522444|b:647|g:119|e:522955|t:512                                           A16MatMul_129|GDMA_TENSOR|s:522444|b:646|g:120|e:522509|t:66|dr:1|sz:2048|bw:28.90             
+A16MatMul_129|AR|s:522956|b:648|g:119|e:523467|t:512                                           A16MatMul_129|GDMA_TENSOR|s:522510|b:646|g:121|e:541921|t:19412|dr:0|sz:1048576|bw:50.31       
+A16MatMul_129|AR|s:523468|b:649|g:119|e:523979|t:512                                                                                                                                          
+A16MatMul_129|AR|s:523980|b:650|g:119|e:525003|t:1024                                                                                                                                         
+A16MatMul_129|AR|s:525004|b:651|g:119|e:526027|t:1024                                                                                                                                         
+A16MatMul_129|MM2|s:526028|b:652|g:119|e:527051|t:1024                                                                                                                                        
+A16MatMul_129|TRANS|s:527052|b:653|g:119|e:527083|t:32                                                                                                                                        
+A16MatMul_129|AR|s:541922|b:654|g:121|e:542433|t:512                                           A16MatMul_129|GDMA_TENSOR|s:541922|b:653|g:122|e:541987|t:66|dr:1|sz:2048|bw:28.90             
+A16MatMul_129|AR|s:542434|b:655|g:121|e:542945|t:512                                                                                                                                          
+A16MatMul_129|AR|s:542946|b:656|g:121|e:543457|t:512                                                                                                                                          
+A16MatMul_129|AR|s:543458|b:657|g:121|e:544481|t:1024                                                                                                                                         
+A16MatMul_129|AR|s:544482|b:658|g:121|e:545505|t:1024                                                                                                                                         
+A16MatMul_129|MM2|s:545506|b:659|g:121|e:546529|t:1024                                                                                                                                        
+A16MatMul_129|TRANS|s:546530|b:660|g:121|e:546561|t:32                                                                                                                                        
+                                                                                               A16MatMul_129|GDMA_TENSOR|s:546562|b:660|g:123|e:546627|t:66|dr:1|sz:2048|bw:28.90             
+                                                                                               Mul_130|GDMA_MATRIX|s:546628|b:660|g:124|e:546909|t:282|dr:0|sz:12288|bw:40.58                 
+                                                                                               Mul_130|GDMA_MATRIX|s:546910|b:660|g:125|e:547191|t:282|dr:0|sz:12288|bw:40.58                 
+Mul_130|AR|s:547192|b:661|g:125|e:547197|t:6                                                                                                                                                  
+                                                                                               Mul_130|GDMA_MATRIX|s:547198|b:661|g:126|e:547569|t:372|dr:1|sz:12288|bw:30.76                 
+                                                                                               A16MatMul_131|GDMA_TENSOR|s:547570|b:661|g:127|e:547872|t:303|dr:0|sz:12288|bw:37.77           
+                                                                                               A16MatMul_131|GDMA_TENSOR|s:547873|b:661|g:128|e:566070|t:18198|dr:0|sz:983040|bw:50.31        
+                                                                                               A16MatMul_131|GDMA_TENSOR|s:566071|b:661|g:129|e:569709|t:3639|dr:0|sz:196608|bw:50.32         
+                                                                                               A16MatMul_131|GDMA_TENSOR|s:569710|b:661|g:130|e:571528|t:1819|dr:0|sz:98304|bw:50.33          
+A16MatMul_131|AR|s:571529|b:662|g:130|e:572008|t:480                                           A16MatMul_131|GDMA_TENSOR|s:571529|b:661|g:131|e:589726|t:18198|dr:0|sz:983040|bw:50.31        
+A16MatMul_131|AR|s:572009|b:663|g:130|e:572488|t:480                                                                                                                                          
+A16MatMul_131|AR|s:572489|b:664|g:130|e:572968|t:480                                                                                                                                          
+A16MatMul_131|AR|s:572969|b:665|g:130|e:573928|t:960                                                                                                                                          
+A16MatMul_131|AR|s:573929|b:666|g:130|e:574888|t:960                                                                                                                                          
+A16MatMul_131|TRANS|s:574889|b:667|g:130|e:575080|t:192                                                                                                                                       
+A16MatMul_131|MM2|s:575081|b:668|g:130|e:576040|t:960                                                                                                                                         
+A16MatMul_131|TRANS|s:576041|b:669|g:130|e:576050|t:10                                                                                                                                        
+A16MatMul_131|AR|s:589727|b:670|g:131|e:590206|t:480                                           A16MatMul_131|GDMA_TENSOR|s:589727|b:669|g:132|e:589788|t:62|dr:1|sz:640|bw:9.61               
+A16MatMul_131|AR|s:590207|b:671|g:131|e:590686|t:480                                           A16MatMul_131|GDMA_TENSOR|s:589789|b:669|g:133|e:607986|t:18198|dr:0|sz:983040|bw:50.31        
+A16MatMul_131|AR|s:590687|b:672|g:131|e:591166|t:480                                                                                                                                          
+A16MatMul_131|AR|s:591167|b:673|g:131|e:592126|t:960                                                                                                                                          
+A16MatMul_131|AR|s:592127|b:674|g:131|e:593086|t:960                                                                                                                                          
+A16MatMul_131|MM2|s:593087|b:675|g:131|e:594046|t:960                                                                                                                                         
+A16MatMul_131|TRANS|s:594047|b:676|g:131|e:594056|t:10                                                                                                                                        
+A16MatMul_131|AR|s:607987|b:677|g:133|e:608466|t:480                                           A16MatMul_131|GDMA_TENSOR|s:607987|b:676|g:134|e:608048|t:62|dr:1|sz:640|bw:9.61               
+A16MatMul_131|AR|s:608467|b:678|g:133|e:608946|t:480                                           A16MatMul_131|GDMA_TENSOR|s:608049|b:676|g:135|e:626246|t:18198|dr:0|sz:983040|bw:50.31        
+A16MatMul_131|AR|s:608947|b:679|g:133|e:609426|t:480                                                                                                                                          
+A16MatMul_131|AR|s:609427|b:680|g:133|e:610386|t:960                                                                                                                                          
+A16MatMul_131|AR|s:610387|b:681|g:133|e:611346|t:960                                                                                                                                          
+A16MatMul_131|MM2|s:611347|b:682|g:133|e:612306|t:960                                                                                                                                         
+A16MatMul_131|TRANS|s:612307|b:683|g:133|e:612316|t:10                                                                                                                                        
+A16MatMul_131|AR|s:626247|b:684|g:135|e:626726|t:480                                           A16MatMul_131|GDMA_TENSOR|s:626247|b:683|g:136|e:626308|t:62|dr:1|sz:640|bw:9.61               
+A16MatMul_131|AR|s:626727|b:685|g:135|e:627206|t:480                                           A16MatMul_131|GDMA_TENSOR|s:626309|b:683|g:137|e:644506|t:18198|dr:0|sz:983040|bw:50.31        
+A16MatMul_131|AR|s:627207|b:686|g:135|e:627686|t:480                                                                                                                                          
+A16MatMul_131|AR|s:627687|b:687|g:135|e:628646|t:960                                                                                                                                          
+A16MatMul_131|AR|s:628647|b:688|g:135|e:629606|t:960                                                                                                                                          
+A16MatMul_131|MM2|s:629607|b:689|g:135|e:630566|t:960                                                                                                                                         
+A16MatMul_131|TRANS|s:630567|b:690|g:135|e:630576|t:10                                                                                                                                        
+A16MatMul_131|AR|s:644507|b:691|g:137|e:644986|t:480                                           A16MatMul_131|GDMA_TENSOR|s:644507|b:690|g:138|e:644568|t:62|dr:1|sz:640|bw:9.61               
+A16MatMul_131|AR|s:644987|b:692|g:137|e:645466|t:480                                           A16MatMul_131|GDMA_TENSOR|s:644569|b:690|g:139|e:662766|t:18198|dr:0|sz:983040|bw:50.31        
+A16MatMul_131|AR|s:645467|b:693|g:137|e:645946|t:480                                                                                                                                          
+A16MatMul_131|AR|s:645947|b:694|g:137|e:646906|t:960                                                                                                                                          
+A16MatMul_131|AR|s:646907|b:695|g:137|e:647866|t:960                                                                                                                                          
+A16MatMul_131|MM2|s:647867|b:696|g:137|e:648826|t:960                                                                                                                                         
+A16MatMul_131|TRANS|s:648827|b:697|g:137|e:648836|t:10                                                                                                                                        
+A16MatMul_131|AR|s:662767|b:698|g:139|e:663246|t:480                                           A16MatMul_131|GDMA_TENSOR|s:662767|b:697|g:140|e:662828|t:62|dr:1|sz:640|bw:9.61               
+A16MatMul_131|AR|s:663247|b:699|g:139|e:663726|t:480                                           A16MatMul_131|GDMA_TENSOR|s:662829|b:697|g:141|e:670107|t:7279|dr:0|sz:393216|bw:50.31         
+A16MatMul_131|AR|s:663727|b:700|g:139|e:664206|t:480                                                                                                                                          
+A16MatMul_131|AR|s:664207|b:701|g:139|e:665166|t:960                                                                                                                                          
+A16MatMul_131|AR|s:665167|b:702|g:139|e:666126|t:960                                                                                                                                          
+A16MatMul_131|MM2|s:666127|b:703|g:139|e:667086|t:960                                                                                                                                         
+A16MatMul_131|TRANS|s:667087|b:704|g:139|e:667096|t:10                                                                                                                                        
+A16MatMul_131|AR|s:670108|b:705|g:141|e:670299|t:192                                           A16MatMul_131|GDMA_TENSOR|s:670108|b:704|g:142|e:670169|t:62|dr:1|sz:640|bw:9.61               
+A16MatMul_131|AR|s:670300|b:706|g:141|e:670491|t:192                                                                                                                                          
+A16MatMul_131|AR|s:670492|b:707|g:141|e:670683|t:192                                                                                                                                          
+A16MatMul_131|AR|s:670684|b:708|g:141|e:671067|t:384                                                                                                                                          
+A16MatMul_131|AR|s:671068|b:709|g:141|e:671451|t:384                                                                                                                                          
+A16MatMul_131|MM2|s:671452|b:710|g:141|e:671835|t:384                                                                                                                                         
+A16MatMul_131|TRANS|s:671836|b:711|g:141|e:671839|t:4                                                                                                                                         
+                                                                                               A16MatMul_131|GDMA_TENSOR|s:671840|b:711|g:143|e:671863|t:24|dr:1|sz:256|bw:9.93               
+                                                                                               Add_132|GDMA_MATRIX|s:671864|b:711|g:144|e:672145|t:282|dr:0|sz:4096|bw:13.53                  
+                                                                                               Add_132|GDMA_MATRIX|s:672146|b:711|g:145|e:672427|t:282|dr:0|sz:4096|bw:13.53                  
+Add_132|AR|s:672428|b:712|g:145|e:672429|t:2                                                                                                                                                  
+                                                                                               Add_132|GDMA_MATRIX|s:672430|b:712|g:146|e:672801|t:372|dr:1|sz:4096|bw:10.25                  
+--------------------------------------
+API_END total_cycle:672802|b:712|g:146
+TCYC : 672802
+GDMA SUMMARY : |dr[0] S2L:31840026|dr[1] L2S:172032|dr[2] S2S:640|dr[3] L2L:0
+DDR BW USAGE : 69.24108144%
+#######################################
+
+
+flops: 121716736, runtime: 0.672802ms, ComputationAbility: 0.180910T

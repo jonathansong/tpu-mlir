@@ -1,0 +1,43 @@
+{
+  "version": "v1.26.beta.0-129-g403630b88-20260531",
+  "files": {
+    "tpuc_opt": {
+      "path": "../../../../install/bin/tpuc-opt",
+      "last_modify": 1780170476.9376318
+    },
+    "bmodel": {
+      "path": "../embedding.bmodel",
+      "last_modify": 1780172088.4317467
+    },
+    "tensor_location": {
+      "path": "../embedding.bmodel.json",
+      "last_modify": 1780172142.2386591
+    },
+    "final_mlir": {
+      "path": "../embedding_bm1684x_bf16_final.mlir",
+      "last_modify": 1780172076.3877664
+    },
+    "tpu_mlir": {
+      "path": "../embedding_bm1684x_bf16_tpu.mlir",
+      "last_modify": 1780172023.7948518
+    },
+    "context_dir": {
+      "path": ".",
+      "last_modify": 1780172161.953627
+    },
+    "layer_group_cache": {
+      "path": "../embedding_bm1684x_bf16.layer_group_cache.json",
+      "last_modify": 1780172044.2491367
+    }
+  },
+  "properties": {
+    "prefix": "embedding_bm1684x_bf16",
+    "chip": "bm1684x",
+    "compare_all": false
+  },
+  "commands": {
+    "deploy_cmd": "/workspace/tpu-mlir/python/tools/model_deploy.py --mlir embedding.mlir --quantize bf16 --quant_input --quant_output --chip bm1684x --num_core 1 --num_device 1 --model embedding.bmodel --addr_mode basic --disable_gdma_check",
+    "final": "tpuc-opt embedding_bm1684x_bf16_tpu.mlir --mlir-disable-threading --strip-io-quant=\"quant_input=True quant_output=True quant_input_list= quant_output_list= quant_output_bf16=False quant_input_int8=False quant_output_int8=False \" --processor-tpu-optimize --dev-parallel --weight-reorder  --subnet-divide=\"dynamic=False\" --op-reorder --topo-sort --layer-group=\"opt=2 group_by_cores=auto compress_mode=none debugger=0 disable_group_overlap=false lgcache=true config_filename= enable_lghash=False lghash_dir=\" --affine-opt  --core-parallel  --after-layergroup-weight-reorder  --address-assign -o embedding_bm1684x_bf16_final.mlir --debug_cmd=",
+    "bmodel": "tpuc-opt embedding_bm1684x_bf16_final.mlir --codegen=\"model_file=embedding.bmodel embed_debug_info=False model_version=latest bmodel_only=False gdma_check=False rvti=False\" -o /dev/null"
+  }
+}

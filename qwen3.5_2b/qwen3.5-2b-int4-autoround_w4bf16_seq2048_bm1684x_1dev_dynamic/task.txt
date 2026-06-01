@@ -1,0 +1,4 @@
+(pushd vit &&  model_deploy.py --mlir vit.mlir --chip bm1684x --num_core 1 --num_device 1 --model vit.bmodel --addr_mode basic --quantize bf16 --quant_output --high_precision --dynamic --disable_gdma_check && popd ) > vit.log
+(pushd embedding &&  model_deploy.py --mlir embedding.mlir --quantize bf16 --quant_input --quant_output --chip bm1684x --num_core 1 --num_device 1 --model embedding.bmodel --addr_mode basic --disable_gdma_check && popd ) > embedding.log
+(pushd embedding_cache &&  model_deploy.py --mlir embedding_cache.mlir --quantize bf16 --quant_input --quant_output --chip bm1684x --num_core 1 --num_device 1 --model embedding_cache.bmodel --addr_mode basic --disable_gdma_check && popd ) > embedding_cache.log
+(pushd lm_head &&  model_deploy.py --mlir lm_head.mlir --quantize bf16 --quant_input --chip bm1684x --num_core 1 --num_device 1 --addr_mode basic --model lm_head.bmodel && popd ) > lm_head.log

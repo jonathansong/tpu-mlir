@@ -138,6 +138,8 @@ class LlmConverter(BaseConverter):
             dtype = self.llm_config.torch_dtype
         else:
             dtype = None
+        if isinstance(dtype, str):
+            dtype = getattr(torch, dtype, dtype)
         return dtype
 
     def is_key_quantized(self, key: str):

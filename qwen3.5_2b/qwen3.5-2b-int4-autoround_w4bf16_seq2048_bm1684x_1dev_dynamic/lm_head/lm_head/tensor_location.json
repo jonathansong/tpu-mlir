@@ -1,0 +1,156 @@
+[
+  {
+    "file-line": 15,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.MatMul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      0,
+      0
+    ],
+    "tiu_dma_id(after)": [
+      144,
+      289
+    ],
+    "operands": [
+      {
+        "address": 4294967296,
+        "layout": "continuous",
+        "memory_type": "<248320x2048xbf16>",
+        "name": "lm_head.weight_bf16",
+        "reshape": "",
+        "shape": [
+          248320,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<248320x2048xbf16, 4294967296 : i64>"
+      },
+      {
+        "address": 5312086016,
+        "layout": "continuous",
+        "memory_type": "<1x2048xbf16>",
+        "name": "hidden_states",
+        "reshape": "",
+        "shape": [
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x2048xbf16, 5312086016 : i64>"
+      },
+      {},
+      {},
+      {}
+    ],
+    "results": [
+      {
+        "address": 5312090112,
+        "layout": "continuous",
+        "memory_type": "<248320x1xbf16>",
+        "name": "lm_head",
+        "reshape": "",
+        "shape": [
+          248320,
+          1
+        ],
+        "slice": "[...]",
+        "type": "tensor<248320x1xbf16, 5312090112 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 16,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Reshape",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      144,
+      289
+    ],
+    "tiu_dma_id(after)": [
+      144,
+      289
+    ],
+    "operands": [
+      {
+        "address": 5312090112,
+        "layout": "continuous",
+        "memory_type": "<248320x1xbf16>",
+        "name": "lm_head",
+        "reshape": "",
+        "shape": [
+          248320,
+          1
+        ],
+        "slice": "[...]",
+        "type": "tensor<248320x1xbf16, 5312090112 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 5312090112,
+        "layout": "continuous",
+        "memory_type": "<1x248320xbf16>",
+        "name": "lm_head.reshape",
+        "reshape": "",
+        "shape": [
+          1,
+          248320
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x248320xbf16, 5312090112 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 17,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      144,
+      289
+    ],
+    "tiu_dma_id(after)": [
+      147,
+      295
+    ],
+    "operands": [
+      {
+        "address": 5312090112,
+        "layout": "continuous",
+        "memory_type": "<1x248320xbf16>",
+        "name": "lm_head.reshape",
+        "reshape": "",
+        "shape": [
+          1,
+          248320
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x248320xbf16, 5312090112 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 5313085440,
+        "layout": "continuous",
+        "memory_type": "<1x248320xf32>",
+        "name": "lm_head.reshapetoken_value_f32",
+        "reshape": "",
+        "shape": [
+          1,
+          248320
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x248320xf32, 5313085440 : i64>"
+      }
+    ],
+    "buffers": []
+  }
+]

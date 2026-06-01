@@ -1,3 +1,4 @@
+*.bmodel
 build/
 build_ap/
 build_en/

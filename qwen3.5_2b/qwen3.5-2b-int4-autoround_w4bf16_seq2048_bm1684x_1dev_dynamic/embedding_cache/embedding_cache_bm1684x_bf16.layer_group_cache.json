@@ -1,0 +1,34 @@
+{
+  "opt": 2,
+  "total subfunc": 1,
+  "subfunc_0": {
+    "subfunc idx": 0,
+    "GroupLayer": [],
+    "GlobalLayer": [
+      {
+        "index": 0,
+        "func_idx": 0,
+        "group_cost": 71,
+        "loc": "embedding_cache"
+      },
+      {
+        "index": 1,
+        "func_idx": 1,
+        "group_cost": 0,
+        "loc": "func.return"
+      }
+    ],
+    "CyclePrefixSum": [
+      {
+        "index": 0,
+        "prefix_end_idx": 0,
+        "cycle_prefix_sum": 71
+      },
+      {
+        "index": 1,
+        "prefix_end_idx": 1,
+        "cycle_prefix_sum": 71
+      }
+    ]
+  }
+}

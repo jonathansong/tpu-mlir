@@ -1,0 +1,532 @@
+{
+  "opt": 2,
+  "total subfunc": 1,
+  "subfunc_0": {
+    "subfunc idx": 0,
+    "GroupLayer": [
+      {
+        "base_group_idx": 5,
+        "start_idx": 0,
+        "end_idx": 1,
+        "func_start_idx": 5,
+        "func_end_idx": 6,
+        "group_cost": 553993,
+        "index": 5,
+        "locs": [
+          "model.language_model.layers.15.self_attn.q_proj.gate_slicemodel.language_model.layers.15.mlp.gate_proj.gate_sigmoid_f32",
+          "model.language_model.layers.15.mlp.gate_proj.gate_sigmoid"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          3,
+          1
+        ]
+      },
+      {
+        "base_group_idx": 21,
+        "start_idx": 0,
+        "end_idx": 1,
+        "func_start_idx": 25,
+        "func_end_idx": 26,
+        "group_cost": 190732,
+        "index": 24,
+        "locs": [
+          "q_proj.rope",
+          "q_proj"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "base_group_idx": 24,
+        "start_idx": 0,
+        "end_idx": 1,
+        "func_start_idx": 29,
+        "func_end_idx": 30,
+        "group_cost": 54962,
+        "index": 27,
+        "locs": [
+          "k_proj.rope",
+          "k_cache"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "base_group_idx": 30,
+        "start_idx": 0,
+        "end_idx": 2,
+        "func_start_idx": 39,
+        "func_end_idx": 41,
+        "group_cost": 1131465,
+        "index": 36,
+        "locs": [
+          "model.language_model.layers.15.mlp.gate_projmodel.language_model.layers.15.mlp.gate_proj.silu_f32",
+          "model.language_model.layers.15.mlp.gate_proj.silu",
+          "model.language_model.layers.15.mlp.gate_proj.silumodel.language_model.layers.15.mlp.up_proj.mul_bf16"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          8,
+          1
+        ]
+      }
+    ],
+    "GlobalLayer": [
+      {
+        "index": 0,
+        "func_idx": 0,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.input_layernorm"
+      },
+      {
+        "index": 1,
+        "func_idx": 1,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.q_proj"
+      },
+      {
+        "index": 2,
+        "func_idx": 2,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.q_proj.reshape"
+      },
+      {
+        "index": 3,
+        "func_idx": 3,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.q_proj.q_slice"
+      },
+      {
+        "index": 4,
+        "func_idx": 4,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.q_proj.gate_slice"
+      },
+      {
+        "index": 6,
+        "func_idx": 7,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.k_proj"
+      },
+      {
+        "index": 7,
+        "func_idx": 8,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.v_proj"
+      },
+      {
+        "index": 8,
+        "func_idx": 9,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.k_proj.reshape"
+      },
+      {
+        "index": 9,
+        "func_idx": 10,
+        "group_cost": 0,
+        "loc": "v_cache"
+      },
+      {
+        "index": 10,
+        "func_idx": 11,
+        "group_cost": 180222,
+        "loc": "model.language_model.layers.15.self_attn.q_norm"
+      },
+      {
+        "index": 11,
+        "func_idx": 12,
+        "group_cost": 49056,
+        "loc": "model.language_model.layers.15.self_attn.k_norm"
+      },
+      {
+        "index": 12,
+        "func_idx": 13,
+        "group_cost": 0,
+        "loc": "rotary_cos"
+      },
+      {
+        "index": 13,
+        "func_idx": 14,
+        "group_cost": 0,
+        "loc": "rotary_cos.permute"
+      },
+      {
+        "index": 14,
+        "func_idx": 15,
+        "group_cost": 0,
+        "loc": "rotary_cos.reshape"
+      },
+      {
+        "index": 15,
+        "func_idx": 16,
+        "group_cost": 0,
+        "loc": "rotary_cos.gather"
+      },
+      {
+        "index": 16,
+        "func_idx": 17,
+        "group_cost": 0,
+        "loc": "rotary_cos.permute2"
+      },
+      {
+        "index": 17,
+        "func_idx": 18,
+        "group_cost": 0,
+        "loc": "rotary_sin"
+      },
+      {
+        "index": 18,
+        "func_idx": 19,
+        "group_cost": 0,
+        "loc": "rotary_sin.permute"
+      },
+      {
+        "index": 19,
+        "func_idx": 20,
+        "group_cost": 0,
+        "loc": "rotary_sin.reshape"
+      },
+      {
+        "index": 20,
+        "func_idx": 21,
+        "group_cost": 0,
+        "loc": "rotary_sin.gather"
+      },
+      {
+        "index": 21,
+        "func_idx": 22,
+        "group_cost": 0,
+        "loc": "rotary_sin.permute2"
+      },
+      {
+        "index": 22,
+        "func_idx": 23,
+        "group_cost": 0,
+        "loc": "q_proj.slice"
+      },
+      {
+        "index": 23,
+        "func_idx": 24,
+        "group_cost": 0,
+        "loc": "q_proj.slice2"
+      },
+      {
+        "index": 25,
+        "func_idx": 27,
+        "group_cost": 0,
+        "loc": "k_proj.slice"
+      },
+      {
+        "index": 26,
+        "func_idx": 28,
+        "group_cost": 0,
+        "loc": "k_proj.slice2"
+      },
+      {
+        "index": 28,
+        "func_idx": 31,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.fattention"
+      },
+      {
+        "index": 29,
+        "func_idx": 32,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.mlp.gate_proj.gate_reshape"
+      },
+      {
+        "index": 30,
+        "func_idx": 33,
+        "group_cost": 239954,
+        "loc": "model.language_model.layers.15.mlp.gate_proj.gate_reshapemodel.language_model.layers.15.mlp.gate_proj.gate_mul_bf16"
+      },
+      {
+        "index": 31,
+        "func_idx": 34,
+        "group_cost": 239952,
+        "loc": "model.language_model.layers.15.mlp.gate_proj.gate_mul"
+      },
+      {
+        "index": 32,
+        "func_idx": 35,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.o_proj"
+      },
+      {
+        "index": 33,
+        "func_idx": 36,
+        "group_cost": 239952,
+        "loc": "model.language_model.layers.15.self_attn.o_proj.add"
+      },
+      {
+        "index": 34,
+        "func_idx": 37,
+        "group_cost": 181818,
+        "loc": "model.language_model.layers.15.post_attention_layernorm"
+      },
+      {
+        "index": 35,
+        "func_idx": 38,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.mlp.gate_proj"
+      },
+      {
+        "index": 37,
+        "func_idx": 42,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.mlp.up_proj"
+      },
+      {
+        "index": 38,
+        "func_idx": 43,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.mlp.up_proj.mul"
+      },
+      {
+        "index": 39,
+        "func_idx": 44,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.mlp.down_proj"
+      },
+      {
+        "index": 40,
+        "func_idx": 45,
+        "group_cost": 0,
+        "loc": "output_states"
+      },
+      {
+        "index": 41,
+        "func_idx": 46,
+        "group_cost": 0,
+        "loc": "func.return"
+      }
+    ],
+    "CyclePrefixSum": [
+      {
+        "index": 0,
+        "prefix_end_idx": 0,
+        "cycle_prefix_sum": 0
+      },
+      {
+        "index": 1,
+        "prefix_end_idx": 1,
+        "cycle_prefix_sum": 0
+      },
+      {
+        "index": 2,
+        "prefix_end_idx": 2,
+        "cycle_prefix_sum": 0
+      },
+      {
+        "index": 3,
+        "prefix_end_idx": 3,
+        "cycle_prefix_sum": 0
+      },
+      {
+        "index": 4,
+        "prefix_end_idx": 4,
+        "cycle_prefix_sum": 0
+      },
+      {
+        "index": 5,
+        "prefix_end_idx": 6,
+        "cycle_prefix_sum": 553993
+      },
+      {
+        "index": 6,
+        "prefix_end_idx": 7,
+        "cycle_prefix_sum": 553993
+      },
+      {
+        "index": 7,
+        "prefix_end_idx": 8,
+        "cycle_prefix_sum": 553993
+      },
+      {
+        "index": 8,
+        "prefix_end_idx": 9,
+        "cycle_prefix_sum": 553993
+      },
+      {
+        "index": 9,
+        "prefix_end_idx": 10,
+        "cycle_prefix_sum": 553993
+      },
+      {
+        "index": 10,
+        "prefix_end_idx": 11,
+        "cycle_prefix_sum": 734215
+      },
+      {
+        "index": 11,
+        "prefix_end_idx": 12,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 12,
+        "prefix_end_idx": 13,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 13,
+        "prefix_end_idx": 14,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 14,
+        "prefix_end_idx": 15,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 15,
+        "prefix_end_idx": 16,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 16,
+        "prefix_end_idx": 17,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 17,
+        "prefix_end_idx": 18,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 18,
+        "prefix_end_idx": 19,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 19,
+        "prefix_end_idx": 20,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 20,
+        "prefix_end_idx": 21,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 21,
+        "prefix_end_idx": 22,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 22,
+        "prefix_end_idx": 23,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 23,
+        "prefix_end_idx": 24,
+        "cycle_prefix_sum": 783271
+      },
+      {
+        "index": 24,
+        "prefix_end_idx": 26,
+        "cycle_prefix_sum": 974003
+      },
+      {
+        "index": 25,
+        "prefix_end_idx": 27,
+        "cycle_prefix_sum": 974003
+      },
+      {
+        "index": 26,
+        "prefix_end_idx": 28,
+        "cycle_prefix_sum": 974003
+      },
+      {
+        "index": 27,
+        "prefix_end_idx": 30,
+        "cycle_prefix_sum": 1028965
+      },
+      {
+        "index": 28,
+        "prefix_end_idx": 31,
+        "cycle_prefix_sum": 1028965
+      },
+      {
+        "index": 29,
+        "prefix_end_idx": 32,
+        "cycle_prefix_sum": 1028965
+      },
+      {
+        "index": 30,
+        "prefix_end_idx": 33,
+        "cycle_prefix_sum": 1268919
+      },
+      {
+        "index": 31,
+        "prefix_end_idx": 34,
+        "cycle_prefix_sum": 1508871
+      },
+      {
+        "index": 32,
+        "prefix_end_idx": 35,
+        "cycle_prefix_sum": 1508871
+      },
+      {
+        "index": 33,
+        "prefix_end_idx": 36,
+        "cycle_prefix_sum": 1748823
+      },
+      {
+        "index": 34,
+        "prefix_end_idx": 37,
+        "cycle_prefix_sum": 1930641
+      },
+      {
+        "index": 35,
+        "prefix_end_idx": 38,
+        "cycle_prefix_sum": 1930641
+      },
+      {
+        "index": 36,
+        "prefix_end_idx": 41,
+        "cycle_prefix_sum": 3062106
+      },
+      {
+        "index": 37,
+        "prefix_end_idx": 42,
+        "cycle_prefix_sum": 3062106
+      },
+      {
+        "index": 38,
+        "prefix_end_idx": 43,
+        "cycle_prefix_sum": 3062106
+      },
+      {
+        "index": 39,
+        "prefix_end_idx": 44,
+        "cycle_prefix_sum": 3062106
+      },
+      {
+        "index": 40,
+        "prefix_end_idx": 45,
+        "cycle_prefix_sum": 3062106
+      },
+      {
+        "index": 41,
+        "prefix_end_idx": 46,
+        "cycle_prefix_sum": 3062106
+      }
+    ]
+  }
+}

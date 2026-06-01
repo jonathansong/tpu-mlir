@@ -1,0 +1,475 @@
+{
+  "opt": 2,
+  "total subfunc": 1,
+  "subfunc_0": {
+    "subfunc idx": 0,
+    "GroupLayer": [
+      {
+        "base_group_idx": 2,
+        "start_idx": 1,
+        "end_idx": 3,
+        "func_start_idx": 3,
+        "func_end_idx": 5,
+        "group_cost": 1293,
+        "index": 3,
+        "locs": [
+          "model.language_model.layers.15.self_attn.q_proj.q_slice",
+          "model.language_model.layers.15.self_attn.q_proj.gate_slice",
+          "model.language_model.layers.15.self_attn.q_proj.gate_slicemodel.language_model.layers.15.mlp.gate_proj.gate_sigmoid_f32"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "base_group_idx": 5,
+        "start_idx": 2,
+        "end_idx": 3,
+        "func_start_idx": 11,
+        "func_end_idx": 12,
+        "group_cost": 1039,
+        "index": 9,
+        "locs": [
+          "model.language_model.layers.15.self_attn.q_norm",
+          "model.language_model.layers.15.self_attn.k_norm"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "base_group_idx": 14,
+        "start_idx": 0,
+        "end_idx": 7,
+        "func_start_idx": 21,
+        "func_end_idx": 28,
+        "group_cost": 1036,
+        "index": 18,
+        "locs": [
+          "q_proj.slice",
+          "q_proj.slice2",
+          "q_proj.rope",
+          "q_proj",
+          "k_proj.slice",
+          "k_proj.slice2",
+          "k_proj.rope",
+          "k_cache"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "base_group_idx": 18,
+        "start_idx": 1,
+        "end_idx": 2,
+        "func_start_idx": 33,
+        "func_end_idx": 34,
+        "group_cost": 1133,
+        "index": 23,
+        "locs": [
+          "model.language_model.layers.15.mlp.gate_proj.gate_reshapemodel.language_model.layers.15.mlp.gate_proj.gate_mul_bf16",
+          "model.language_model.layers.15.mlp.gate_proj.gate_mul"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "base_group_idx": 20,
+        "start_idx": 0,
+        "end_idx": 1,
+        "func_start_idx": 36,
+        "func_end_idx": 37,
+        "group_cost": 2573,
+        "index": 25,
+        "locs": [
+          "model.language_model.layers.15.self_attn.o_proj.add",
+          "model.language_model.layers.15.post_attention_layernorm"
+        ],
+        "shape_secs": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    ],
+    "GlobalLayer": [
+      {
+        "index": 0,
+        "func_idx": 0,
+        "group_cost": 3854,
+        "loc": "model.language_model.layers.15.input_layernorm"
+      },
+      {
+        "index": 1,
+        "func_idx": 1,
+        "group_cost": 86527,
+        "loc": "model.language_model.layers.15.self_attn.q_proj"
+      },
+      {
+        "index": 2,
+        "func_idx": 2,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.q_proj.reshape"
+      },
+      {
+        "index": 4,
+        "func_idx": 6,
+        "group_cost": 767,
+        "loc": "model.language_model.layers.15.mlp.gate_proj.gate_sigmoid"
+      },
+      {
+        "index": 5,
+        "func_idx": 7,
+        "group_cost": 13401,
+        "loc": "model.language_model.layers.15.self_attn.k_proj"
+      },
+      {
+        "index": 6,
+        "func_idx": 8,
+        "group_cost": 13401,
+        "loc": "model.language_model.layers.15.self_attn.v_proj"
+      },
+      {
+        "index": 7,
+        "func_idx": 9,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.k_proj.reshape"
+      },
+      {
+        "index": 8,
+        "func_idx": 10,
+        "group_cost": 0,
+        "loc": "v_cache"
+      },
+      {
+        "index": 10,
+        "func_idx": 13,
+        "group_cost": 19,
+        "loc": "rotary_cos"
+      },
+      {
+        "index": 11,
+        "func_idx": 14,
+        "group_cost": 0,
+        "loc": "rotary_cos.reshape"
+      },
+      {
+        "index": 12,
+        "func_idx": 15,
+        "group_cost": 296,
+        "loc": "rotary_cos.gather"
+      },
+      {
+        "index": 13,
+        "func_idx": 16,
+        "group_cost": 0,
+        "loc": "rotary_cos.permute2"
+      },
+      {
+        "index": 14,
+        "func_idx": 17,
+        "group_cost": 19,
+        "loc": "rotary_sin"
+      },
+      {
+        "index": 15,
+        "func_idx": 18,
+        "group_cost": 0,
+        "loc": "rotary_sin.reshape"
+      },
+      {
+        "index": 16,
+        "func_idx": 19,
+        "group_cost": 296,
+        "loc": "rotary_sin.gather"
+      },
+      {
+        "index": 17,
+        "func_idx": 20,
+        "group_cost": 0,
+        "loc": "rotary_sin.permute2"
+      },
+      {
+        "index": 19,
+        "func_idx": 29,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.k_proj.concat"
+      },
+      {
+        "index": 20,
+        "func_idx": 30,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.self_attn.v_proj.concat"
+      },
+      {
+        "index": 21,
+        "func_idx": 31,
+        "group_cost": 117818,
+        "loc": "model.language_model.layers.15.fattention"
+      },
+      {
+        "index": 22,
+        "func_idx": 32,
+        "group_cost": 0,
+        "loc": "model.language_model.layers.15.mlp.gate_proj.gate_reshape"
+      },
+      {
+        "index": 24,
+        "func_idx": 35,
+        "group_cost": 45785,
+        "loc": "model.language_model.layers.15.self_attn.o_proj"
+      },
+      {
+        "index": 26,
+        "func_idx": 38,
+        "group_cost": 127203,
+        "loc": "model.language_model.layers.15.mlp.gate_proj"
+      },
+      {
+        "index": 27,
+        "func_idx": 39,
+        "group_cost": 846,
+        "loc": "model.language_model.layers.15.mlp.gate_projmodel.language_model.layers.15.mlp.gate_proj.silu_f32"
+      },
+      {
+        "index": 28,
+        "func_idx": 40,
+        "group_cost": 1330,
+        "loc": "model.language_model.layers.15.mlp.gate_proj.silu"
+      },
+      {
+        "index": 29,
+        "func_idx": 41,
+        "group_cost": 801,
+        "loc": "model.language_model.layers.15.mlp.gate_proj.silumodel.language_model.layers.15.mlp.up_proj.mul_bf16"
+      },
+      {
+        "index": 30,
+        "func_idx": 42,
+        "group_cost": 127203,
+        "loc": "model.language_model.layers.15.mlp.up_proj"
+      },
+      {
+        "index": 31,
+        "func_idx": 43,
+        "group_cost": 942,
+        "loc": "model.language_model.layers.15.mlp.up_proj.mul"
+      },
+      {
+        "index": 32,
+        "func_idx": 44,
+        "group_cost": 124294,
+        "loc": "model.language_model.layers.15.mlp.down_proj"
+      },
+      {
+        "index": 33,
+        "func_idx": 45,
+        "group_cost": 938,
+        "loc": "output_states"
+      },
+      {
+        "index": 34,
+        "func_idx": 46,
+        "group_cost": 0,
+        "loc": "func.return"
+      }
+    ],
+    "CyclePrefixSum": [
+      {
+        "index": 0,
+        "prefix_end_idx": 0,
+        "cycle_prefix_sum": 3854
+      },
+      {
+        "index": 1,
+        "prefix_end_idx": 1,
+        "cycle_prefix_sum": 90381
+      },
+      {
+        "index": 2,
+        "prefix_end_idx": 2,
+        "cycle_prefix_sum": 90381
+      },
+      {
+        "index": 3,
+        "prefix_end_idx": 5,
+        "cycle_prefix_sum": 91674
+      },
+      {
+        "index": 4,
+        "prefix_end_idx": 6,
+        "cycle_prefix_sum": 92441
+      },
+      {
+        "index": 5,
+        "prefix_end_idx": 7,
+        "cycle_prefix_sum": 105842
+      },
+      {
+        "index": 6,
+        "prefix_end_idx": 8,
+        "cycle_prefix_sum": 119243
+      },
+      {
+        "index": 7,
+        "prefix_end_idx": 9,
+        "cycle_prefix_sum": 119243
+      },
+      {
+        "index": 8,
+        "prefix_end_idx": 10,
+        "cycle_prefix_sum": 119243
+      },
+      {
+        "index": 9,
+        "prefix_end_idx": 12,
+        "cycle_prefix_sum": 120282
+      },
+      {
+        "index": 10,
+        "prefix_end_idx": 13,
+        "cycle_prefix_sum": 120301
+      },
+      {
+        "index": 11,
+        "prefix_end_idx": 14,
+        "cycle_prefix_sum": 120301
+      },
+      {
+        "index": 12,
+        "prefix_end_idx": 15,
+        "cycle_prefix_sum": 120597
+      },
+      {
+        "index": 13,
+        "prefix_end_idx": 16,
+        "cycle_prefix_sum": 120597
+      },
+      {
+        "index": 14,
+        "prefix_end_idx": 17,
+        "cycle_prefix_sum": 120616
+      },
+      {
+        "index": 15,
+        "prefix_end_idx": 18,
+        "cycle_prefix_sum": 120616
+      },
+      {
+        "index": 16,
+        "prefix_end_idx": 19,
+        "cycle_prefix_sum": 120912
+      },
+      {
+        "index": 17,
+        "prefix_end_idx": 20,
+        "cycle_prefix_sum": 120912
+      },
+      {
+        "index": 18,
+        "prefix_end_idx": 28,
+        "cycle_prefix_sum": 121948
+      },
+      {
+        "index": 19,
+        "prefix_end_idx": 29,
+        "cycle_prefix_sum": 121948
+      },
+      {
+        "index": 20,
+        "prefix_end_idx": 30,
+        "cycle_prefix_sum": 121948
+      },
+      {
+        "index": 21,
+        "prefix_end_idx": 31,
+        "cycle_prefix_sum": 239766
+      },
+      {
+        "index": 22,
+        "prefix_end_idx": 32,
+        "cycle_prefix_sum": 239766
+      },
+      {
+        "index": 23,
+        "prefix_end_idx": 34,
+        "cycle_prefix_sum": 240899
+      },
+      {
+        "index": 24,
+        "prefix_end_idx": 35,
+        "cycle_prefix_sum": 286684
+      },
+      {
+        "index": 25,
+        "prefix_end_idx": 37,
+        "cycle_prefix_sum": 289257
+      },
+      {
+        "index": 26,
+        "prefix_end_idx": 38,
+        "cycle_prefix_sum": 416460
+      },
+      {
+        "index": 27,
+        "prefix_end_idx": 39,
+        "cycle_prefix_sum": 417306
+      },
+      {
+        "index": 28,
+        "prefix_end_idx": 40,
+        "cycle_prefix_sum": 418636
+      },
+      {
+        "index": 29,
+        "prefix_end_idx": 41,
+        "cycle_prefix_sum": 419437
+      },
+      {
+        "index": 30,
+        "prefix_end_idx": 42,
+        "cycle_prefix_sum": 546640
+      },
+      {
+        "index": 31,
+        "prefix_end_idx": 43,
+        "cycle_prefix_sum": 547582
+      },
+      {
+        "index": 32,
+        "prefix_end_idx": 44,
+        "cycle_prefix_sum": 671876
+      },
+      {
+        "index": 33,
+        "prefix_end_idx": 45,
+        "cycle_prefix_sum": 672814
+      },
+      {
+        "index": 34,
+        "prefix_end_idx": 46,
+        "cycle_prefix_sum": 672814
+      }
+    ]
+  }
+}

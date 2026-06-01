@@ -166,6 +166,7 @@ def ImageOutFormatAttr : AnyStrAttrOf<["FLOAT32", "UINT8"]>;
 def Yuv2rgbFormulaAttr : AnyStrAttrOf<["_601_limited", "_601_full"]>;
 def GELUModeAttr : AnyStrAttrOf<["normal", "tanh", "sigm"]>;
 def RopeModeAttr : AnyStrAttrOf<["interleaved_pairs", "contiguous_halves"]>;
+def KVCacheFormatAttr : AnyStrAttrOf<["Q4_0", "Q4_1", "Q8_0", "Q8_1", "FP8"]>;
 def DqTypeAttr : AnyStrAttrOf<["NONE", "F16", "BF16", "INT8", "INT4", "F8E4M3", "F4"]>;
 
 //===----------------------------------------------------------------------===//
@@ -2867,6 +2868,46 @@ def Top_InterpOp : Top_Op<"Interp"> {
   );
   let hasCanonicalizer=1;
   let results = (outs AnyTensor:$output);
+}
+
+// KV-cache state persists across decode invocations. Keep these operations at
+// TOP level so graph rewrites cannot reorder or eliminate cache accesses.
+def Top_KVCacheLoadOp : Top_BaseOp<"KVCacheLoad", [MemoryEffects<[MemRead]>]> {
+  let summary = "KV-cache load operator";
+  let description = [{
+    Reads historical key and value tensors from a persistent KV-cache object.
+    The cache tensor is an opaque handle at TOP level; target-specific storage
+    placement is selected during TPU lowering.
+  }];
+  let arguments = (ins
+    AnyTensor:$cache,
+    AnyTensor:$position,
+    KVCacheFormatAttr:$kv_format,
+    DefaultValuedAttr<I64Attr, "64">:$group_size,
+    OptionalAttr<StrAttr>:$resource_id
+  );
+  let results = (outs
+    AnyTensor:$key,
+    AnyTensor:$value
+  );
+}
+
+def Top_KVCacheStoreOp : Top_BaseOp<"KVCacheStore", [MemoryEffects<[MemWrite]>]> {
+  let summary = "KV-cache store operator";
+  let description = [{
+    Stores current-token key and value tensors into a persistent KV-cache
+    object. The explicit write effect prevents dead-code elimination when the
+    operation has no SSA results.
+  }];
+  let arguments = (ins
+    AnyTensor:$cache,
+    AnyTensor:$position,
+    AnyTensor:$key,
+    AnyTensor:$value,
+    KVCacheFormatAttr:$kv_format,
+    DefaultValuedAttr<I64Attr, "64">:$group_size,
+    OptionalAttr<StrAttr>:$resource_id
+  );
 }
 
 def Top_LayerNormBwdOp : Top_Op<"LayerNormBwd"> {

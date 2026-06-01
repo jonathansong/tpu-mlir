@@ -1,0 +1,63 @@
+[
+  {
+    "file-line": 13,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Gather",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      0,
+      0
+    ],
+    "tiu_dma_id(after)": [
+      2,
+      2
+    ],
+    "operands": [
+      {
+        "address": 4294967296,
+        "layout": "continuous",
+        "memory_type": "<248320x2048xbf16>",
+        "name": "model.language_model.embed_tokens.weight_bf16",
+        "reshape": "",
+        "shape": [
+          248320,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<248320x2048xbf16, 4294967296 : i64>"
+      },
+      {
+        "address": 5312086016,
+        "layout": "continuous",
+        "memory_type": "<1x1024xsi32>",
+        "name": "input_ids",
+        "reshape": "",
+        "shape": [
+          1,
+          1024
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1024xsi32, 5312086016 : i64>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 5312090112,
+        "layout": "continuous",
+        "memory_type": "<1x1024x2048xbf16>",
+        "name": "embedding",
+        "reshape": "",
+        "shape": [
+          1,
+          1024,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1024x2048xbf16, 5312090112 : i64>"
+      }
+    ],
+    "buffers": []
+  }
+]

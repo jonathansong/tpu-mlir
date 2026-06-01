@@ -1,0 +1,16 @@
+--------------------------------------
+s: start time, b: bd_id, g: gdma_id, e: end time, t: cmd cost time, dr: direction, sz: memsize, bw: bandwidth
+--------------------------------------
+ENGINE_BD                                                                   ENGINE_GDMA                                                                 
+                                                                            Gather_13|GDMA_BROADCAST|s:0|b:0|g:1|e:3|t:4|dr:0|sz:4|bw:0.93              
+Gather_13|AR|s:4|b:1|g:1|e:4|t:1                                                                                                                        
+Gather_13|FUSED_CMP|s:5|b:2|g:1|e:6|t:2                                                                                                                 
+                                                                            Gather_13|GDMA_GATHER|s:7|b:2|g:2|e:70|t:64|dr:2|sz:4096|bw:59.60           
+--------------------------------------
+API_END total_cycle:71|b:2|g:2
+TCYC : 71
+GDMA SUMMARY : |dr[0] S2L:4|dr[1] L2S:0|dr[2] S2S:4096|dr[3] L2L:0
+DDR BW USAGE : 167.98239044%
+#######################################
+
+

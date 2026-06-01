@@ -1,0 +1,3369 @@
+[
+  {
+    "file-line": 47,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.RMSNorm",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      0,
+      0
+    ],
+    "tiu_dma_id(after)": [
+      10,
+      3
+    ],
+    "operands": [
+      {
+        "address": 4325937152,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "input_states",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4325937152 : i64>"
+      },
+      {
+        "address": 4294967296,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.input_layernorm.weight_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4294967296 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.input_layernorm",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 48,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.A16MatMul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      10,
+      3
+    ],
+    "tiu_dma_id(after)": [
+      25,
+      10
+    ],
+    "operands": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.input_layernorm",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      },
+      {
+        "address": 4301852672,
+        "layout": "continuous",
+        "memory_type": "<2048x1024xui8>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z_weight",
+        "reshape": "",
+        "shape": [
+          2048,
+          1024
+        ],
+        "slice": "[...]",
+        "type": "tensor<2048x1024xui8, 4301852672 : i64>"
+      },
+      {
+        "address": 4301787136,
+        "layout": "continuous",
+        "memory_type": "<64x32x16xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          32,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x32x16xbf16, 4301787136 : i64>"
+      },
+      {
+        "address": 4301754368,
+        "layout": "continuous",
+        "memory_type": "<64x32x16xui8>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z_1_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          32,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x32x16xui8, 4301754368 : i64>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 49,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      25,
+      10
+    ],
+    "tiu_dma_id(after)": [
+      26,
+      12
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326576128,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_zmodel.language_model.layers.12.linear_attn.in_proj_z.silu_f32",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xf32, 4326576128 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 51,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      26,
+      12
+    ],
+    "tiu_dma_id(after)": [
+      26,
+      13
+    ],
+    "operands": [
+      {
+        "address": 4295032832,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.bias_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16, 4295032832 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_a.bias_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 52,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      26,
+      13
+    ],
+    "tiu_dma_id(after)": [
+      26,
+      14
+    ],
+    "operands": [
+      {
+        "address": 4295036928,
+        "layout": "continuous",
+        "memory_type": "<1x2048x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.weight_bf16",
+        "reshape": "<1x2048x1x16x1>",
+        "shape": [
+          1,
+          2048,
+          16
+        ],
+        "slice": "[0:1, 0:2048, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x2048x16xbf16, 4295036928 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x2048x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_a.weight_bf16",
+        "reshape": "<1x2048x1x16x1>",
+        "shape": [
+          1,
+          2048,
+          16
+        ],
+        "slice": "[0:1, 0:2048, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x2048x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 53,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      26,
+      14
+    ],
+    "tiu_dma_id(after)": [
+      26,
+      15
+    ],
+    "operands": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.input_layernorm",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12.input_layernorm",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 55,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.MatMul",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      26,
+      15
+    ],
+    "tiu_dma_id(after)": [
+      29,
+      15
+    ],
+    "operands": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12.input_layernorm",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x2048x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_a.weight_bf16",
+        "reshape": "<1x2048x1x16x1>",
+        "shape": [
+          1,
+          2048,
+          16
+        ],
+        "slice": "[0:1, 0:2048, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x2048x16xbf16>"
+      },
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_a.bias_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      },
+      {},
+      {}
+    ],
+    "results": [
+      {
+        "address": 65536,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 54,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      26,
+      15
+    ],
+    "tiu_dma_id(after)": [
+      26,
+      16
+    ],
+    "operands": [
+      {
+        "address": 4295102464,
+        "layout": "continuous",
+        "memory_type": "<1x2048x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b.weight_bf16",
+        "reshape": "<1x2048x1x16x1>",
+        "shape": [
+          1,
+          2048,
+          16
+        ],
+        "slice": "[0:1, 0:2048, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x2048x16xbf16, 4295102464 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x2048x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_b.weight_bf16",
+        "reshape": "<1x2048x1x16x1>",
+        "shape": [
+          1,
+          2048,
+          16
+        ],
+        "slice": "[0:1, 0:2048, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x2048x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 56,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      29,
+      16
+    ],
+    "tiu_dma_id(after)": [
+      30,
+      16
+    ],
+    "operands": [
+      {
+        "address": 65536,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "results": [
+      {
+        "address": 34816,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_amodel.language_model.layers.12.linear_attn.in_proj_a.softplus_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 58,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.MatMul",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      30,
+      16
+    ],
+    "tiu_dma_id(after)": [
+      31,
+      16
+    ],
+    "operands": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12.input_layernorm",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x2048x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_b.weight_bf16",
+        "reshape": "<1x2048x1x16x1>",
+        "shape": [
+          1,
+          2048,
+          16
+        ],
+        "slice": "[0:1, 0:2048, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x2048x16xbf16>"
+      },
+      {},
+      {},
+      {}
+    ],
+    "results": [
+      {
+        "address": 49216,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 57,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Store",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      30,
+      16
+    ],
+    "tiu_dma_id(after)": [
+      30,
+      17
+    ],
+    "operands": [
+      {
+        "address": 34816,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_amodel.language_model.layers.12.linear_attn.in_proj_a.softplus_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326588416,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_amodel.language_model.layers.12.linear_attn.in_proj_a.softplus_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32, 4326588416 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 59,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      31,
+      17
+    ],
+    "tiu_dma_id(after)": [
+      32,
+      17
+    ],
+    "operands": [
+      {
+        "address": 49216,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "results": [
+      {
+        "address": 18432,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_bmodel.language_model.layers.12.linear_attn.in_proj_b.sigmoid_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 60,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Store",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      32,
+      17
+    ],
+    "tiu_dma_id(after)": [
+      32,
+      18
+    ],
+    "operands": [
+      {
+        "address": 18432,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_bmodel.language_model.layers.12.linear_attn.in_proj_b.sigmoid_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326584320,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_bmodel.language_model.layers.12.linear_attn.in_proj_b.sigmoid_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32, 4326584320 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 63,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.A16MatMul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      32,
+      18
+    ],
+    "tiu_dma_id(after)": [
+      75,
+      33
+    ],
+    "operands": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.input_layernorm",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      },
+      {
+        "address": 4295462912,
+        "layout": "continuous",
+        "memory_type": "<6144x1024xui8>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv_weight",
+        "reshape": "",
+        "shape": [
+          6144,
+          1024
+        ],
+        "slice": "[...]",
+        "type": "tensor<6144x1024xui8, 4295462912 : i64>"
+      },
+      {
+        "address": 4295266304,
+        "layout": "continuous",
+        "memory_type": "<64x96x16xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          96,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x96x16xbf16, 4295266304 : i64>"
+      },
+      {
+        "address": 4295168000,
+        "layout": "continuous",
+        "memory_type": "<64x96x16xui8>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv_1_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          96,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x96x16xui8, 4295168000 : i64>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 64,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Reshape",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      75,
+      33
+    ],
+    "tiu_dma_id(after)": [
+      75,
+      33
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x6144x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.reshape",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          1
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x1xbf16, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 65,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.ConcatSlice",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      75,
+      33
+    ],
+    "tiu_dma_id(after)": [
+      77,
+      36
+    ],
+    "operands": [
+      {
+        "address": 4325941248,
+        "layout": "continuous",
+        "memory_type": "<1x6144x4xbf16>",
+        "name": "conv_state",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          4
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x4xbf16, 4325941248 : i64>"
+      },
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x6144x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.reshape",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          1
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x1xbf16, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4325941248,
+        "layout": "continuous",
+        "memory_type": "<1x6144x4xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.concat",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          4
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x4xbf16, 4325941248 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 66,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Mul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      77,
+      36
+    ],
+    "tiu_dma_id(after)": [
+      79,
+      42
+    ],
+    "operands": [
+      {
+        "address": 4325941248,
+        "layout": "continuous",
+        "memory_type": "<1x6144x4xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.concat",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          4
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x4xbf16, 4325941248 : i64>"
+      },
+      {
+        "address": 4294975488,
+        "layout": "continuous",
+        "memory_type": "<1x6144x4xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.weight_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          4
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x4xbf16, 4294975488 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x6144x4xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.mul",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          4
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x4xbf16, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 67,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Reduce",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      79,
+      42
+    ],
+    "tiu_dma_id(after)": [
+      80,
+      44
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x6144x4xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.mul",
+        "reshape": "",
+        "shape": [
+          1,
+          6144,
+          4
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144x4xbf16, 4326514688 : i64>"
+      },
+      {},
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326563840,
+        "layout": "continuous",
+        "memory_type": "<1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.reduce_sum",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xbf16, 4326563840 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 68,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      80,
+      44
+    ],
+    "tiu_dma_id(after)": [
+      81,
+      46
+    ],
+    "operands": [
+      {
+        "address": 4326563840,
+        "layout": "continuous",
+        "memory_type": "<1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.reduce_sum",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xbf16, 4326563840 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x6144xf32>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.reduce_summodel.language_model.layers.12.linear_attn.conv1d.silu_f32",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xf32, 4326539264 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 70,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      81,
+      46
+    ],
+    "tiu_dma_id(after)": [
+      81,
+      47
+    ],
+    "operands": [
+      {
+        "address": 4326584320,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_bmodel.language_model.layers.12.linear_attn.in_proj_b.sigmoid_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32, 4326584320 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_bmodel.language_model.layers.12.linear_attn.in_proj_b.sigmoid_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 72,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Active",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      81,
+      47
+    ],
+    "tiu_dma_id(after)": [
+      97,
+      47
+    ],
+    "operands": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_bmodel.language_model.layers.12.linear_attn.in_proj_b.sigmoid_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "results": [
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b.sigmoid",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "buffers": [
+      {
+        "address": 49152,
+        "size": 256
+      }
+    ]
+  },
+  {
+    "file-line": 71,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      81,
+      47
+    ],
+    "tiu_dma_id(after)": [
+      81,
+      48
+    ],
+    "operands": [
+      {
+        "address": 4326588416,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_amodel.language_model.layers.12.linear_attn.in_proj_a.softplus_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32, 4326588416 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_amodel.language_model.layers.12.linear_attn.in_proj_a.softplus_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 73,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      97,
+      48
+    ],
+    "tiu_dma_id(after)": [
+      98,
+      48
+    ],
+    "operands": [
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b.sigmoid",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "results": [
+      {
+        "address": 128,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b.sigmoidmodel.language_model.layers.12.recurrent_gated_delta_rule_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 76,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Active",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      98,
+      48
+    ],
+    "tiu_dma_id(after)": [
+      125,
+      48
+    ],
+    "operands": [
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_amodel.language_model.layers.12.linear_attn.in_proj_a.softplus_f32",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "results": [
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.softplus",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "buffers": [
+      {
+        "address": 32768,
+        "size": 320
+      }
+    ]
+  },
+  {
+    "file-line": 75,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Store",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      98,
+      48
+    ],
+    "tiu_dma_id(after)": [
+      98,
+      49
+    ],
+    "operands": [
+      {
+        "address": 128,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b.sigmoidmodel.language_model.layers.12.recurrent_gated_delta_rule_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326567936,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b.sigmoidmodel.language_model.layers.12.recurrent_gated_delta_rule_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16, 4326567936 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 74,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      98,
+      49
+    ],
+    "tiu_dma_id(after)": [
+      98,
+      50
+    ],
+    "operands": [
+      {
+        "address": 4294971392,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.A_log.weight_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16, 4294971392 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 64,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.A_log.weight_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 77,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      125,
+      50
+    ],
+    "tiu_dma_id(after)": [
+      126,
+      50
+    ],
+    "operands": [
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.softplus",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xf32>"
+      }
+    ],
+    "results": [
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.softplusmodel.language_model.layers.12.linear_attn.in_proj_a.mul_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 78,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Mul",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      126,
+      50
+    ],
+    "tiu_dma_id(after)": [
+      127,
+      50
+    ],
+    "operands": [
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.softplusmodel.language_model.layers.12.linear_attn.in_proj_a.mul_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      },
+      {
+        "address": 64,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.A_log.weight_bf16",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "results": [
+      {
+        "address": 65536,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.mul",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 79,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Store",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      127,
+      50
+    ],
+    "tiu_dma_id(after)": [
+      127,
+      51
+    ],
+    "operands": [
+      {
+        "address": 65536,
+        "layout": "eu_align",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.mul",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326563840,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.mul",
+        "reshape": "<1x1x1x16x1>",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:16, 0:1]",
+        "type": "tensor<1x1x16xbf16, 4326563840 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 82,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Active",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      127,
+      51
+    ],
+    "tiu_dma_id(after)": [
+      144,
+      53
+    ],
+    "operands": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x6144xf32>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.reduce_summodel.language_model.layers.12.linear_attn.conv1d.silu_f32",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xf32, 4326539264 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x6144xf32>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.silu",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xf32, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 83,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      144,
+      53
+    ],
+    "tiu_dma_id(after)": [
+      145,
+      55
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x6144xf32>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.silu",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xf32, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.silumodel.language_model.layers.12.linear_attn.in_proj_qkv.q_slice_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xbf16, 4326539264 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 84,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Slice",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      145,
+      55
+    ],
+    "tiu_dma_id(after)": [
+      145,
+      55
+    ],
+    "operands": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.silumodel.language_model.layers.12.linear_attn.in_proj_qkv.q_slice_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xbf16, 4326539264 : i64>"
+      },
+      {},
+      {},
+      {},
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.q_slice",
+        "reshape": "",
+        "shape": [
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x2048xbf16, 4326539264 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 85,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Slice",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      145,
+      55
+    ],
+    "tiu_dma_id(after)": [
+      145,
+      55
+    ],
+    "operands": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.silumodel.language_model.layers.12.linear_attn.in_proj_qkv.q_slice_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xbf16, 4326539264 : i64>"
+      },
+      {},
+      {},
+      {},
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326543360,
+        "layout": "continuous",
+        "memory_type": "<1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.k_slice",
+        "reshape": "",
+        "shape": [
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x2048xbf16, 4326543360 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 86,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Slice",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      145,
+      55
+    ],
+    "tiu_dma_id(after)": [
+      145,
+      55
+    ],
+    "operands": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x6144xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.conv1d.silumodel.language_model.layers.12.linear_attn.in_proj_qkv.q_slice_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x6144xbf16, 4326539264 : i64>"
+      },
+      {},
+      {},
+      {},
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326547456,
+        "layout": "continuous",
+        "memory_type": "<1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.v_slice",
+        "reshape": "",
+        "shape": [
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x2048xbf16, 4326547456 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 87,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.RecurrentGatedDeltaRule",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      145,
+      55
+    ],
+    "tiu_dma_id(after)": [
+      268,
+      71
+    ],
+    "operands": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.q_slice",
+        "reshape": "",
+        "shape": [
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x2048xbf16, 4326539264 : i64>"
+      },
+      {
+        "address": 4326543360,
+        "layout": "continuous",
+        "memory_type": "<1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.k_slice",
+        "reshape": "",
+        "shape": [
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x2048xbf16, 4326543360 : i64>"
+      },
+      {
+        "address": 4326547456,
+        "layout": "continuous",
+        "memory_type": "<1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_qkv.v_slice",
+        "reshape": "",
+        "shape": [
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x2048xbf16, 4326547456 : i64>"
+      },
+      {
+        "address": 4326563840,
+        "layout": "continuous",
+        "memory_type": "<1x1x16xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_a.mul",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x16xbf16, 4326563840 : i64>"
+      },
+      {
+        "address": 4326567936,
+        "layout": "continuous",
+        "memory_type": "<1x1x16xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_b.sigmoidmodel.language_model.layers.12.recurrent_gated_delta_rule_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x16xbf16, 4326567936 : i64>"
+      },
+      {
+        "address": 4325990400,
+        "layout": "continuous",
+        "memory_type": "<1x16x128x128xbf16>",
+        "name": "recurrent_state",
+        "reshape": "",
+        "shape": [
+          1,
+          16,
+          128,
+          128
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x16x128x128xbf16, 4325990400 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326531072,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x128xbf16>",
+        "name": "model.language_model.layers.12.recurrent_gated_delta_rule",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          16,
+          128
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x16x128xbf16, 4326531072 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 88,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.RMSNorm",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      268,
+      71
+    ],
+    "tiu_dma_id(after)": [
+      278,
+      74
+    ],
+    "operands": [
+      {
+        "address": 4326531072,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x128xbf16>",
+        "name": "model.language_model.layers.12.recurrent_gated_delta_rule",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          16,
+          128
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x16x128xbf16, 4326531072 : i64>"
+      },
+      {
+        "address": 4303949824,
+        "layout": "continuous",
+        "memory_type": "<1x1x1x128xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.norm.weight_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          1,
+          128
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x1x128xbf16, 4303949824 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x128xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.norm",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          16,
+          128
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x16x128xbf16, 4326526976 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 89,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Reshape",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      278,
+      74
+    ],
+    "tiu_dma_id(after)": [
+      278,
+      74
+    ],
+    "operands": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x16x128xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.norm",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          16,
+          128
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x16x128xbf16, 4326526976 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12..core_attn_reshape",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 90,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Active",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      278,
+      74
+    ],
+    "tiu_dma_id(after)": [
+      295,
+      76
+    ],
+    "operands": [
+      {
+        "address": 4326576128,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_zmodel.language_model.layers.12.linear_attn.in_proj_z.silu_f32",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xf32, 4326576128 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z.silu",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xf32, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 92,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      295,
+      76
+    ],
+    "tiu_dma_id(after)": [
+      295,
+      77
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xf32>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z.silu",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xf32, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xf32>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_z.silu",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xf32>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 94,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      295,
+      77
+    ],
+    "tiu_dma_id(after)": [
+      296,
+      77
+    ],
+    "operands": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xf32>",
+        "name": "load_model.language_model.layers.12.linear_attn.in_proj_z.silu",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xf32>"
+      }
+    ],
+    "results": [
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z.silumodel.language_model.layers.12..core_attn_mul_bf16",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 93,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      295,
+      77
+    ],
+    "tiu_dma_id(after)": [
+      295,
+      78
+    ],
+    "operands": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12..core_attn_reshape",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12..core_attn_reshape",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 95,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Mul",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      296,
+      78
+    ],
+    "tiu_dma_id(after)": [
+      297,
+      78
+    ],
+    "operands": [
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12..core_attn_reshape",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {
+        "address": 16384,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.in_proj_z.silumodel.language_model.layers.12..core_attn_mul_bf16",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "results": [
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12..core_attn_mul",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 96,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Store",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      297,
+      78
+    ],
+    "tiu_dma_id(after)": [
+      297,
+      79
+    ],
+    "operands": [
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12..core_attn_mul",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326522880,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12..core_attn_mul",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4326522880 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 99,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.A16MatMul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      297,
+      79
+    ],
+    "tiu_dma_id(after)": [
+      312,
+      86
+    ],
+    "operands": [
+      {
+        "address": 4326522880,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12..core_attn_mul",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326522880 : i64>"
+      },
+      {
+        "address": 4304052224,
+        "layout": "continuous",
+        "memory_type": "<2048x1024xui8>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj_weight",
+        "reshape": "",
+        "shape": [
+          2048,
+          1024
+        ],
+        "slice": "[...]",
+        "type": "tensor<2048x1024xui8, 4304052224 : i64>"
+      },
+      {
+        "address": 4303986688,
+        "layout": "continuous",
+        "memory_type": "<64x32x16xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          32,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x32x16xbf16, 4303986688 : i64>"
+      },
+      {
+        "address": 4303953920,
+        "layout": "continuous",
+        "memory_type": "<64x32x16xui8>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj_1_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          32,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x32x16xui8, 4303953920 : i64>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 101,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      312,
+      86
+    ],
+    "tiu_dma_id(after)": [
+      312,
+      87
+    ],
+    "operands": [
+      {
+        "address": 4325937152,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "input_states",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4325937152 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_0",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 102,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      312,
+      87
+    ],
+    "tiu_dma_id(after)": [
+      312,
+      88
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.out_proj",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 104,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Add",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      312,
+      88
+    ],
+    "tiu_dma_id(after)": [
+      313,
+      88
+    ],
+    "operands": [
+      {
+        "address": 32768,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_0",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {
+        "address": 49152,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12.linear_attn.out_proj",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "results": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj.add",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 103,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Load",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      312,
+      88
+    ],
+    "tiu_dma_id(after)": [
+      312,
+      89
+    ],
+    "operands": [
+      {
+        "address": 4325933056,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.post_attention_layernorm.weight_bf16",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4325933056 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 16384,
+        "layout": "compact",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12.post_attention_layernorm.weight_bf16",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 106,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.RMSNorm",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      313,
+      89
+    ],
+    "tiu_dma_id(after)": [
+      325,
+      89
+    ],
+    "operands": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj.add",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {
+        "address": 16384,
+        "layout": "compact",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "load_model.language_model.layers.12.post_attention_layernorm.weight_bf16",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "results": [
+      {
+        "address": 98304,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.post_attention_layernorm",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      }
+    ],
+    "buffers": [
+      {
+        "address": 65536,
+        "size": 16448
+      }
+    ]
+  },
+  {
+    "file-line": 105,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Store",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      313,
+      89
+    ],
+    "tiu_dma_id(after)": [
+      313,
+      90
+    ],
+    "operands": [
+      {
+        "address": 0,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj.add",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326563840,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj.add",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4326563840 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 107,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Store",
+    "is_local": true,
+    "tiu_dma_id(before)": [
+      325,
+      90
+    ],
+    "tiu_dma_id(after)": [
+      325,
+      91
+    ],
+    "operands": [
+      {
+        "address": 98304,
+        "layout": "eu_align",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.post_attention_layernorm",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326567936,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048x1xbf16>",
+        "name": "model.language_model.layers.12.post_attention_layernorm",
+        "reshape": "<1x1x1x2048x1>",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[0:1, 0:1, 0:1, 0:2048, 0:1]",
+        "type": "tensor<1x1x2048xbf16, 4326567936 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 110,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.A16MatMul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      325,
+      91
+    ],
+    "tiu_dma_id(after)": [
+      368,
+      106
+    ],
+    "operands": [
+      {
+        "address": 4326567936,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.post_attention_layernorm",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326567936 : i64>"
+      },
+      {
+        "address": 4313055232,
+        "layout": "continuous",
+        "memory_type": "<6144x1024xui8>",
+        "name": "model.language_model.layers.12.mlp.gate_proj_weight",
+        "reshape": "",
+        "shape": [
+          6144,
+          1024
+        ],
+        "slice": "[...]",
+        "type": "tensor<6144x1024xui8, 4313055232 : i64>"
+      },
+      {
+        "address": 4312858624,
+        "layout": "continuous",
+        "memory_type": "<64x96x16xbf16>",
+        "name": "model.language_model.layers.12.mlp.gate_proj_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          96,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x96x16xbf16, 4312858624 : i64>"
+      },
+      {
+        "address": 4312760320,
+        "layout": "continuous",
+        "memory_type": "<64x96x16xui8>",
+        "name": "model.language_model.layers.12.mlp.gate_proj_1_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          96,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x96x16xui8, 4312760320 : i64>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.gate_proj",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 111,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      368,
+      106
+    ],
+    "tiu_dma_id(after)": [
+      369,
+      108
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.gate_proj",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xf32>",
+        "name": "model.language_model.layers.12.mlp.gate_projmodel.language_model.layers.12.mlp.gate_proj.silu_f32",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xf32, 4326539264 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 112,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Active",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      369,
+      108
+    ],
+    "tiu_dma_id(after)": [
+      386,
+      110
+    ],
+    "operands": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xf32>",
+        "name": "model.language_model.layers.12.mlp.gate_projmodel.language_model.layers.12.mlp.gate_proj.silu_f32",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xf32, 4326539264 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xf32>",
+        "name": "model.language_model.layers.12.mlp.gate_proj.silu",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xf32, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 113,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Cast",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      386,
+      110
+    ],
+    "tiu_dma_id(after)": [
+      387,
+      112
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xf32>",
+        "name": "model.language_model.layers.12.mlp.gate_proj.silu",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xf32, 4326514688 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.gate_proj.silumodel.language_model.layers.12.mlp.up_proj.mul_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326539264 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 114,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.A16MatMul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      387,
+      112
+    ],
+    "tiu_dma_id(after)": [
+      430,
+      127
+    ],
+    "operands": [
+      {
+        "address": 4326567936,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.post_attention_layernorm",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326567936 : i64>"
+      },
+      {
+        "address": 4319641600,
+        "layout": "continuous",
+        "memory_type": "<6144x1024xui8>",
+        "name": "model.language_model.layers.12.mlp.up_proj_weight",
+        "reshape": "",
+        "shape": [
+          6144,
+          1024
+        ],
+        "slice": "[...]",
+        "type": "tensor<6144x1024xui8, 4319641600 : i64>"
+      },
+      {
+        "address": 4319444992,
+        "layout": "continuous",
+        "memory_type": "<64x96x16xbf16>",
+        "name": "model.language_model.layers.12.mlp.up_proj_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          96,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x96x16xbf16, 4319444992 : i64>"
+      },
+      {
+        "address": 4319346688,
+        "layout": "continuous",
+        "memory_type": "<64x96x16xui8>",
+        "name": "model.language_model.layers.12.mlp.up_proj_1_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          96,
+          16
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x96x16xui8, 4319346688 : i64>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.up_proj",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326526976 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 115,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Mul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      430,
+      127
+    ],
+    "tiu_dma_id(after)": [
+      431,
+      130
+    ],
+    "operands": [
+      {
+        "address": 4326539264,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.gate_proj.silumodel.language_model.layers.12.mlp.up_proj.mul_bf16",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326539264 : i64>"
+      },
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.up_proj",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326526976 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.up_proj.mul",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326514688 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 116,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.A16MatMul",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      431,
+      130
+    ],
+    "tiu_dma_id(after)": [
+      481,
+      147
+    ],
+    "operands": [
+      {
+        "address": 4326514688,
+        "layout": "continuous",
+        "memory_type": "<1x1x6144xbf16>",
+        "name": "model.language_model.layers.12.mlp.up_proj.mul",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          6144
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x6144xbf16, 4326514688 : i64>"
+      },
+      {
+        "address": 4306468864,
+        "layout": "continuous",
+        "memory_type": "<2048x3072xui8>",
+        "name": "model.language_model.layers.12.mlp.down_proj_weight",
+        "reshape": "",
+        "shape": [
+          2048,
+          3072
+        ],
+        "slice": "[...]",
+        "type": "tensor<2048x3072xui8, 4306468864 : i64>"
+      },
+      {
+        "address": 4306272256,
+        "layout": "continuous",
+        "memory_type": "<64x32x48xbf16>",
+        "name": "model.language_model.layers.12.mlp.down_proj_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          32,
+          48
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x32x48xbf16, 4306272256 : i64>"
+      },
+      {
+        "address": 4306173952,
+        "layout": "continuous",
+        "memory_type": "<64x32x48xui8>",
+        "name": "model.language_model.layers.12.mlp.down_proj_1_reordered",
+        "reshape": "",
+        "shape": [
+          64,
+          32,
+          48
+        ],
+        "slice": "[...]",
+        "type": "tensor<64x32x48xui8, 4306173952 : i64>"
+      },
+      {}
+    ],
+    "results": [
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.mlp.down_proj",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      }
+    ],
+    "buffers": []
+  },
+  {
+    "file-line": 117,
+    "subnet_id": 0,
+    "core_id": 0,
+    "opcode": "tpu.Add",
+    "is_local": false,
+    "tiu_dma_id(before)": [
+      481,
+      147
+    ],
+    "tiu_dma_id(after)": [
+      482,
+      150
+    ],
+    "operands": [
+      {
+        "address": 4326563840,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.linear_attn.out_proj.add",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326563840 : i64>"
+      },
+      {
+        "address": 4326526976,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "model.language_model.layers.12.mlp.down_proj",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4326526976 : i64>"
+      }
+    ],
+    "results": [
+      {
+        "address": 4325937152,
+        "layout": "continuous",
+        "memory_type": "<1x1x2048xbf16>",
+        "name": "output_states",
+        "reshape": "",
+        "shape": [
+          1,
+          1,
+          2048
+        ],
+        "slice": "[...]",
+        "type": "tensor<1x1x2048xbf16, 4325937152 : i64>"
+      }
+    ],
+    "buffers": []
+  }
+]

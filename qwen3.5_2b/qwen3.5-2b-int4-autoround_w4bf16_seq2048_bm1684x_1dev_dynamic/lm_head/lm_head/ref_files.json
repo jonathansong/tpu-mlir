@@ -1,0 +1,43 @@
+{
+  "version": "v1.26.beta.0-129-g403630b88-20260531",
+  "files": {
+    "tpuc_opt": {
+      "path": "../../../../install/bin/tpuc-opt",
+      "last_modify": 1780170476.9376318
+    },
+    "bmodel": {
+      "path": "../lm_head.bmodel",
+      "last_modify": 1780171827.7171705
+    },
+    "tensor_location": {
+      "path": "../lm_head.bmodel.json",
+      "last_modify": 1780171848.0321376
+    },
+    "final_mlir": {
+      "path": "../lm_head_bm1684x_bf16_final.mlir",
+      "last_modify": 1780171712.998357
+    },
+    "tpu_mlir": {
+      "path": "../lm_head_bm1684x_bf16_tpu.mlir",
+      "last_modify": 1780171687.0303993
+    },
+    "context_dir": {
+      "path": ".",
+      "last_modify": 1780171903.719047
+    },
+    "layer_group_cache": {
+      "path": "../lm_head_bm1684x_bf16.layer_group_cache.json",
+      "last_modify": 1780171707.9764507
+    }
+  },
+  "properties": {
+    "prefix": "lm_head_bm1684x_bf16",
+    "chip": "bm1684x",
+    "compare_all": false
+  },
+  "commands": {
+    "deploy_cmd": "/workspace/tpu-mlir/python/tools/model_deploy.py --mlir lm_head.mlir --quantize bf16 --quant_input --chip bm1684x --num_core 1 --num_device 1 --addr_mode basic --model lm_head.bmodel",
+    "final": "tpuc-opt lm_head_bm1684x_bf16_tpu.mlir --mlir-disable-threading --strip-io-quant=\"quant_input=True quant_output=False quant_input_list= quant_output_list= quant_output_bf16=False quant_input_int8=False quant_output_int8=False \" --processor-tpu-optimize --dev-parallel --weight-reorder  --subnet-divide=\"dynamic=False\" --op-reorder --topo-sort --layer-group=\"opt=2 group_by_cores=auto compress_mode=none debugger=0 disable_group_overlap=false lgcache=true config_filename= enable_lghash=False lghash_dir=\" --affine-opt  --core-parallel  --after-layergroup-weight-reorder  --address-assign -o lm_head_bm1684x_bf16_final.mlir --debug_cmd=",
+    "bmodel": "tpuc-opt lm_head_bm1684x_bf16_final.mlir --codegen=\"model_file=lm_head.bmodel embed_debug_info=False model_version=latest bmodel_only=False gdma_check=True rvti=False\" -o /dev/null"
+  }
+}

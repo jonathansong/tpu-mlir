@@ -1,0 +1,43 @@
+{
+  "version": "v1.26.beta.0-129-g403630b88-20260531",
+  "files": {
+    "tpuc_opt": {
+      "path": "../../../../install/bin/tpuc-opt",
+      "last_modify": 1780164663.6224358
+    },
+    "bmodel": {
+      "path": "../block_14.bmodel",
+      "last_modify": 1780169524.9009042
+    },
+    "tensor_location": {
+      "path": "../block_14.bmodel.json",
+      "last_modify": 1780169544.8179038
+    },
+    "final_mlir": {
+      "path": "../block_14_bm1684x_w4bf16_final.mlir",
+      "last_modify": 1780169501.057905
+    },
+    "tpu_mlir": {
+      "path": "../block_14_bm1684x_w4bf16_tpu.mlir",
+      "last_modify": 1780169499.5892031
+    },
+    "context_dir": {
+      "path": ".",
+      "last_modify": 1780169544.8305953
+    },
+    "layer_group_cache": {
+      "path": "../block_14_bm1684x_w4bf16.layer_group_cache.json",
+      "last_modify": 1780169501.0288606
+    }
+  },
+  "properties": {
+    "prefix": "block_14_bm1684x_w4bf16",
+    "chip": "bm1684x",
+    "compare_all": false
+  },
+  "commands": {
+    "deploy_cmd": "/workspace/tpu-mlir/python/tools/model_deploy.py --mlir block_14.mlir --quantize w4bf16 --q_group_size 128 --quant_input --quant_output --chip bm1684x --num_core 1 --num_device 1 --model block_14.bmodel --addr_mode basic --high_precision --dynamic --disable_gdma_check",
+    "final": "tpuc-opt block_14_bm1684x_w4bf16_tpu.mlir --mlir-disable-threading --strip-io-quant=\"quant_input=True quant_output=True quant_input_list= quant_output_list= quant_output_bf16=False quant_input_int8=False quant_output_int8=False \" --processor-tpu-optimize --dev-parallel --weight-reorder  --subnet-divide=\"dynamic=True\" --op-reorder --topo-sort --layer-group=\"opt=2 group_by_cores=auto compress_mode=none debugger=0 disable_group_overlap=false lgcache=true config_filename= enable_lghash=False lghash_dir=\" --affine-opt  --core-parallel  --after-layergroup-weight-reorder  --address-assign -o block_14_bm1684x_w4bf16_final.mlir --debug_cmd=",
+    "bmodel": "tpuc-opt block_14_bm1684x_w4bf16_final.mlir --codegen=\"model_file=block_14.bmodel embed_debug_info=False model_version=latest bmodel_only=False gdma_check=False rvti=False\" -o /dev/null"
+  }
+}

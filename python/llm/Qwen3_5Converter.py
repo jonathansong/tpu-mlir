@@ -53,19 +53,36 @@ class Qwen3_5Converter(LlmConverter):
 
     @override
     def rotary_embedding(self):
-        from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5TextRotaryEmbedding
-        rotary_embed = Qwen3_5TextRotaryEmbedding(self.llm_config)
+        rope_params = self.llm_config.rope_parameters
+        rope_theta = rope_params["rope_theta"]
+        partial_rotary_factor = rope_params.get("partial_rotary_factor", 1.0)
+        mrope_section = rope_params.get("mrope_section", [11, 11, 10])
+        dim = int(self.head_dim * partial_rotary_factor)
+        inv_freq = 1.0 / (rope_theta**(torch.arange(0, dim, 2, dtype=torch.float32) / dim)
+                          )  # shape: (dim//2,)
         position_ids = torch.arange(self.seq_length, dtype=torch.long).reshape(
             1, 1, self.seq_length).expand(3, 1, self.seq_length)
-        x = torch.zeros([1, self.seq_length, self.hidden_size], dtype=torch.float32)
-        cos, sin = rotary_embed(x, position_ids)
-        cos = cos[0].reshape(self.seq_length, 1, -1)
-        sin = sin[0].reshape(self.seq_length, 1, -1)
+        # inv_freq_expanded: (3, 1, dim//2, 1)
+        inv_freq_expanded = inv_freq[None, None, :, None].float().expand(3, 1, -1, 1)
+        # position_ids_expanded: (3, 1, 1, seq_length)
+        position_ids_expanded = position_ids[:, :, None, :].float()
+        # freqs: (3, 1, seq_length, dim//2)
+        freqs = (inv_freq_expanded @ position_ids_expanded).transpose(2, 3)
+        # apply interleaved mrope inline -> (1, seq_length, dim//2)
+        freqs_t = freqs[0].clone()
+        for d, offset in enumerate((1, 2), start=1):
+            length = mrope_section[d] * 3
+            idx = slice(offset, length, 3)
+            freqs_t[..., idx] = freqs[d, ..., idx]
+        freqs = freqs_t
+        # emb: (1, seq_length, dim)
+        emb = torch.cat((freqs, freqs), dim=-1)
+        cos = emb.cos()[0].reshape(self.seq_length, 1, -1)
+        sin = emb.sin()[0].reshape(self.seq_length, 1, -1)
         end_dim = cos.shape[-1] // 2
-        # half
         cos = cos[:, :, :end_dim]
         sin = sin[:, :, :end_dim]
-        return cos.numpy(), sin.numpy()  #[seq, 1, 64]
+        return cos.numpy(), sin.numpy()  #[seq, 1, dim//2]
 
     def apply_interleaved_mrope(self, freqs):
         """Apply interleaved MRoPE to 3D rotary embeddings.
@@ -207,10 +224,12 @@ class Qwen3_5Converter(LlmConverter):
         return q_op, k_op
 
     def vision_rotary(self):
-        from transformers.models.qwen2_vl.modeling_qwen2_vl import VisionRotaryEmbedding
         head_dim = self.vconfig.hidden_size // self.vnum_heads
-        rotary_embed = VisionRotaryEmbedding(head_dim // 2)
-        freqs = rotary_embed(self.num_patches)
+        dim = head_dim // 2
+        theta = getattr(self.vconfig, "rope_theta", 10000.0)
+        inv_freq = 1.0 / (theta**(torch.arange(0, dim, 2, dtype=torch.float32) / dim))
+        position_ids = torch.arange(self.num_patches, dtype=torch.float32)
+        freqs = (position_ids.unsqueeze(-1) * inv_freq).flatten(1)
         return freqs.cos().numpy(), freqs.sin().numpy()
 
     def gen_vit_mlir(self):

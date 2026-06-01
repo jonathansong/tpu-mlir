@@ -1,0 +1,43 @@
+{
+  "version": "v1.26.beta.0-129-g403630b88-20260531",
+  "files": {
+    "tpuc_opt": {
+      "path": "../../../../install/bin/tpuc-opt",
+      "last_modify": 1780164663.6224358
+    },
+    "bmodel": {
+      "path": "../block_cache_10.bmodel",
+      "last_modify": 1780169442.801908
+    },
+    "tensor_location": {
+      "path": "../block_cache_10.bmodel.json",
+      "last_modify": 1780169470.0119064
+    },
+    "final_mlir": {
+      "path": "../block_cache_10_bm1684x_w4bf16_final.mlir",
+      "last_modify": 1780169382.477913
+    },
+    "tpu_mlir": {
+      "path": "../block_cache_10_bm1684x_w4bf16_tpu.mlir",
+      "last_modify": 1780169341.7619174
+    },
+    "context_dir": {
+      "path": ".",
+      "last_modify": 1780169470.029369
+    },
+    "layer_group_cache": {
+      "path": "../block_cache_10_bm1684x_w4bf16.layer_group_cache.json",
+      "last_modify": 1780169341.8321037
+    }
+  },
+  "properties": {
+    "prefix": "block_cache_10_bm1684x_w4bf16",
+    "chip": "bm1684x",
+    "compare_all": false
+  },
+  "commands": {
+    "deploy_cmd": "/workspace/tpu-mlir/python/tools/model_deploy.py --mlir block_cache_10.mlir --quantize w4bf16 --q_group_size 128 --quant_input --quant_output --chip bm1684x --addr_mode io_alone --num_core 1 --num_device 1 --model block_cache_10.bmodel --high_precision --same_addr 0:0,1:1 --disable_gdma_check",
+    "final": "tpuc-opt block_cache_10_bm1684x_w4bf16_tpu.mlir --mlir-disable-threading --strip-io-quant=\"quant_input=True quant_output=True quant_input_list= quant_output_list= quant_output_bf16=False quant_input_int8=False quant_output_int8=False \" --processor-tpu-optimize --dev-parallel --weight-reorder  --subnet-divide=\"dynamic=False\" --op-reorder --topo-sort --layer-group=\"opt=2 group_by_cores=auto compress_mode=none debugger=0 disable_group_overlap=false lgcache=true config_filename= enable_lghash=False lghash_dir=\" --affine-opt  --core-parallel  --after-layergroup-weight-reorder  --address-assign=\"same_addr=0:0,1:1\" -o block_cache_10_bm1684x_w4bf16_final.mlir --debug_cmd=",
+    "bmodel": "tpuc-opt block_cache_10_bm1684x_w4bf16_final.mlir --codegen=\"model_file=block_cache_10.bmodel embed_debug_info=False model_version=latest bmodel_only=False gdma_check=False rvti=False\" -o /dev/null"
+  }
+}

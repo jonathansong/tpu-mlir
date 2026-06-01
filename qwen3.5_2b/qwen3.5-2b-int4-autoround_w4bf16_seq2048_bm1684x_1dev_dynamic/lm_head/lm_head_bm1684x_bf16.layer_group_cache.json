@@ -1,0 +1,86 @@
+{
+  "opt": 2,
+  "total subfunc": 2,
+  "subfunc_0": {
+    "subfunc idx": 0,
+    "GroupLayer": [],
+    "GlobalLayer": [
+      {
+        "func_idx": 0,
+        "group_cost": 25073590,
+        "index": 0,
+        "loc": "lm_head"
+      },
+      {
+        "func_idx": 1,
+        "group_cost": 0,
+        "index": 1,
+        "loc": "lm_head.reshape"
+      },
+      {
+        "func_idx": 2,
+        "group_cost": 31134,
+        "index": 2,
+        "loc": "lm_head.reshapetoken_value_f32"
+      },
+      {
+        "func_idx": 3,
+        "group_cost": 0,
+        "index": 3,
+        "loc": "func.return"
+      }
+    ],
+    "CyclePrefixSum": [
+      {
+        "cycle_prefix_sum": 25073590,
+        "index": 0,
+        "prefix_end_idx": 0
+      },
+      {
+        "cycle_prefix_sum": 25073590,
+        "index": 1,
+        "prefix_end_idx": 1
+      },
+      {
+        "cycle_prefix_sum": 25104724,
+        "index": 2,
+        "prefix_end_idx": 2
+      },
+      {
+        "cycle_prefix_sum": 25104724,
+        "index": 3,
+        "prefix_end_idx": 3
+      }
+    ]
+  },
+  "subfunc_1": {
+    "subfunc idx": 1,
+    "GroupLayer": [],
+    "GlobalLayer": [
+      {
+        "index": 0,
+        "func_idx": 0,
+        "group_cost": 0,
+        "loc": "token_value"
+      },
+      {
+        "index": 1,
+        "func_idx": 1,
+        "group_cost": 0,
+        "loc": "func.return"
+      }
+    ],
+    "CyclePrefixSum": [
+      {
+        "index": 0,
+        "prefix_end_idx": 0,
+        "cycle_prefix_sum": 0
+      },
+      {
+        "index": 1,
+        "prefix_end_idx": 1,
+        "cycle_prefix_sum": 0
+      }
+    ]
+  }
+}

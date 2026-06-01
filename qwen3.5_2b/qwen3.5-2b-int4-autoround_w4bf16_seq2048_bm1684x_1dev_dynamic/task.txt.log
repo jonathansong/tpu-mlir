@@ -1,0 +1,5 @@
+Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
+1	:	1780170660.125	   504.795	0	0	0	0	(pushd vit &&  model_deploy.py --mlir vit.mlir --chip bm1684x --num_core 1 --num_device 1 --model vit.bmodel --addr_mode basic --quantize bf16 --quant_output --high_precision --dynamic --disable_gdma_check && popd ) > vit.log
+4	:	1780170660.132	  1301.605	0	0	0	0	(pushd lm_head &&  model_deploy.py --mlir lm_head.mlir --quantize bf16 --quant_input --chip bm1684x --num_core 1 --num_device 1 --addr_mode basic --model lm_head.bmodel && popd ) > lm_head.log
+2	:	1780170660.127	  1586.993	0	0	0	0	(pushd embedding &&  model_deploy.py --mlir embedding.mlir --quantize bf16 --quant_input --quant_output --chip bm1684x --num_core 1 --num_device 1 --model embedding.bmodel --addr_mode basic --disable_gdma_check && popd ) > embedding.log
+3	:	1780170660.129	  1587.134	0	0	0	0	(pushd embedding_cache &&  model_deploy.py --mlir embedding_cache.mlir --quantize bf16 --quant_input --quant_output --chip bm1684x --num_core 1 --num_device 1 --model embedding_cache.bmodel --addr_mode basic --disable_gdma_check && popd ) > embedding_cache.log

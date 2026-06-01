@@ -1,0 +1,36 @@
+#loc = loc(unknown)
+#loc1 = loc("hidden_states")
+#loc5 = loc("lm_head.reshapetoken_value_f32")
+module @lm_head attributes {module.FLOPs = 1017118720 : i64, module.addr_mode = "basic", module.asymmetric = false, module.chip = "bm1684x", module.cores = 1 : i64, module.devices = 1 : i64, module.high_precision = false, module.inputs = ["hidden_states"], module.mode = "BF16", module.outputs = ["token_id"], module.platform = "LLM_QUANTIZED", module.q_group_size = 0 : i64, module.q_symmetric = false, module.state = "TPU_ADDRESSED", module.top_run_mode = "STATIC", module.weight_file = "lm_head_tpu_addressed_bm1684x_bf16_weight.npz"} {
+  module @lm_head attributes {module.coeff_addr = 4294967296 : i64, module.coeff_size = 1017118720 : i64, module.device_id = 0 : i64, module.dynamic_coeff_offset = 1017118720 : i64, module.neuron_addr = 5312086016 : i64, module.neuron_size = 2998272 : i64, module.step = 0 : i64} {
+    func.func @main(%arg0: tensor<1x2048xf32> loc(unknown)) -> tensor<1x1xi32, 5315076096 : i64> {
+      %0 = "top.Input"(%arg0) {do_preprocess = false} : (tensor<1x2048xf32>) -> tensor<1x2048xbf16, 5312086016 : i64> loc(#loc1)
+      %1 = call @subfunc_0(%0) : (tensor<1x2048xbf16, 5312086016 : i64>) -> tensor<1x248320xf32, 5313085440 : i64> loc(#loc)
+      %2 = call @subfunc_1(%1) : (tensor<1x248320xf32, 5313085440 : i64>) -> tensor<1x1xi32, 5315076096 : i64> loc(#loc)
+      return %2 : tensor<1x1xi32, 5315076096 : i64> loc(#loc)
+    } loc(#loc)
+    func.func @subfunc_0(%arg0: tensor<1x2048xbf16, 5312086016 : i64> loc("hidden_states")) -> tensor<1x248320xf32, 5313085440 : i64> attributes {id = 0 : i64, mode = #tpu<run_mode TPU_STATIC>, next_index = array<i32: 1>} {
+      %0 = "top.None"() : () -> none loc(#loc)
+      %1 = "top.Weight"() {path = "tpu.MatMul.input"} : () -> tensor<248320x2048xbf16, 4294967296 : i64> loc(#loc2)
+      %2 = "tpu.MatMul"(%1, %arg0, %0, %0, %0) {do_relu = false, dq_type = "NONE", fuse_rq = false, hdim_is_batch = false, input_zp = 0 : i64, is_lora = false, keep_dims = true, left_reuse = 0 : i64, left_transpose = false, multipliers = [1], output_transpose = false, q_group_size = 0 : i64, quant_mode = #tpu<rq_mode MultiplierShift>, relu_limit = -1.000000e+00 : f64, right_transpose = true, right_zp = 0 : i64, round_mode = #tpu<round_mode HalfAwayFromZero>, rshifts = [0]} : (tensor<248320x2048xbf16, 4294967296 : i64>, tensor<1x2048xbf16, 5312086016 : i64>, none, none, none) -> tensor<248320x1xbf16, 5312090112 : i64> loc(#loc3)
+      %3 = "tpu.Reshape"(%2) {flatten_start_dim = -1 : i64, shape = []} : (tensor<248320x1xbf16, 5312090112 : i64>) -> tensor<1x248320xbf16, 5312090112 : i64> loc(#loc4)
+      %4 = "tpu.Cast"(%3) {round_mode = #tpu<round_mode HalfAwayFromZero>, with_scale = true} : (tensor<1x248320xbf16, 5312090112 : i64>) -> tensor<1x248320xf32, 5313085440 : i64> loc(#loc5)
+      return %4 : tensor<1x248320xf32, 5313085440 : i64> loc(#loc)
+    } loc(#loc)
+    func.func @subfunc_1(%arg0: tensor<1x248320xf32, 5313085440 : i64> loc("lm_head.reshapetoken_value_f32")) -> tensor<1x1xi32, 5315076096 : i64> attributes {id = 1 : i64, mode = #tpu<run_mode TPU_DYNAMIC>, next_index = array<i32: -1>} {
+      %0 = "tpu.Buffer"() {buffer_type = #tpu<buffer_type GMEM>} : () -> tensor<248320xf32, 5312090112 : i64> loc(#loc6)
+      %1 = "tpu.Buffer"() {buffer_type = #tpu<buffer_type GMEM>} : () -> tensor<248320xi32, 5314080768 : i64> loc(#loc7)
+      %values, %indices = "tpu.TopK"(%arg0, %0, %1) {K = 1 : i64, axis = 1 : i64, largest = true, replace_topk_indices = false, sorted = true, values_used_only = false} : (tensor<1x248320xf32, 5313085440 : i64>, tensor<248320xf32, 5312090112 : i64>, tensor<248320xi32, 5314080768 : i64>) -> (tensor<1x1xf32, 5315080192 : i64>, tensor<1x1xi32, 5315076096 : i64>) loc(#loc10)
+      return %indices : tensor<1x1xi32, 5315076096 : i64> loc(#loc)
+    } loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc2 = loc("lm_head.weight_bf16")
+#loc3 = loc("lm_head")
+#loc4 = loc("lm_head.reshape")
+#loc6 = loc("token_value_buffer_val")
+#loc7 = loc("token_value_buffer_idx")
+#loc8 = loc("token_value")
+#loc9 = loc("token_id")
+#loc10 = loc(fused[#loc8, #loc9])
+
