@@ -493,6 +493,16 @@ def Tpu_KVCacheFormat : I32EnumAttr<"KVCacheFormat",
 }
 def Tpu_KVCacheFormatAttr : EnumAttr<Tpu_Dialect, Tpu_KVCacheFormat, "kv_format">;
 
+def Tpu_KVCacheMode : I32EnumAttr<"KVCacheMode",
+    "ADA300 KV-cache addressing mode", [
+      I32EnumAttrCase<"paged", 0>,
+      I32EnumAttrCase<"contiguous", 1>,
+    ]> {
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::tpu_mlir::tpu";
+}
+def Tpu_KVCacheModeAttr : EnumAttr<Tpu_Dialect, Tpu_KVCacheMode, "kv_cache_mode">;
+
 def Tpu_WeightFormat : I32EnumAttr<"WeightFormat",
     "ADA300 low-bit weight packing format", [
       I32EnumAttrCase<"Q4_0", 0>,
@@ -2888,39 +2898,15 @@ def Tpu_EmbDenseBwdOp : Tpu_Op<"EmbDenseBwd"> {
 }
 
 def Tpu_FAttentionOp : Tpu_Op<"FAttention", [
+    AttrSizedOperandSegments,
     DeclareOpInterfaceMethods<TypeInterface>]> {
   let summary = "Flash Attention operator";
 
   let description = [{
-    1.Op Introduction
-    Performs a two dimensional matrix multiplication. This allows both inputs to
-    be activations, rather than reserving weights as an attribute in the
-    FULLY_CONNECTED operator.
-
-    2.Math formula
-    ```math
-        Attention(Q, K, V) = softmax(((Q x K^T) / \sqrt{d_k}) + musk) x V;
-        head_i = Attention(Q x queries_weight, K x keys_weight, V x values_weight);
-        MultiHead(Q, K, V) = Concat(head_1, head_2, ..., head_h) x out_weight + out_bias;
-        output = MultiHead(input x queries_weight + queries_bias, input x keys_weight + keys_bias, input x values_weight + values_bias).
-    ```
-
-    3.activation and weight
-    queries(act.): input tensor.;
-    keys(act.): The keys are derived from the input data and help the model determine which parts of the input are relevant for each query.;
-    values(act.): The values are the actual information that will be aggregated based on the attention scores computed from the queries and keys.;
-    mask(w.): apply masking during the attention computation, Masks can prevent the model from attending to certain positions in the input.;;
-    buffer(w.): temporary storage of intermediate results or states during computation.;
-
-    4.attributes
-    scale: scalar.;
-    batch: batch size.;
-    q_head: the number of query heads in the multi-head attention mechanism.;
-    kv_head: the number of key/value heads.;
-    dim: the size of the input features or the size of the query, key, and value vectors.;
-    mq: a dimension or a modifier related to the query matrix.;
-    mk: the key matrix.;
-    multicore: whether op supports multicore execution.;
+    Flash attention for Ada300 LLM inference. The operand and attribute contract
+    is aligned with rxops_flash_attention: q, k_new, v_new, paged cache K/V,
+    block table, seq_lens, optional mask, and output. The rx-ops backend updates
+    seq_lens and writes K/V into cache as part of execution.
   }];
 
   let arguments = (ins
@@ -2929,6 +2915,10 @@ def Tpu_FAttentionOp : Tpu_Op<"FAttention", [
     AnyTensor:$values,
     AnyTensorOrNone:$mask,
     AnyTensorOrNone:$buffer,
+    Optional<AnyTensorOrNone>:$cache_k,
+    Optional<AnyTensorOrNone>:$cache_v,
+    Optional<AnyTensorOrNone>:$block_table,
+    Optional<AnyTensorOrNone>:$seq_lens,
     F64Attr:$scale,
     I64Attr:$batch,
     I64Attr:$q_head,
@@ -2939,10 +2929,43 @@ def Tpu_FAttentionOp : Tpu_Op<"FAttention", [
     DefaultValuedAttr<BoolAttr, "true">:$keep_dims,
     OptionalAttr<BoolAttr>:$multicore,
     DefaultValuedAttr<BoolAttr, "true">:$causal,
-    OptionalAttr<Tpu_PhaseAttr>:$phase
+    OptionalAttr<Tpu_PhaseAttr>:$phase,
+    DefaultValuedAttr<I64Attr, "0">:$block_size,
+    DefaultValuedAttr<I64Attr, "0">:$max_blocks_per_seq,
+    DefaultValuedAttr<BoolAttr, "false">:$has_mask,
+    DefaultValuedAttr<Tpu_KVCacheModeAttr, "tpu::KVCacheMode::paged">:$kv_cache_mode
   );
 
   let results = (outs AnyTensor:$output);
+}
+
+def Tpu_KVCacheUpdateOp : Tpu_Op<"KVCacheUpdate",
+    [DeclareOpInterfaceMethods<TypeInterface>]> {
+  let summary = "Paged KV-cache update operator";
+  let description = [{
+    Updates paged KV cache tensors for Ada300 LLM decode. This op mirrors the
+    cache-write portion of rxops_flash_attention and can be fused with
+    FAttention during TpuToRxOps lowering.
+  }];
+  let arguments = (ins
+    AnyTensor:$cache_k,
+    AnyTensor:$cache_v,
+    AnyTensor:$key,
+    AnyTensor:$value,
+    AnyTensor:$block_table,
+    AnyTensor:$seq_lens,
+    Tpu_KVCacheFormatAttr:$kv_format,
+    DefaultValuedAttr<Tpu_KVCacheModeAttr, "tpu::KVCacheMode::paged">:$mode,
+    DefaultValuedAttr<I64Attr, "0">:$block_size,
+    DefaultValuedAttr<I64Attr, "0">:$max_blocks_per_seq,
+    DefaultValuedAttr<I64Attr, "0">:$axis,
+    OptionalAttr<BoolAttr>:$multicore
+  );
+  let results = (outs
+    AnyTensor:$updated_cache_k,
+    AnyTensor:$updated_cache_v,
+    AnyTensor:$updated_seq_lens
+  );
 }
 
 def Tpu_FusedActiveCastOp : Tpu_Op<"FusedActiveCast", [
@@ -6382,6 +6405,8 @@ def Tpu_RMSNormOp : Tpu_Op<"RMSNorm", [
     AnyTensor:$input,
     AnyTensorOrNone:$gamma,
     F64Attr:$eps,
+    DefaultValuedAttr<I64Attr, "-1">:$axis,
+    DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$accumulate_dtype,
     DefaultValuedAttr<BoolAttr, "false">:$weight_keep_f32,
     OptionalAttr<BoolAttr>:$multicore,
     OptionalAttr<BoolAttr>:$do_core_parallel
@@ -6506,6 +6531,7 @@ def Tpu_RoiExtractorOp : Tpu_Op<"RoiExtractor", [
 }
 
 def Tpu_RopeOp : Tpu_Op<"Rope", [
+    AttrSizedOperandSegments,
     SupportElementwise,
     DeclareOpInterfaceMethods<LocalGenInterface, ["codegen_local_bm1684x_kernel", "DumpAttrs"]>,
     DeclareOpInterfaceMethods<DynLocalGenInterface>]> {
@@ -6548,7 +6574,15 @@ def Tpu_RopeOp : Tpu_Op<"Rope", [
   let arguments = (ins AnyRankedTensor:$input1,
     AnyRankedTensor:$input2,
     AnyRankedTensor:$input3,
+    Optional<AnyTensorOrNone>:$pos,
+    Optional<AnyTensorOrNone>:$rope_cache,
     DefaultValuedAttr<Tpu_RopeModeAttr, "tpu::RopeMode::interleaved_pairs">:$rope_mode,
+    DefaultValuedAttr<F64Attr, "10000.0">:$freq_base,
+    DefaultValuedAttr<F64Attr, "1.0">:$freq_scale,
+    DefaultValuedAttr<F64Attr, "0.0">:$xpos_base,
+    DefaultValuedAttr<SI32Attr, "0">:$xpos_down,
+    DefaultValuedAttr<SI32Attr, "0">:$n_dims,
+    DefaultValuedAttr<BoolAttr, "false">:$use_rope_cache,
     DefaultValuedAttr<BoolAttr, "false">:$is_permute_optimize,
     DefaultValuedAttr<Tpu_RoundModeAttr, "tpu::RoundMode::HalfAwayFromZero">:$mul1_round_mode,
     DefaultValuedAttr<Tpu_RoundModeAttr, "tpu::RoundMode::HalfAwayFromZero">:$mul2_round_mode,

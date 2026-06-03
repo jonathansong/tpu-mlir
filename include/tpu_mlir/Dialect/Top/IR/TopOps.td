@@ -171,6 +171,7 @@ def DqTypeAttr : AnyStrAttrOf<["NONE", "F16", "BF16", "INT8", "INT4", "F8E4M3", 
 def PhaseAttr : AnyStrAttrOf<["prefill", "decode"]>;
 def QuantSchemeAttr : AnyStrAttrOf<["W4A8", "W4A8KV4", "W8A8", "A16W8", "W4A16", "W8A16"]>;
 def WeightFormatAttr : AnyStrAttrOf<["Q4_0", "Q4_1", "Q8_0", "Q8_1", "Q4_K", "Q6_K", "Q2_K", "Q3_K", "Q5_K", "Q8_K"]>;
+def KVCacheModeAttr : AnyStrAttrOf<["paged", "contiguous"]>;
 
 //===----------------------------------------------------------------------===//
 // TOP Types.
@@ -2270,13 +2271,15 @@ def Top_ExpOp : Top_Op<"Exp"> {
   let results = (outs AnyTensor:$output);
 }
 
-def Top_FAttentionOp : Top_Op<"FAttention"> {
+def Top_FAttentionOp : Top_Op<"FAttention", [AttrSizedOperandSegments]> {
   let summary = "Flash Attention operator";
 
   let description = [{
-    Performs a two dimensional matrix multiplication. This allows both inputs to
-    be activations, rather than reserving weights as an attribute in the
-    FULLY_CONNECTED operator.
+    Flash attention for LLM inference. For Ada300 lowering this op matches the
+    rx-ops flash_attention contract: projected Q/K/V tensors plus optional
+    paged KV-cache tensors. When cache_k/cache_v/block_table/seq_lens are
+    present, the Ada300 rx-ops backend writes k_new/v_new into the paged cache,
+    computes online-softmax attention, and updates seq_lens.
   }];
 
   let arguments = (ins
@@ -2285,6 +2288,10 @@ def Top_FAttentionOp : Top_Op<"FAttention"> {
     AnyTensor:$values,
     AnyTensorOrNone:$mask,
     AnyTensorOrNone:$buffer,
+    Optional<AnyTensorOrNone>:$cache_k,
+    Optional<AnyTensorOrNone>:$cache_v,
+    Optional<AnyTensorOrNone>:$block_table,
+    Optional<AnyTensorOrNone>:$seq_lens,
     F64Attr:$scale,
     I64Attr:$batch,
     I64Attr:$q_head,
@@ -2294,7 +2301,11 @@ def Top_FAttentionOp : Top_Op<"FAttention"> {
     I64Attr:$mk,
     DefaultValuedAttr<BoolAttr, "true">:$keep_dims,
     DefaultValuedAttr<BoolAttr, "true">:$causal,
-    OptionalAttr<PhaseAttr>:$phase
+    OptionalAttr<PhaseAttr>:$phase,
+    DefaultValuedAttr<I64Attr, "0">:$block_size,
+    DefaultValuedAttr<I64Attr, "0">:$max_blocks_per_seq,
+    DefaultValuedAttr<BoolAttr, "false">:$has_mask,
+    DefaultValuedAttr<KVCacheModeAttr, "\"paged\"">:$kv_cache_mode
   );
 
   let results = (outs AnyTensor:$output);
@@ -2918,6 +2929,35 @@ def Top_KVCacheStoreOp : Top_BaseOp<"KVCacheStore", [MemoryEffects<[MemWrite]>]>
     KVCacheFormatAttr:$kv_format,
     DefaultValuedAttr<I64Attr, "64">:$group_size,
     OptionalAttr<StrAttr>:$resource_id
+  );
+}
+
+def Top_KVCacheUpdateOp : Top_BaseOp<"KVCacheUpdate",
+    [MemoryEffects<[MemRead, MemWrite]>]> {
+  let summary = "Paged KV-cache update operator";
+  let description = [{
+    Updates a persistent KV-cache with current-token key/value tensors. This op
+    exists to preserve explicit cache semantics in TOP IR; Ada300 lowering may
+    fuse it with FAttention and emit one rxops_flash_attention call.
+  }];
+  let arguments = (ins
+    AnyTensor:$cache_k,
+    AnyTensor:$cache_v,
+    AnyTensor:$key,
+    AnyTensor:$value,
+    AnyTensor:$block_table,
+    AnyTensor:$seq_lens,
+    KVCacheFormatAttr:$kv_format,
+    DefaultValuedAttr<KVCacheModeAttr, "\"paged\"">:$mode,
+    DefaultValuedAttr<I64Attr, "0">:$block_size,
+    DefaultValuedAttr<I64Attr, "0">:$max_blocks_per_seq,
+    DefaultValuedAttr<I64Attr, "0">:$axis,
+    OptionalAttr<StrAttr>:$resource_id
+  );
+  let results = (outs
+    AnyTensor:$updated_cache_k,
+    AnyTensor:$updated_cache_v,
+    AnyTensor:$updated_seq_lens
   );
 }
 
@@ -5180,6 +5220,8 @@ def Top_RMSNormOp : Top_Op<"RMSNorm"> {
     AnyTensor:$input,
     AnyTensorOrNone:$gamma,
     F64Attr:$eps,
+    DefaultValuedAttr<I64Attr, "-1">:$axis,
+    DefaultValuedAttr<DqTypeAttr, "\"NONE\"">:$accumulate_dtype,
     DefaultValuedAttr<BoolAttr, "false">:$weight_keep_f32
   );
 
@@ -5413,7 +5455,7 @@ def Top_ScaleDotProductAttentionOp : Top_Op<"ScaleDotProductAttention"> {
   let hasCanonicalizer = 1;
 }
 
-def Top_RopeOp : Top_Op<"Rope"> {
+def Top_RopeOp : Top_Op<"Rope", [AttrSizedOperandSegments]> {
   let summary = "Rope operator";
 
   let description = [{
@@ -5452,7 +5494,15 @@ def Top_RopeOp : Top_Op<"Rope"> {
     AnyTensor:$input1,
     AnyTensor:$input2,
     AnyTensor:$input3,
+    Optional<AnyTensorOrNone>:$pos,
+    Optional<AnyTensorOrNone>:$rope_cache,
     DefaultValuedAttr<RopeModeAttr, "\"interleaved_pairs\"">:$rope_mode,
+    DefaultValuedAttr<F64Attr, "10000.0">:$freq_base,
+    DefaultValuedAttr<F64Attr, "1.0">:$freq_scale,
+    DefaultValuedAttr<F64Attr, "0.0">:$xpos_base,
+    DefaultValuedAttr<SI32Attr, "0">:$xpos_down,
+    DefaultValuedAttr<SI32Attr, "0">:$n_dims,
+    DefaultValuedAttr<BoolAttr, "false">:$use_rope_cache,
     DefaultValuedAttr<BoolAttr, "false">:$is_permute_optimize,
     DefaultValuedAttr<RoundModeAttr, "\"HalfAwayFromZero\"">:$mul1_round_mode,
     DefaultValuedAttr<RoundModeAttr, "\"HalfAwayFromZero\"">:$mul2_round_mode,
