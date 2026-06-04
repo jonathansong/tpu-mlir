@@ -20,6 +20,7 @@ class BMAddressAssign {
 public:
   BMAddressAssign() {}
   void assign(ModuleOp &module, bool reuse_addr, std::string same_addr);
+  bool hasFailure() const { return failed_; }
   static bool isInPlaceOp(Operation *op);
 
 protected:
@@ -49,6 +50,7 @@ protected:
 
 protected:
   StringRef chip;
+  bool failed_ = false;
 };
 
 } // namespace tpu

@@ -23,7 +23,11 @@ public:
     auto mOp = getOperation();
     auto chip_ = StringRef(chip).lower();
     auto chip = module::symbolizeChip(chip_);
-    assert(chip.has_value());
+    if (!chip.has_value()) {
+      mOp.emitError("unsupported chip: ") << chip_;
+      signalPassFailure();
+      return;
+    }
     module::setChip(chip.value());
     if (!(module::isBM1684XFamily() || module::isBM1690Family())) {
       // only one device
@@ -37,7 +41,11 @@ public:
     }
     auto mode_ = StringRef(mode).upper();
     auto quant_mode = module::symbolizeMode(mode_);
-    assert(quant_mode.has_value());
+    if (!quant_mode.has_value()) {
+      mOp.emitError("unsupported quantization mode: ") << mode_;
+      signalPassFailure();
+      return;
+    }
     module::setMode(quant_mode.value());
     assert(num_device > 0);
     module::setDeviceNum(num_device);

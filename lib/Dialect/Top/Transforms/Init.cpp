@@ -8,6 +8,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "tpu_mlir/Backend/Arch.h"
+#include "tpu_mlir/Backend/Device.h"
 #include "tpu_mlir/Dialect/Top/Transforms/Passes.h"
 
 using namespace llvm;
@@ -23,6 +24,7 @@ public:
     auto mOp = getOperation();
     module::init(mOp);
     backend::Arch::init(freq);
+    backend::attachDeviceAttrs(mOp);
     module::init_loglevel(this->level);
     module::setWeightInMemFlag(weight_in_mem);
   }

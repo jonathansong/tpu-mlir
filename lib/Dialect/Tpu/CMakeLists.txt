@@ -22,6 +22,7 @@ file(GLOB _sources
           Transforms/CoreParallel/*.cpp
           Transforms/OptPostProcessor/*.cpp
 )
+list(APPEND _sources Interfaces/Common/KVCacheUpdate.cpp)
 
 add_llvm_library(TPUMLIRTpu
   ${_sources}

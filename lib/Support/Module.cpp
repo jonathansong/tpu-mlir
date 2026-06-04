@@ -16,6 +16,7 @@ namespace module {
 struct Attr {
   static constexpr llvm::StringRef STATE = "module.state";
   static constexpr llvm::StringRef CHIP = "module.chip";
+  static constexpr llvm::StringRef TARGET = "tpu.target";
   static constexpr llvm::StringRef WEIGHT_FILE = "module.weight_file";
   static constexpr llvm::StringRef FLOPS = "module.FLOPs";
   static constexpr llvm::StringRef CORES = "module.cores";
@@ -62,6 +63,10 @@ void init(ModuleOp module) {
   ctx = m.getContext();
   auto chip_ = m->getAttrOfType<StringAttr>(Attr::CHIP);
   chip = symbolizeChip(chip_).value_or(Chip::ALL);
+  if (!m->hasAttrOfType<StringAttr>(Attr::TARGET) && chip != Chip::ALL) {
+    m->setAttr(Attr::TARGET,
+               StringAttr::get(ctx, toLower(stringifyChip(chip))));
+  }
   wFile = nullptr;
   if (m->hasAttrOfType<StringAttr>(Attr::PLATFORM)) {
     auto p = m->getAttrOfType<StringAttr>(Attr::PLATFORM);
@@ -1224,6 +1229,21 @@ Chip getChip() { return chip; }
 
 StringRef getChipStr() { return stringifyChip(chip); }
 
+StringRef getTarget() {
+  if (m && m->hasAttrOfType<StringAttr>(Attr::TARGET)) {
+    return m->getAttrOfType<StringAttr>(Attr::TARGET).strref();
+  }
+  return getChipStr();
+}
+
+void setTarget(StringRef target) {
+  m->setAttr(Attr::TARGET, StringAttr::get(ctx, target));
+}
+
+bool isTarget(StringRef target) {
+  return getTarget().equals_insensitive(target);
+}
+
 Mode getMode() {
   if (false == m->hasAttrOfType<StringAttr>(Attr::MODE)) {
     return Mode::F32;
@@ -1273,6 +1293,7 @@ void setChip(Chip chip_) {
   chip = chip_;
   auto s = stringifyChip(chip_);
   m->setAttr(Attr::CHIP, StringAttr::get(m.getContext(), s));
+  setTarget(toLower(s));
 }
 
 bool isChip(Chip chip_) { return chip == chip_; }

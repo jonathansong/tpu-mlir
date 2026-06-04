@@ -4,6 +4,7 @@ file(GLOB _sources
      BM168x/*.cpp
      CV18xx/*.cpp
      CV18xx/Kernel/*.cpp)
+list(APPEND _sources Device.cpp)
 
 add_llvm_library(TPUMLIRBackend
   ${_sources}

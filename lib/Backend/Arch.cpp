@@ -46,7 +46,16 @@ void Arch::init(uint64_t freq) {
     return;
   } else {
     Arch::FREQ = freq;
-    if (chip == module::Chip::BM1684) {
+    if (chip == module::Chip::Ada300) {
+      Arch::NPU_NUM = 1;
+      Arch::EU_BYTES = 64;
+      Arch::LMEM_BANKS = 5;
+      Arch::LMEM_BANK_BYTES = 256 * 1024;
+      Arch::LMEM_BYTES = Arch::LMEM_BANKS * Arch::LMEM_BANK_BYTES;
+      Arch::DMA_ALGN_BYTES = 64;
+      Arch::ALIGN_4N = false;
+      return;
+    } else if (chip == module::Chip::BM1684) {
       inst = &BM1684::instance();
     } else if (chip == module::Chip::BM1684X) {
       inst = &BM1684X::instance();

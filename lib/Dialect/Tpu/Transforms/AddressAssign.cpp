@@ -9,8 +9,11 @@
 #include "AddressAssign/BMAddressAssign.h"
 #include "AddressAssign/CVAddressAssign.h"
 #include "mlir/Transforms/GreedyPatternRewriteDriver.h"
+#include "tpu_mlir/Backend/Device.h"
 #include "tpu_mlir/Dialect/Tpu/Transforms/Passes.h"
+#include "tpu_mlir/Support/MathUtils.h"
 #include "tpu_mlir/Support/OpRewriterPatternEx.h"
+#include "llvm/ADT/SmallPtrSet.h"
 
 using namespace llvm;
 
@@ -18,6 +21,62 @@ namespace tpu_mlir {
 namespace tpu {
 
 extern void populateGlobalBufferBM168xPatterns(RewritePatternSet *patterns);
+
+static LogicalResult assignAda300Flat(ModuleOp &m) {
+  const auto &device = backend::getDevice(m);
+  const int64_t alignment = device.getAlignmentBytes();
+
+  int64_t weightStart = device.getWeightStartAddr();
+  int64_t weightAddr = weightStart;
+  m.walk([&](top::WeightOp op) {
+    auto out = op.getOutput();
+    module::setAddress(out, weightAddr);
+    weightAddr = align_up(weightAddr + module::getBytes(out), alignment);
+  });
+  module::setCoeffAddr(m, weightStart);
+  module::setCoeffSize(m, weightAddr - weightStart);
+  if (device.getWeightMemoryBytes() > 0 &&
+      weightAddr - weightStart > device.getWeightMemoryBytes()) {
+    m.emitError("weight memory allocation exceeds target capacity");
+    return failure();
+  }
+
+  int64_t gmemStart = device.getGmemStartAddr();
+  int64_t gmemAddr = gmemStart;
+  llvm::SmallPtrSet<void *, 32> assigned;
+  auto assignValue = [&](Value v) {
+    if (!v || v.getType().isa<NoneType>() ||
+        assigned.contains(v.getAsOpaquePointer())) {
+      return;
+    }
+    module::setAddress(v, gmemAddr);
+    assigned.insert(v.getAsOpaquePointer());
+    gmemAddr = align_up(gmemAddr + module::getBytes(v), alignment);
+  };
+
+  for (auto func : m.getOps<FuncOp>()) {
+    for (auto arg : func.getArguments()) {
+      assignValue(arg);
+    }
+  }
+  m.walk([&](Operation *op) {
+    if (isa<top::WeightOp>(op)) {
+      return;
+    }
+    for (auto result : op->getResults()) {
+      assignValue(result);
+    }
+  });
+  module::setNeuronAddr(m, gmemStart);
+  module::setNeuronSize(m, gmemAddr - gmemStart);
+  if (device.getGmemBytes() > 0 &&
+      gmemAddr - gmemStart > device.getGmemBytes()) {
+    m.emitError("global memory allocation exceeds target capacity");
+    return failure();
+  }
+  module::updateModuleTypes();
+  return success();
+}
 
 class ConcatFusePattern : public OpRewriterPatternEx<tpu::ConcatOp> {
 public:
@@ -151,14 +210,21 @@ public:
     module::removeUnusedOp();
     auto modules = module::getAllModules();
     for (auto s : *modules) {
-      if (module::isCV18xx()) {
+      if (module::isChip(module::Chip::Ada300) || module::isTarget("ada300")) {
+        if (failed(assignAda300Flat(s))) {
+          signalPassFailure();
+          return;
+        }
+      } else if (module::isCV18xx()) {
         CVAddressAssign addr_assign;
         addr_assign.assign(s, reuse_addr, merge_weight, compress_weight,
                            weight_map_file, iomem_set);
       } else {
-        RewritePatternSet patterns(s.getContext());
-        populateGlobalBufferBM168xPatterns(&patterns);
-        applyPatternsAndFoldGreedily(s, std::move(patterns));
+        if (!module::isChip(module::Chip::Ada300)) {
+          RewritePatternSet patterns(s.getContext());
+          populateGlobalBufferBM168xPatterns(&patterns);
+          applyPatternsAndFoldGreedily(s, std::move(patterns));
+        }
         module::applyPatternOnce<ConcatMergePattern>(s);
         module::applyPatternOnce<ConcatFusePattern>(s);
         module::applyPatternOnce<ConcatSlicePattern>(s);
@@ -171,6 +237,10 @@ public:
         }
         BMAddressAssign addr_assign;
         addr_assign.assign(s, reuse_addr, same_addr);
+        if (addr_assign.hasFailure()) {
+          signalPassFailure();
+          return;
+        }
       }
     }
     module::setState(module::State::TPU_ADDRESSED);

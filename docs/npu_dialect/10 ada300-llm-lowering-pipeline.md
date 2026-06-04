@@ -938,6 +938,68 @@ test/Transforms/Tpu/Ada300MemoryAlloc.mlir
 Ada200 与 Ada300 均通过同一套 target-neutral memory API 工作。Ada300 的
 memory summary、layer group 约束和 allocator 使用同一个设备模型。
 
+
+#### 实现记录（2026-06-04）
+
+本次按 Ada300-only 目标完成 M0 主线收口，范围限定在 `top/tpu`
+dialect pipeline 的 target 与 memory model，不接入 bmodel codegen。
+
+已落地改动：
+
+1. `module::Chip` 增加 `ada300`，`--processor-assign="chip=ada300"`
+   可正常解析；未知 chip 改为 `emitError + signalPassFailure`，不再 assert。
+2. `module` helper 增加 `getTarget/setTarget/isTarget`，`setChip()` 同步写入
+   `tpu.target`；`--init` 调用 `backend::attachDeviceAttrs()` 写入：
+   - `tpu.target = "ada300"`
+   - `tpu.gmem_bytes = 512 MiB`
+   - `tpu.sram_bank_count = 5`
+   - `tpu.sram_bank_bytes = 256 KiB`
+   - `tpu.weight_memory_bytes = 256 MiB`
+3. 新增 `backend::Device` 与 `backend::getDevice(moduleOp)`，Ada300 设备模型
+   通过同一入口提供 GMEM、SRAM bank、weight memory、alignment 和 base addr。
+4. `backend::Arch::init()` 增加 Ada300 分支，只初始化静态参数，不加载 BM/CV
+   backend instance。
+5. `address-assign` 对 `ada300`/`tpu.target="ada300"` 走 Ada300 flat
+   allocator，跳过 BM global-buffer rewrite 与 BM live-range allocator。
+   当前 allocator 行为：
+   - weight 从 `weightStartAddr` 顺序分配；
+   - func block argument 与 op result 从 `gmemStartAddr` 顺序分配；
+   - 64-byte 对齐；
+   - 超过 `Device` 容量时显式报错；
+   - 不做 reuse、tiling、bank-aware placement。
+6. `tpu.KVCacheUpdate` 增加 Common interface stub，保证新增 TPU op 可链接；
+   实际 Ada300 rxops lowering/codegen 后续步骤实现。
+
+新增回归：
+
+```text
+test/Transforms/Tpu/Ada300Target.mlir
+test/Transforms/Tpu/Ada300MemoryAlloc.mlir
+```
+
+已验证命令：
+
+```bash
+ninja -C build tpuc-opt
+
+build/bin/tpuc-opt --processor-assign="chip=ada300 mode=F16" \
+  --init="freq=0 level=0" test/Transforms/Tpu/Ada300Target.mlir | \
+  FileCheck test/Transforms/Tpu/Ada300Target.mlir
+
+not build/bin/tpuc-opt --processor-assign="chip=unknown mode=F16" \
+  test/Transforms/Tpu/Ada300Target.mlir 2>&1 | \
+  FileCheck test/Transforms/Tpu/Ada300Target.mlir --check-prefix=UNKNOWN
+
+build/bin/tpuc-opt --init="freq=0 level=0" \
+  --address-assign="reuse_addr=false" \
+  test/Transforms/Tpu/Ada300MemoryAlloc.mlir | \
+  FileCheck test/Transforms/Tpu/Ada300MemoryAlloc.mlir
+```
+
+当前完成度：Ada300-only M0 已完成。legacy BM/CV address allocator 未重构成
+`assignGmemAddresses/assignSmemAddresses` 命名，但 Ada300 路径已经不依赖 BM/CV
+设备常量或 bmodel codegen。
+
 ### 19.2 Step 2：M1 FP16 MatMul + Add 最小闭环
 
 #### 目标

@@ -11,6 +11,7 @@
 #include "tpu_mlir/Backend/BM168x/BM1684X.h"
 #include "tpu_mlir/Backend/BM168x/SG2380.h"
 #include "tpu_mlir/Backend/CV18xx/CV184X.h"
+#include "tpu_mlir/Backend/Device.h"
 #include "tpu_mlir/Support/MathUtils.h"
 #include "tpu_mlir/Support/TPUNnvlcUtil.h"
 #include "llvm/Support/Debug.h"
@@ -414,7 +415,8 @@ void BMAddressAssign::assignL2SRAM(ModuleOp &m) {
   if (!module::isBM1690Family() || module::isBM1684X2()) {
     return;
   }
-  int64_t alignment = BM168x::ALIGNMENT;
+  const auto &device = backend::getDevice(m);
+  int64_t alignment = device.getAlignmentBytes();
   Builder builder(m.getContext());
   std::map<ValueInfo, TensorLive> liveRange;
   std::map<Operation *, uint32_t> ops_loc;
@@ -462,13 +464,13 @@ void BMAddressAssign::assignL2SRAM(ModuleOp &m) {
     }
     target_ops.emplace_back(info);
   }
-  int64_t l2memSize = BM168x::L2_SRAM_SIZE;
+  int64_t l2memSize = device.getSramBytes();
   auto core_num = module::getCoreNum();
   const int MAX_CORES = 8;
   l2memSize = (l2memSize / MAX_CORES) * core_num;
 
-  int64_t start_addr = BM168x::L2_SRAM_START_ADDR;
-  GmemAllocL2SRAM allocator(BM168x::ALIGNMENT, l2memSize);
+  int64_t start_addr = device.getSramStartAddr();
+  GmemAllocL2SRAM allocator(device.getAlignmentBytes(), l2memSize);
   int64_t l2memUsed =
       allocator.assignGaddr(target_ops, liveRange, true, start_addr);
   if (l2memUsed > l2memSize) {
@@ -707,8 +709,9 @@ void BMAddressAssign::assignIOByAddrMode(
 
 void BMAddressAssign::assign(mlir::ModuleOp &m, bool reuse_addr,
                              std::string same_addr) {
-  int64_t alignment = BM168x::ALIGNMENT;
-  int64_t start_addr = BM168x::COEFF_START_ADDR;
+  const auto &device = backend::getDevice(m);
+  int64_t alignment = device.getAlignmentBytes();
+  int64_t start_addr = device.getWeightStartAddr();
   Builder builder(m.getContext());
   // same_addr: "0:0,1:2,4:4" means in[0] and out[0] share the same address,
   // in[1] and out[2] share the same address, in[4] and out[4] share the same
@@ -776,8 +779,7 @@ void BMAddressAssign::assign(mlir::ModuleOp &m, bool reuse_addr,
         }
 
         DEBUG_WITH_TYPE("gmem_allocator", {
-          llvm::dbgs() << "; action = assignGaddr"
-                       << "; step = weight_static"
+          llvm::dbgs() << "; action = assignGaddr" << "; step = weight_static"
                        << "; start_addr = " << addr
                        << "; end_addr = " << addr + bytes
                        << "; live_start = " << 0
@@ -792,13 +794,20 @@ void BMAddressAssign::assign(mlir::ModuleOp &m, bool reuse_addr,
   }
   module::setCoeffAddr(m, start_addr);
   module::setCoeffSize(m, addr - start_addr);
+  if (device.getWeightMemoryBytes() > 0 &&
+      addr - start_addr > device.getWeightMemoryBytes()) {
+    m.emitError("weight memory allocation exceeds target capacity");
+    failed_ = true;
+    return;
+  }
   // ================= assign l2sram to activation =============================
   assignL2SRAM(m);
   // ================= assign ddr to activation ================================
   if (BM168x::SUPPORT_MEM_TAG) {
     addr = BM168x::CTX_START_ADDR;
   }
-  start_addr = addr;
+  start_addr =
+      module::isChip(module::Chip::Ada300) ? device.getGmemStartAddr() : addr;
   uint32_t loc = 0;
   // key: the operation pointer + output index, convert the result to type
   // int64_t
@@ -869,6 +878,11 @@ void BMAddressAssign::assign(mlir::ModuleOp &m, bool reuse_addr,
     auto gmemUsed =
         allocator.assignGaddr(common_ops, liveRange, reuse_addr, start_addr);
     addr += gmemUsed;
+    if (device.getGmemBytes() > 0 && gmemUsed > device.getGmemBytes()) {
+      m.emitError("global memory allocation exceeds target capacity");
+      failed_ = true;
+      return;
+    }
     LLVM_DEBUG(llvm::dbgs() << "Global Memory usage(without weight): "
                             << gmemUsed / (1 << 20) << " MB\n");
   }
@@ -922,8 +936,7 @@ void BMAddressAssign::updateLiveRangeofBMOps(
     int alignment) {
   auto updateOperandsLiveRange = [&](Operation *op, uint32_t endPosition) {
     DEBUG_WITH_TYPE("on_live_range", {
-      llvm::dbgs() << "\n; action = updateOperandsLiveRange"
-                   << "; step = begin"
+      llvm::dbgs() << "\n; action = updateOperandsLiveRange" << "; step = begin"
                    << "; op = " << module::getName(op)
                    << "; endPosition = " << endPosition << "\n";
     });
@@ -940,8 +953,7 @@ void BMAddressAssign::updateLiveRangeofBMOps(
       if (noNeedAddress(operand)) {
         DEBUG_WITH_TYPE("on_live_range", {
           llvm::dbgs() << "; action = updateOperandsLiveRange"
-                       << "; step = opd_skip"
-                       << "\n";
+                       << "; step = opd_skip" << "\n";
         });
         continue;
       }
@@ -1153,15 +1165,13 @@ void BMAddressAssign::updateLiveRangeofBMOps(
 
       DEBUG_WITH_TYPE("on_live_range", {
         llvm::dbgs() << "; action = updateOperandsLiveRange"
-                     << "; step = opd_end"
-                     << "; opd_type = " << opd->getName()
+                     << "; step = opd_end" << "; opd_type = " << opd->getName()
                      << "; opd_loc = " << module::getName(operand)
                      << "; opd_index = " << i << "\n";
       });
     }
     DEBUG_WITH_TYPE("on_live_range", {
-      llvm::dbgs() << "; action = updateOperandsLiveRange"
-                   << "; step = end"
+      llvm::dbgs() << "; action = updateOperandsLiveRange" << "; step = end"
                    << "; op = " << module::getName(op) << "\n";
     });
   };
@@ -1173,8 +1183,7 @@ void BMAddressAssign::updateLiveRangeofBMOps(
         getTensorGmemSize(op, v_info.index, alignment);
 
     DEBUG_WITH_TYPE("live_range", {
-      llvm::dbgs() << "; action = live_range"
-                   << "; step = update_solo"
+      llvm::dbgs() << "; action = live_range" << "; step = update_solo"
                    << "; live_start = " << liveRange[v_info].start
                    << "; live_end = " << liveRange[v_info].end
                    << "; loc = " << module::getName(v_info.op)
@@ -1266,8 +1275,7 @@ void BMAddressAssign::updateLiveRangeofBMOps(
         }
 
         DEBUG_WITH_TYPE("live_range", {
-          llvm::dbgs() << "; action = live_range"
-                       << "; step = inplace_concat"
+          llvm::dbgs() << "; action = live_range" << "; step = inplace_concat"
                        << "; live_start = " << liveRange[pre_v].start
                        << "; live_end = " << liveRange[pre_v].end
                        << "; loc = " << module::getName(pre_v.op)
