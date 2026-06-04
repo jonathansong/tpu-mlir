@@ -220,11 +220,9 @@ public:
         addr_assign.assign(s, reuse_addr, merge_weight, compress_weight,
                            weight_map_file, iomem_set);
       } else {
-        if (!module::isChip(module::Chip::Ada300)) {
-          RewritePatternSet patterns(s.getContext());
-          populateGlobalBufferBM168xPatterns(&patterns);
-          applyPatternsAndFoldGreedily(s, std::move(patterns));
-        }
+        RewritePatternSet patterns(s.getContext());
+        populateGlobalBufferBM168xPatterns(&patterns);
+        applyPatternsAndFoldGreedily(s, std::move(patterns));
         module::applyPatternOnce<ConcatMergePattern>(s);
         module::applyPatternOnce<ConcatFusePattern>(s);
         module::applyPatternOnce<ConcatSlicePattern>(s);

@@ -7,6 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "Codegen/Ada300Codegen.hpp"
 #include "Codegen/BM168xCodegen.hpp"
 #include "Codegen/CV18xxCodegen.hpp"
 #include "tpu_mlir/Dialect/Tpu/Transforms/Passes.h"
@@ -30,6 +31,11 @@ public:
     if (module::isCV18xx()) {
       CviModelBuilder builder(modules->at(0), model_version);
       builder.storeModel(filename);
+      return;
+    }
+    if (module::isChip(module::Chip::Ada300) || module::isTarget("ada300")) {
+      Ada300Codegen ada300_codegen;
+      ada300_codegen.run(mOp, filename);
       return;
     }
     BMCodegen bm_codegen;

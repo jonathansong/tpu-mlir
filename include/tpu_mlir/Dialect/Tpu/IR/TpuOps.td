@@ -2939,7 +2939,7 @@ def Tpu_FAttentionOp : Tpu_Op<"FAttention", [
   let results = (outs AnyTensor:$output);
 }
 
-def Tpu_KVCacheUpdateOp : Tpu_Op<"KVCacheUpdate",
+def Tpu_KVCacheUpdateOp : Tpu_BaseOp<"KVCacheUpdate",
     [DeclareOpInterfaceMethods<TypeInterface>]> {
   let summary = "Paged KV-cache update operator";
   let description = [{

@@ -8,6 +8,7 @@
 //===----------------------------------------------------------------------===//
 #include "tpu_mlir/Backend/Arch.h"
 #include "tpu_mlir/Conversion/TopToTpu/ConvertTopToTpu.h"
+#include "tpu_mlir/Conversion/TopToTpu/LoweringAda300.h"
 #include "tpu_mlir/Conversion/TopToTpu/LoweringBM1684.h"
 #include "tpu_mlir/Conversion/TopToTpu/LoweringBM1684X.h"
 #include "tpu_mlir/Conversion/TopToTpu/LoweringCV18xx.h"
@@ -1791,6 +1792,9 @@ void ConvertTopToTpu::runOnOperation() {
     bm1684::populateTopToTpuConversionPatterns(&patterns);
   } else if (module::isCV18xx()) {
     cv18xx::populateTopToTpuConversionPatterns(&patterns);
+  } else if (module::isChip(module::Chip::Ada300) ||
+             module::isTarget("ada300")) {
+    ada300::populateTopToTpuConversionPatterns(&patterns);
   } else {
     llvm_unreachable("Not Implemented");
   }

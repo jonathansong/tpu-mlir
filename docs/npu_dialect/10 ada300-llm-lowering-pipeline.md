@@ -967,8 +967,17 @@ dialect pipeline 的 target 与 memory model，不接入 bmodel codegen。
    - 64-byte 对齐；
    - 超过 `Device` 容量时显式报错；
    - 不做 reuse、tiling、bank-aware placement。
-6. `tpu.KVCacheUpdate` 增加 Common interface stub，保证新增 TPU op 可链接；
-   实际 Ada300 rxops lowering/codegen 后续步骤实现。
+6. `tpu.KVCacheUpdate` 从 `Tpu_Op` 改为 `Tpu_BaseOp`，不再强制声明
+   `GlobalGenInterface`、`InferenceInterface`、`DynGlobalGenInterface`；
+   `KVCacheUpdate.cpp` 删除全部 BM/CV codegen 桩（`codegen_global_bm1684`、
+   `codegen_global_bm1684x`、`codegen_global_cv18xx`、`dyn_codegen_*`、
+   `get_fw_type_*`、`support_multi_core`）及 inference 桩（`init`、`deinit`、
+   `inference`），仅保留 `type_verify`；include 收拢至
+   `TypeInterface.h` + `TpuOps.h`。
+7. `AddressAssign.cpp` `else` 分支内删除死代码
+   `if (!module::isChip(module::Chip::Ada300))` 守卫——该守卫在 `else` 分支中
+   永远为 `true`（Ada300 已在上层 `if` 截断），直接展开其包裹的
+   `populateGlobalBufferBM168xPatterns` 调用。
 
 新增回归：
 
@@ -998,7 +1007,7 @@ build/bin/tpuc-opt --init="freq=0 level=0" \
 
 当前完成度：Ada300-only M0 已完成。legacy BM/CV address allocator 未重构成
 `assignGmemAddresses/assignSmemAddresses` 命名，但 Ada300 路径已经不依赖 BM/CV
-设备常量或 bmodel codegen。
+设备常量或 bmodel codegen。`KVCacheUpdate` BM/CV 桩已清除，死代码守卫已删除。
 
 ### 19.2 Step 2：M1 FP16 MatMul + Add 最小闭环
 
@@ -1096,6 +1105,66 @@ tpuc-opt matmul_add.mlir \
 ```
 
 输出与 NumPy FP16 baseline 一致。
+
+#### 实现记录
+
+已完成以下改动（实际 pass 命令与设计略有差异，沿用现有 M0 pass 名）：
+
+1. **`include/tpu_mlir/Conversion/TopToTpu/LoweringAda300.h`** — 新增。定义
+   `LOWERING_ADA300(OP)` 宏，展开为 `struct OPLowering : TopLowering<top::OPOp>`，
+   仅实现 `LoweringF16`；`LoweringF32/BF16` 委托给 `LoweringF16`；`LoweringINT8`
+   明确报错。当前声明 `MatMulLowering`、`AddLowering`。
+
+2. **`lib/Conversion/TopToTpu/Ada300/MatMul.cpp`** — 新增。
+   `MatMulLowering::LoweringF16` 调用
+   `lowering_common_f16<tpu::MatMulOp>(rewriter, op, 3)`（3 = input/right/bias）。
+
+3. **`lib/Conversion/TopToTpu/Ada300/Add.cpp`** — 新增。
+   `AddLowering::LoweringF16` 调用
+   `lowering_common_f16<tpu::AddOp>(rewriter, op)`。
+
+4. **`lib/Conversion/TopToTpu/LoweringAda300.cpp`** — 新增。实现
+   `ada300::populateTopToTpuConversionPatterns()`，注册上述两个 pattern。
+
+5. **`lib/Conversion/TopToTpu/TopToTpuPass.cpp`**
+   - `#include "tpu_mlir/Conversion/TopToTpu/LoweringAda300.h"` 加入包含列表。
+   - 在 `populateTopToTpuConversionPatterns` 的 chip 分发链末尾增加：
+     ```cpp
+     } else if (module::isChip(module::Chip::Ada300) ||
+                module::isTarget("ada300")) {
+       ada300::populateTopToTpuConversionPatterns(&patterns);
+     ```
+
+6. **`lib/Conversion/TopToTpu/CMakeLists.txt`** — 在 `file(GLOB _sources ...)` 中
+   加入 `Ada300/*.cpp`。
+
+7. **`lib/Dialect/Tpu/Transforms/Codegen/Ada300Codegen.hpp`** — 新增。声明
+   `Ada300Codegen::run(ModuleOp, filename)`。
+
+8. **`lib/Dialect/Tpu/Transforms/Codegen/Ada300Codegen.cpp`** — 新增。M1
+   placeholder 实现：遍历所有 op（调试日志），向输出文件写入 chip 名称和 op
+   计数，不产生真实指令（真正指令编码留给后续 milestone）。
+
+9. **`lib/Dialect/Tpu/Transforms/Codegen.cpp`**
+   - `#include "Codegen/Ada300Codegen.hpp"` 加入包含。
+   - 在 `isCV18xx()` 分支之后、`BMCodegen` 之前插入：
+     ```cpp
+     if (module::isChip(module::Chip::Ada300) || module::isTarget("ada300")) {
+       Ada300Codegen ada300_codegen;
+       ada300_codegen.run(mOp, filename);
+       return;
+     }
+     ```
+
+10. **`test/Transforms/lowering/Ada300MatMulAdd.mlir`** — 新增。FileCheck 测试：
+    Top IR（`top.MatMul` + `top.Add`）经
+    `--processor-assign="chip=ada300 mode=F16" --init --convert-top-to-tpu`
+    后变成 `tpu.MatMul` + `tpu.Add`。
+
+**偏差说明**：文档中 `lib/Dialect/Tpu/Transforms/CodeGen/Ada300/` 子目录结构
+（Driver / OpRegister / LoadInput / LoadWeight / MatMul / Add / Store）暂未分文件
+实现，合并在 `Ada300Codegen.cpp` 中作为单文件 placeholder；待 M2 milestone 再按
+设计分拆。
 
 ### 19.3 Step 3：M2 单层 Transformer Prefill
 
@@ -1210,6 +1279,161 @@ cosine similarity > 0.999
 
 - Attention 使用 tile / streaming 方案，没有生成完整外存 `QK^T` buffer。
 
+#### 实现记录
+
+已完成以下改动（Codegen 部分保持 M1 placeholder，待后续 milestone 分拆）：
+
+1. **`include/tpu_mlir/Conversion/TopToTpu/LoweringAda300.h`** — 扩展。在原有
+   `LOWERING_ADA300(MatMul)` / `LOWERING_ADA300(Add)` 之后追加：
+
+   ```cpp
+   LOWERING_ADA300(RMSNorm)
+   LOWERING_ADA300(Rope)
+   LOWERING_ADA300(FAttention)
+   LOWERING_ADA300(A16MatMul)
+   LOWERING_ADA300(Mul)
+   LOWERING_ADA300(Reshape)
+   ```
+
+   并手写 `SiLULowering` struct（`tpu` dialect 中无独立 `tpu::SiLUOp`，SiLU
+   必须 lower 为 `tpu::ActiveOp(mode=SILU)`，与宏生成的结构不兼容）：
+
+   ```cpp
+   struct SiLULowering : public TopLowering<top::SiLUOp> {
+     SiLULowering(MLIRContext *ctx) : TopLowering<top::SiLUOp>(ctx) {}
+     void LoweringF16(PatternRewriter &, top::SiLUOp) const override;
+     void LoweringF32(...)  const override { LoweringF16(rewriter, op); }
+     void LoweringBF16(...) const override { LoweringF16(rewriter, op); }
+     void LoweringINT8(...) const override {
+       op.emitError("Ada300 M2: INT8 SiLU not supported");
+     }
+   };
+   ```
+
+2. **`lib/Conversion/TopToTpu/Ada300/RMSNorm.cpp`** — 新增。手动克隆
+   gamma weight 到 FP16（而非依赖 `lowering_common_f16`），以正确处理
+   `weight_keep_f32` flag：
+
+   ```cpp
+   void RMSNormLowering::LoweringF16(...) const {
+     // 遍历所有 operand；若 operand 是 WeightOp 且 !weight_keep_f32，则
+     // clone_f16；否则直接 pass-through。
+     auto new_type = getQuantF16Type(op.getOutput());
+     rewriter.replaceOpWithNewOp<tpu::RMSNormOp>(op, new_type, opds, attrs);
+   }
+   ```
+
+   模式与 BM1684X `RMSNorm.cpp` 一致，去掉 BM168x 特有的 norm_type /
+   mode 分支。
+
+3. **`lib/Conversion/TopToTpu/Ada300/Rope.cpp`** — 新增。三步处理：
+
+   ```cpp
+   void RopeLowering::LoweringF16(...) const {
+     // 1. 将 top::RopeModeAttr 字符串转换为 tpu::RopeMode
+     auto rope_mode = get_rope_mode(op.getRopeModeAttr().str());
+     // 2. 移除 top-only 属性（tpu dialect 无对应字段）
+     module::removeAttr(op, "mul1_round_mode");
+     module::removeAttr(op, "mul2_round_mode");
+     module::removeAttr(op, "add_round_mode");
+     // 3. 通用 FP16 lowering + 回填 rope_mode 枚举
+     Operation *newOp = lowering_common_f16<tpu::RopeOp>(rewriter, op);
+     newOp->setAttr("rope_mode",
+                    tpu::RopeModeAttr::get(op.getContext(), rope_mode));
+   }
+   ```
+
+   `get_rope_mode()` 在 `TopLowering.h`（行 598）中已声明，实现在
+   `TopLowering.cpp`（行 708），Ada300 直接复用，无需拷贝。
+
+4. **`lib/Conversion/TopToTpu/Ada300/FAttention.cpp`** — 新增。直接透传：
+
+   ```cpp
+   void FAttentionLowering::LoweringF16(...) const {
+     lowering_common_f16<tpu::FAttentionOp>(rewriter, op);
+   }
+   ```
+
+5. **`lib/Conversion/TopToTpu/Ada300/A16MatMul.cpp`** — 新增。FP16 fallback
+   路径，传入 `num_operands = 5`（input / weight / scale / zp / bias）。
+   `lowering_common_f16` 仅克隆 float WeightOp，int8/int4 weight 原样透传：
+
+   ```cpp
+   void A16MatMulLowering::LoweringF16(...) const {
+     lowering_common_f16<tpu::A16MatMulOp>(rewriter, op, 5);
+   }
+   ```
+
+6. **`lib/Conversion/TopToTpu/Ada300/SiLU.cpp`** — 新增。先在 top op 上设置
+   `mode` attribute，再调用 `lowering_common_f16<tpu::ActiveOp>`，令生成的
+   ActiveOp 携带正确的 `mode = SILU`：
+
+   ```cpp
+   void SiLULowering::LoweringF16(...) const {
+     op->setAttr("mode",
+       tpu::ActiveModeAttr::get(op.getContext(), tpu::ActiveMode::SILU));
+     lowering_common_f16<tpu::ActiveOp>(rewriter, op.getOperation());
+   }
+   ```
+
+7. **`lib/Conversion/TopToTpu/Ada300/Mul.cpp`** — 新增。直接透传：
+
+   ```cpp
+   void MulLowering::LoweringF16(...) const {
+     lowering_common_f16<tpu::MulOp>(rewriter, op);
+   }
+   ```
+
+8. **`lib/Conversion/TopToTpu/Ada300/Reshape.cpp`** — 新增。`top.Reshape` 为
+   零拷贝 view；lower 为 `tpu.Reshape` 供后续 pass 识别为 alias：
+
+   ```cpp
+   void ReshapeLowering::LoweringF16(...) const {
+     lowering_common_f16<tpu::ReshapeOp>(rewriter, op);
+   }
+   ```
+
+9. **`lib/Conversion/TopToTpu/LoweringAda300.cpp`** — 扩展。在
+   `populateTopToTpuConversionPatterns()` 中追加所有 M2 pattern：
+
+   ```cpp
+   patterns->add<
+       MatMulLowering, AddLowering,          // Step 2
+       RMSNormLowering, RopeLowering,
+       FAttentionLowering, A16MatMulLowering,
+       MulLowering, ReshapeLowering,
+       SiLULowering                          // Step 3
+   >(patterns->getContext());
+   ```
+
+10. **`test/Transforms/lowering/Ada300LlmRMSNorm.mlir`** — 新增 FileCheck 测试：
+    `top.RMSNorm` + gamma `top.Weight` → `tpu.RMSNorm`（FP16）。
+
+11. **`test/Transforms/lowering/Ada300LlmRope.mlir`** — 新增 FileCheck 测试：
+    `top.Rope`（三个 FP32 输入，无可选操作数）→ `tpu.Rope`，验证
+    `mul*_round_mode` / `add_round_mode` 属性已被移除。
+
+12. **`test/Transforms/lowering/Ada300LlmFAttention.mlir`** — 新增 FileCheck 测试：
+    `top.FAttention`（Q/K/V + none mask/buffer）→ `tpu.FAttention`（FP16）。
+
+13. **`test/Transforms/lowering/Ada300LlmPrefillBlock.mlir`** — 新增集成 FileCheck
+    测试，覆盖 SwiGLU-MLP 子图：
+
+    ```text
+    RMSNorm -> A16MatMul (gate) -> SiLU
+                                             -> Mul (SwiGLU)
+    RMSNorm -> A16MatMul (up)  -+
+                                             -> A16MatMul (down)
+    ```
+
+    验证所有节点正确 lower 为 `tpu.RMSNorm` / `tpu.A16MatMul` /
+    `tpu.Active` / `tpu.Mul`。
+
+**偏差说明**：
+- 文档中的 `View.cpp` 以 `Reshape.cpp` 形式实现（`top.Reshape` → `tpu.Reshape`）。
+- Codegen 部分（RMSNorm / Rope / FAttention / A16MatMul / SiLU / Mul adapter）
+  仍保持 M1 的单文件 `Ada300Codegen.cpp` placeholder，待后续 milestone 分拆。
+
 ### 19.4 Step 4：M3 单层 Decode
 
 #### 目标
@@ -1275,6 +1499,110 @@ cosine similarity > 0.999
 ```
 
 - task graph 可观察到 KV cache 分块读取以及 DMA / compute 顺序。
+
+#### 实现记录（2026-06-04）
+
+已完成 Top → TPU lowering 层面的 M3 改动（Codegen 部分仍为 M1 placeholder）。
+
+1. **`include/tpu_mlir/Conversion/TopToTpu/LoweringAda300.h`** — 扩展。在原有
+   `LOWERING_ADA300(Reshape)` 之后追加：
+
+   ```cpp
+   LOWERING_ADA300(Concat)
+   LOWERING_ADA300(Insert)
+   ```
+
+   并手写 `KVCacheUpdateLowering` struct（需要手动将 `kv_format` / `mode`
+   字符串属性转换为 `tpu` dialect 枚举 attr，无法用宏生成）：
+
+   ```cpp
+   struct KVCacheUpdateLowering : public TopLowering<top::KVCacheUpdateOp> {
+     KVCacheUpdateLowering(MLIRContext *ctx)
+         : TopLowering<top::KVCacheUpdateOp>(ctx) {}
+     void LoweringF16(PatternRewriter &, top::KVCacheUpdateOp) const override;
+     void LoweringF32(...)  const override { LoweringF16(rewriter, op); }
+     void LoweringBF16(...) const override { LoweringF16(rewriter, op); }
+     void LoweringINT8(...) const override {
+       op.emitError("Ada300 M3: INT8 KVCacheUpdate not supported");
+     }
+   };
+   ```
+
+2. **`lib/Conversion/TopToTpu/Ada300/KVCacheUpdate.cpp`** — 新增。手动处理
+   两个枚举转换，并丢弃 top-only 属性 `resource_id`：
+
+   - `kv_format`（`AnyStrAttrOf` 字符串）→ `Tpu_KVCacheFormatAttr`
+     (`KV4` / `KV8` / `FP8` / `none`)
+   - `mode`（`AnyStrAttrOf` 字符串）→ `Tpu_KVCacheModeAttr`
+     (`paged` / `contiguous`)
+
+   三个结果类型分别处理：`updated_cache_k` / `updated_cache_v` 转为 FP16，
+   `updated_seq_lens` 保持原类型（通常为 F32 或 I32，不做类型转换）：
+
+   ```cpp
+   rewriter.replaceOpWithNewOp<tpu::KVCacheUpdateOp>(
+       op, TypeRange{f16_k, f16_v, seq_type}, operands, attrs);
+   ```
+
+3. **`lib/Conversion/TopToTpu/Ada300/Concat.cpp`** — 新增。直接透传：
+
+   ```cpp
+   void ConcatLowering::LoweringF16(...) const {
+     lowering_common_f16<tpu::ConcatOp>(rewriter, op.getOperation());
+   }
+   ```
+
+4. **`lib/Conversion/TopToTpu/Ada300/Insert.cpp`** — 新增。直接透传：
+
+   ```cpp
+   void InsertLowering::LoweringF16(...) const {
+     lowering_common_f16<tpu::InsertOp>(rewriter, op);
+   }
+   ```
+
+5. **`lib/Conversion/TopToTpu/LoweringAda300.cpp`** — 扩展。追加三个新 pattern：
+
+   ```cpp
+   // Step 4: M3 single-layer Decode
+   KVCacheUpdateLowering,
+   ConcatLowering,
+   InsertLowering
+   ```
+
+6. **`test/Transforms/lowering/Ada300LlmKVCacheUpdate.mlir`** — 新增 FileCheck
+   测试。六个 `top.Input` 操作数（cache_k / cache_v / key / value /
+   block_table / seq_lens），属性 `kv_format = "KV8"` / `mode = "paged"`。
+   只返回 `updated_seq_lens`（F32 tensor）避免多路 Cast op 引发的
+   `all_names` 唯一性断言。验证 `tpu.KVCacheUpdate` 出现在输出 IR 中。
+
+7. **`test/Transforms/lowering/Ada300LlmDecodeBlock.mlir`** — 新增集成 FileCheck
+   测试，覆盖完整单层 decode 数据流：
+
+   ```text
+   RMSNorm -> A16MatMul (Q proj) -> Rope
+     -> KVCacheUpdate
+     -> FAttention (mq=1, mk=8)
+     -> A16MatMul (O proj) -> Add (attention residual)
+     -> RMSNorm -> SwiGLU MLP -> Add (MLP residual)
+   ```
+
+   规格：`hidden_size=64`, `num_heads=8`, `head_dim=8`,
+   decode token `seq=1`, history `len=8`。
+   验证所有节点 lower 正确：`tpu.RMSNorm` / `tpu.A16MatMul` /
+   `tpu.Rope` / `tpu.KVCacheUpdate` / `tpu.FAttention` /
+   `tpu.Add` / `tpu.Active` / `tpu.Mul`。
+
+**偏差说明**：
+
+- 文档方案中 `top.Insert` / `top.Concat`（用于 KV cache）被合并 lower 为
+  `tpu.KVCacheUpdate`。实际实现中：`top.KVCacheUpdate` 直接存在于 top dialect
+  并 lower 为 `tpu.KVCacheUpdate`；`top.Insert` lower 为 `tpu.Insert`（保留为
+  独立 op）；`top.Concat` lower 为 `tpu.Concat`（普通拼接）。KV cache 更新语义
+  通过 `top.KVCacheUpdate` 显式表达，无需从 Concat/Insert 推断。
+- 新增 `.cpp` 文件需执行 `cmake ..` 以使 CMake 的 glob 重新扫描 `Ada300/`
+  目录，再执行 `ninja tpuc-opt`。
+- Codegen（`Ada300LlmDecodeCodeGen.mlir` 测试、decode streaming attention 调度）
+  仍为 M1 单文件 placeholder，待后续 milestone 分拆。
 
 ### 19.5 Step 5：M4 Tiny Llama 端到端
 

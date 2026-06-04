@@ -1,5 +1,6 @@
 file(GLOB _sources
           *.cpp
+          Ada300/*.cpp
           BM1684X/*.cpp
           BM1684/*.cpp
           CV18xx/*.cpp
