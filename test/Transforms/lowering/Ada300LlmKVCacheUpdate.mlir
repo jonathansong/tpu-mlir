@@ -19,9 +19,9 @@ module @ada300_kvcache_update attributes {
       %arg1: tensor<1x8x64xf32>  loc("cache_v"),
       %arg2: tensor<1x1x64xf32>  loc("key"),
       %arg3: tensor<1x1x64xf32>  loc("value"),
-      %arg4: tensor<1x8xf32>     loc("block_table"),
-      %arg5: tensor<1xf32>       loc("seq_lens"))
-      -> tensor<1xf32> {
+      %arg4: tensor<1x8xi32>     loc("block_table"),
+      %arg5: tensor<1xi32>       loc("seq_lens"))
+      -> tensor<1xi32> {
 
     %ck  = "top.Input"(%arg0) {} : (tensor<1x8x64xf32>) -> tensor<1x8x64xf32>
         loc("cache_k")
@@ -31,9 +31,9 @@ module @ada300_kvcache_update attributes {
         loc("key")
     %val = "top.Input"(%arg3) {} : (tensor<1x1x64xf32>) -> tensor<1x1x64xf32>
         loc("value")
-    %bt  = "top.Input"(%arg4) {} : (tensor<1x8xf32>)    -> tensor<1x8xf32>
+    %bt  = "top.Input"(%arg4) {} : (tensor<1x8xi32>)    -> tensor<1x8xi32>
         loc("block_table")
-    %sl  = "top.Input"(%arg5) {} : (tensor<1xf32>)      -> tensor<1xf32>
+    %sl  = "top.Input"(%arg5) {} : (tensor<1xi32>)      -> tensor<1xi32>
         loc("seq_lens")
 
     %uk, %uv, %us = "top.KVCacheUpdate"(%ck, %cv, %key, %val, %bt, %sl) {
@@ -44,10 +44,10 @@ module @ada300_kvcache_update attributes {
         axis = 1 : i64
     } : (tensor<1x8x64xf32>, tensor<1x8x64xf32>,
          tensor<1x1x64xf32>, tensor<1x1x64xf32>,
-         tensor<1x8xf32>, tensor<1xf32>)
-          -> (tensor<1x8x64xf32>, tensor<1x8x64xf32>, tensor<1xf32>)
+         tensor<1x8xi32>, tensor<1xi32>)
+          -> (tensor<1x8x64xf32>, tensor<1x8x64xf32>, tensor<1xi32>)
         loc("kvcache_update")
 
-    return %us : tensor<1xf32>
+    return %us : tensor<1xi32>
   }
 }

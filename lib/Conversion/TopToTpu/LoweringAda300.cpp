@@ -29,7 +29,13 @@ void populateTopToTpuConversionPatterns(RewritePatternSet *patterns) {
       // Step 4: M3 single-layer Decode
       KVCacheUpdateLowering,
       ConcatLowering,
-      InsertLowering
+      InsertLowering,
+      // Shape / indexing ops for real Qwen subgraphs
+      SliceLowering,
+      PermuteLowering,
+      TopKLowering,
+      SigmoidLowering,
+      GatherLowering
   >(patterns->getContext());
   // clang-format on
 }

@@ -40,6 +40,28 @@ def ConvertTopToTpu : Pass<"convert-top-to-tpu", "ModuleOp"> {
   ];
 }
 
+//===----------------------------------------------------------------------===//
+// TpuToRxOps
+//===----------------------------------------------------------------------===//
+
+def ConvertTpuToRxOps : Pass<"convert-tpu-to-rxops", "ModuleOp"> {
+  let summary = "Convert Ada300 TPU Ops to rx-ops bridge calls";
+  let constructor = "tpu_mlir::createConvertTpuToRxOps()";
+  let dependentDialects = ["tpu_mlir::top::TopDialect", "tpu_mlir::tpu::TpuDialect",
+                            "mlir::arith::ArithDialect", "mlir::bufferization::BufferizationDialect",
+                            "mlir::func::FuncDialect", "mlir::LLVM::LLVMDialect",
+                            "mlir::memref::MemRefDialect", "mlir::tensor::TensorDialect"];
+  let options = [
+    Option<"allowStubs", "allow-stubs", "bool", /*default=*/"true",
+           "allow unsupported TPU ops to remain as placeholders during bring-up">,
+    Option<"chip", "chip", "std::string", /*default=*/"\"ada300\"",
+           "target chip for auto-pipeline when module.state < TPU_ADDRESSED">,
+    Option<"mode", "mode", "std::string", /*default=*/"\"F16\"",
+           "quantization mode for auto-pipeline (e.g. F16, F32, BF16)">,
+  ];
+}
+
+
 
 //===----------------------------------------------------------------------===//
 // TopToTosa

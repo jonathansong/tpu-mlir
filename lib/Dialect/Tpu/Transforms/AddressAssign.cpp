@@ -204,7 +204,11 @@ public:
   AddressAssignPass() {}
   void runOnOperation() override {
     if (!module::isState(module::State::TPU_DIVIDED) &&
-        !module::isState(module::State::TPU_ADDRESSED)) {
+        !module::isState(module::State::TPU_ADDRESSED) &&
+        !(module::isChip(module::Chip::Ada300) &&
+          module::isState(module::State::TPU_LOWERED)) &&
+        !(module::isTarget("ada300") &&
+          module::isState(module::State::TPU_LOWERED))) {
       llvm_unreachable("module should be divided or addressed");
     }
     module::removeUnusedOp();

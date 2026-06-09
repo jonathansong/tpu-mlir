@@ -366,6 +366,10 @@ static void removeUnusedOp(ModuleOp submodule) {
         op->getAttrOfType<mlir::BoolAttr>("placeholder").getValue()) {
       continue;
     }
+    if (op->hasAttrOfType<mlir::BoolAttr>("ada300.rxops.keep") &&
+        op->getAttrOfType<mlir::BoolAttr>("ada300.rxops.keep").getValue()) {
+      continue;
+    }
     if (op->use_empty()) {
       op->erase();
     }

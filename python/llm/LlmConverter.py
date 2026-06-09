@@ -177,9 +177,12 @@ class LlmConverter(BaseConverter):
             for i in range(self.num_layers):
                 self.all_gen_mlirs.append(lambda i=i: self.gen_block_mlir(i))
         else:
-            self.all_gen_mlirs.append(lambda i=0: self.gen_block_mlir(i))
+            # tiny_llm uses block_7; generate embedding+lm_head (always above)
+            # plus block_7 only so the three *_top_weights.npz files are ready.
             if self.llm_type == LlmType.QWEN3_5:
-                self.all_gen_mlirs.append(lambda i=3: self.gen_block_mlir(i))
+                self.all_gen_mlirs.append(lambda i=7: self.gen_block_mlir(i))
+            else:
+                self.all_gen_mlirs.append(lambda i=0: self.gen_block_mlir(i))
 
         if self.debug:
             for func in self.all_gen_mlirs:

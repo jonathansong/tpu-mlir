@@ -1,6 +1,4 @@
-# Ada300 LLM Top Dialect 到 TPU Dialect Lowering Pipeline 设计
-
-## 1. 文档目标
+# Ada300 LLM Top Dialect 到 TPU Dialect Lowering Pipeline 设计## 1. 文档目标
 
 本文设计面向 Ada300 的 LLM inference 编译链路：
 
@@ -1168,6 +1166,10 @@ tpuc-opt matmul_add.mlir \
 
 ### 19.3 Step 3：M2 单层 Transformer Prefill
 
+> 当前落地范围：M2 先实现 FP16-only Top -> TPU lowering 与 Ada300 flat address assign，
+> 不实现量化 A16MatMul，也不实现 Ada300 codegen。投影算子以
+> `top.MatMul -> tpu.MatMul` 为主路径；A16/W8A16/W4A16 留到后续量化 milestone。
+
 #### 目标
 
 让 `block_0.mlir` 在 Ada300 上完成 prompt 阶段推理，暂不处理历史 KV
@@ -1195,18 +1197,12 @@ input_states
 tpu.RMSNorm
 tpu.Rope
 tpu.FAttention
-tpu.A16MatMul
+tpu.MatMul
 tpu.SiLU
 ```
 
-`tpu.A16MatMul` 首版可以支持 FP16 fallback，但 IR 契约应保留：
-
-```text
-weight_bits
-q_group_size
-scale
-zero_point
-```
+`tpu.A16MatMul`、`weight_bits`、`q_group_size`、`scale`、`zero_point`
+等量化契约暂不属于本轮 FP16-only M2 完成范围。
 
 #### Lowering 改动
 
@@ -1216,7 +1212,7 @@ zero_point
 RMSNorm.cpp
 Rope.cpp
 FAttention.cpp
-A16MatMul.cpp
+MatMul.cpp
 SiLU.cpp
 Mul.cpp
 View.cpp
@@ -1231,19 +1227,8 @@ View.cpp
 
 #### Codegen 改动
 
-新增 Ada300 adapter：
-
-```text
-RMSNorm.cpp
-Rope.cpp
-FAttention.cpp
-A16MatMul.cpp
-SiLU.cpp
-Mul.cpp
-```
-
-如果复合 kernel 暂时不存在，可在 codegen 内 fallback 展开，但不要破坏
-TPU IR 的高层契约。
+本轮 M2 明确不实现 Ada300 codegen。`Ada300Codegen.cpp` 仍保持 placeholder；
+M2 只要求 Top -> TPU lowering 和 Ada300 flat address assign 可运行。
 
 #### 测试
 
@@ -1254,7 +1239,6 @@ test/Transforms/lowering/Ada300LlmRMSNorm.mlir
 test/Transforms/lowering/Ada300LlmRope.mlir
 test/Transforms/lowering/Ada300LlmFAttention.mlir
 test/Transforms/lowering/Ada300LlmPrefillBlock.mlir
-test/Transforms/Tpu/Ada300LlmPrefillCodeGen.mlir
 ```
 
 建议数值测试规格：
@@ -1269,19 +1253,20 @@ layers = 1
 
 #### 完成标准
 
-- `block_0.mlir` 可完成 Top -> TPU -> Ada300 codegen。
-- 输出 `output_states`、`k_cache` 和 `v_cache`。
-- 与 PyTorch FP16 baseline 对比：
+本轮 FP16-only M2 的完成标准为：
 
-```text
-cosine similarity > 0.999
-```
+- 单层 prefill 示例可完成 `--convert-top-to-tpu`。
+- 单层 prefill 示例可继续完成 Ada300 flat `--address-assign`，module state 到 `TPU_ADDRESSED`。
+- 投影使用 `top.MatMul -> tpu.MatMul`，不生成 `tpu.A16MatMul`。
+- `top.FAttention` lower 为 `tpu.FAttention`，保持高层 attention 语义。
+- 输出 `output_states`、`k_cache`、`v_cache` 的 FP16 TPU IR 路径。
 
-- Attention 使用 tile / streaming 方案，没有生成完整外存 `QK^T` buffer。
+不属于本轮完成标准：Ada300 codegen、tile/streaming task graph、数值对比、
+量化 A16/W8A16/W4A16。
 
-#### 实现记录
+#### 实现记录（截至 2026-06-08）
 
-已完成以下改动（Codegen 部分保持 M1 placeholder，待后续 milestone 分拆）：
+已完成以下改动。当前 M2 落地范围为 FP16-only lowering 与 Ada300 flat address assign；Codegen 部分保持 M1 placeholder，量化 A16 路径不作为本轮完成项：
 
 1. **`include/tpu_mlir/Conversion/TopToTpu/LoweringAda300.h`** — 扩展。在原有
    `LOWERING_ADA300(MatMul)` / `LOWERING_ADA300(Add)` 之后追加：
@@ -1294,6 +1279,8 @@ cosine similarity > 0.999
    LOWERING_ADA300(Mul)
    LOWERING_ADA300(Reshape)
    ```
+
+   其中 `A16MatMul` 注册保留既有实现记录；当前 M2 FP16-only 路径以 `MatMul` 为完成项，测试明确不生成 `tpu.A16MatMul`。
 
    并手写 `SiLULowering` struct（`tpu` dialect 中无独立 `tpu::SiLUOp`，SiLU
    必须 lower 为 `tpu::ActiveOp(mode=SILU)`，与宏生成的结构不兼容）：
@@ -1416,25 +1403,27 @@ cosine similarity > 0.999
 12. **`test/Transforms/lowering/Ada300LlmFAttention.mlir`** — 新增 FileCheck 测试：
     `top.FAttention`（Q/K/V + none mask/buffer）→ `tpu.FAttention`（FP16）。
 
-13. **`test/Transforms/lowering/Ada300LlmPrefillBlock.mlir`** — 新增集成 FileCheck
-    测试，覆盖 SwiGLU-MLP 子图：
+13. **`test/Transforms/lowering/Ada300LlmPrefillBlock.mlir`** — 更新为 FP16-only 集成 FileCheck 测试，覆盖完整 prefill 子图：
 
     ```text
-    RMSNorm -> A16MatMul (gate) -> SiLU
-                                             -> Mul (SwiGLU)
-    RMSNorm -> A16MatMul (up)  -+
-                                             -> A16MatMul (down)
+    RMSNorm -> MatMul(Q/K/V) -> RoPE(Q/K) -> FAttention
+      -> MatMul(O) -> Add -> RMSNorm
+      -> MatMul(gate/up) -> SiLU -> Mul -> MatMul(down) -> Add
     ```
 
-    验证所有节点正确 lower 为 `tpu.RMSNorm` / `tpu.A16MatMul` /
-    `tpu.Active` / `tpu.Mul`。
+    验证所有投影 lower 为 `tpu.MatMul`，并显式检查不生成 `tpu.A16MatMul`。
 
 **偏差说明**：
 - 文档中的 `View.cpp` 以 `Reshape.cpp` 形式实现（`top.Reshape` → `tpu.Reshape`）。
-- Codegen 部分（RMSNorm / Rope / FAttention / A16MatMul / SiLU / Mul adapter）
-  仍保持 M1 的单文件 `Ada300Codegen.cpp` placeholder，待后续 milestone 分拆。
+- Codegen 部分仍保持 M1 的单文件 `Ada300Codegen.cpp` placeholder，待后续 milestone 分拆。
+- FP16-only M2 使用 `top.MatMul -> tpu.MatMul`；A16/量化路径保留为后续 milestone。
+- Ada300 flat address assign 允许从 `TPU_LOWERED` 直接进入 allocator，并在完成后设置 `TPU_ADDRESSED`。
 
 ### 19.4 Step 4：M3 单层 Decode
+
+> 当前落地范围：M3 先实现 FP16-only Top -> TPU lowering 与 Ada300 flat address assign，
+> 不实现量化 A16MatMul，也不实现 Ada300 codegen。KV cache 更新通过显式
+> `top.KVCacheUpdate -> tpu.KVCacheUpdate` 表达，不从 `Concat`/`Insert` 推断。
 
 #### 目标
 
@@ -1469,14 +1458,16 @@ mode = insert | concat
 
 #### Lowering 与 Codegen 改动
 
-- 将 `top.Insert` lower 为 `tpu.KVCacheUpdate`。
-- 将用于 KV cache 更新的 `top.Concat` lower 为 `tpu.KVCacheUpdate`。
-- 保留普通 `top.Concat -> tpu.Concat`。
-- KV cache 常驻 external memory，不整体搬入 SRAM。
-- Decode attention 使用 `mq = 1` 专用 codegen。
-- 按 token block 或 head 分块 DMA 读取历史 K/V。
-- 新 K/V 原地写入 cache。
-- 不生成完整 attention score 外存 buffer。
+本轮 M3 只做 FP16 lowering 与地址分配：
+
+- 显式 `top.KVCacheUpdate -> tpu.KVCacheUpdate`。
+- `top.Concat -> tpu.Concat`、`top.Insert -> tpu.Insert` 暂保留普通语义，不用于
+  推断 KV cache update。
+- Decode attention 保留为高层 `tpu.FAttention`，`mq = 1` 由 IR 属性表达。
+- `block_table`、`seq_lens` 等 cache 索引/状态张量保持整数类型，不随 FP16
+  activation cast。
+- Codegen、DMA/compute task graph、原地 cache 写入调度和完整 attention score
+  buffer 约束留到后续 codegen milestone。
 
 #### 测试
 
@@ -1485,24 +1476,26 @@ mode = insert | concat
 ```text
 test/Transforms/lowering/Ada300LlmKVCacheUpdate.mlir
 test/Transforms/lowering/Ada300LlmDecodeBlock.mlir
-test/Transforms/Tpu/Ada300LlmDecodeCodeGen.mlir
 ```
 
 #### 完成标准
 
-- 单层 decode 连续运行多个 token。
-- KV cache 每轮正确更新。
-- 与 PyTorch FP16 baseline 对比：
+本轮 FP16-only M3 的完成标准为：
 
-```text
-cosine similarity > 0.999
-```
+- 单层 decode 示例可完成 `--convert-top-to-tpu`。
+- 单层 decode 示例可继续完成 Ada300 flat `--address-assign`，module state 到 `TPU_ADDRESSED`。
+- 投影使用 `top.MatMul -> tpu.MatMul`，不生成 `tpu.A16MatMul`。
+- 显式 `top.KVCacheUpdate -> tpu.KVCacheUpdate`，并保留 `block_table`、
+  `seq_lens` 为整数类型。
+- Decode `top.FAttention` lower 为 `tpu.FAttention`，通过 `mq = 1` 表达 decode
+  attention 形态。
 
-- task graph 可观察到 KV cache 分块读取以及 DMA / compute 顺序。
+不属于本轮完成标准：连续多 token runtime、真实 cache 原地写入、PyTorch 数值对比、
+Ada300 task graph/codegen、量化 A16/W8A16/W4A16。
 
-#### 实现记录（2026-06-04）
+#### 实现记录（2026-06-04；2026-06-08 更新为 FP16-only）
 
-已完成 Top → TPU lowering 层面的 M3 改动（Codegen 部分仍为 M1 placeholder）。
+已完成 Top → TPU lowering 层面的 M3 改动。当前落地范围为 FP16-only lowering 与 Ada300 flat address assign；Codegen 部分仍为 M1 placeholder，量化 A16 路径不作为本轮完成项。
 
 1. **`include/tpu_mlir/Conversion/TopToTpu/LoweringAda300.h`** — 扩展。在原有
    `LOWERING_ADA300(Reshape)` 之后追加：
@@ -1537,7 +1530,7 @@ cosine similarity > 0.999
      (`paged` / `contiguous`)
 
    三个结果类型分别处理：`updated_cache_k` / `updated_cache_v` 转为 FP16，
-   `updated_seq_lens` 保持原类型（通常为 F32 或 I32，不做类型转换）：
+   `updated_seq_lens` 保持原类型（当前 decode 测试使用 I32，不做 FP16 类型转换）：
 
    ```cpp
    rewriter.replaceOpWithNewOp<tpu::KVCacheUpdateOp>(
@@ -1572,25 +1565,23 @@ cosine similarity > 0.999
 6. **`test/Transforms/lowering/Ada300LlmKVCacheUpdate.mlir`** — 新增 FileCheck
    测试。六个 `top.Input` 操作数（cache_k / cache_v / key / value /
    block_table / seq_lens），属性 `kv_format = "KV8"` / `mode = "paged"`。
-   只返回 `updated_seq_lens`（F32 tensor）避免多路 Cast op 引发的
-   `all_names` 唯一性断言。验证 `tpu.KVCacheUpdate` 出现在输出 IR 中。
+   只返回 `updated_seq_lens`（I32 tensor），验证 `block_table` 和
+   `seq_lens` 在 FP16 lowering 后仍保持整数类型，并验证 `tpu.KVCacheUpdate`
+   出现在输出 IR 中。
 
-7. **`test/Transforms/lowering/Ada300LlmDecodeBlock.mlir`** — 新增集成 FileCheck
-   测试，覆盖完整单层 decode 数据流：
+7. **`test/Transforms/lowering/Ada300LlmDecodeBlock.mlir`** — 更新为 FP16-only 集成 FileCheck 测试，覆盖完整单层 decode 数据流：
 
    ```text
-   RMSNorm -> A16MatMul (Q proj) -> Rope
-     -> KVCacheUpdate
-     -> FAttention (mq=1, mk=8)
-     -> A16MatMul (O proj) -> Add (attention residual)
-     -> RMSNorm -> SwiGLU MLP -> Add (MLP residual)
+   RMSNorm -> MatMul(Q) -> Rope -> KVCacheUpdate
+     -> FAttention(mq=1, mk=8) -> MatMul(O) -> Add
+     -> RMSNorm -> MatMul(gate/up) -> SiLU -> Mul
+     -> MatMul(down) -> Add
    ```
 
    规格：`hidden_size=64`, `num_heads=8`, `head_dim=8`,
    decode token `seq=1`, history `len=8`。
-   验证所有节点 lower 正确：`tpu.RMSNorm` / `tpu.A16MatMul` /
-   `tpu.Rope` / `tpu.KVCacheUpdate` / `tpu.FAttention` /
-   `tpu.Add` / `tpu.Active` / `tpu.Mul`。
+   验证投影 lower 为 `tpu.MatMul`，显式检查不生成 `tpu.A16MatMul`，
+   并验证 `tpu.KVCacheUpdate` 的 `block_table` / `seq_lens` 保持 I32。
 
 **偏差说明**：
 
@@ -1601,8 +1592,9 @@ cosine similarity > 0.999
   通过 `top.KVCacheUpdate` 显式表达，无需从 Concat/Insert 推断。
 - 新增 `.cpp` 文件需执行 `cmake ..` 以使 CMake 的 glob 重新扫描 `Ada300/`
   目录，再执行 `ninja tpuc-opt`。
-- Codegen（`Ada300LlmDecodeCodeGen.mlir` 测试、decode streaming attention 调度）
-  仍为 M1 单文件 placeholder，待后续 milestone 分拆。
+- Codegen、decode streaming attention 调度、真实 cache 原地写入仍为后续 milestone。
+- FP16-only M3 使用 `top.MatMul -> tpu.MatMul`；A16/量化路径保留为后续 milestone。
+- Ada300 flat address assign 允许从 `TPU_LOWERED` 直接进入 allocator，并在完成后设置 `TPU_ADDRESSED`。
 
 ### 19.5 Step 5：M4 Tiny Llama 端到端
 

@@ -98,6 +98,11 @@ LogicalResult tpu::FAttentionOp::inference(InferenceParameter &p) {
 
 mlir::Type tpu::FAttentionOp::type_verify(uint64_t opd_idx,
                                           TypeCastMode &mode) {
+  // Optional block_table and seq_lens operands are cache index/state tensors.
+  // They should not be cast to the FP16 attention output type.
+  if (opd_idx == 7 || opd_idx == 8) {
+    return do_nothing(mode);
+  }
   return type_verify_case_same(getOperation(), opd_idx, mode);
 }
 

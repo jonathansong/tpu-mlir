@@ -22,6 +22,7 @@ add_mlir_library(TPUMLIRInitAll
   MLIRLinalgDialect
   MLIRInferenceInterface
   TPUMLIRTopToTpu
+  TPUMLIRTpuToRxOps
   TPUMLIRTopToTosa
   TPUMLIRTopToLinalg
 )

@@ -50,6 +50,10 @@ LOWERING_ADA300(Reshape)
 // Step 4: M3 single-layer Decode
 LOWERING_ADA300(Concat)
 LOWERING_ADA300(Insert)
+// Shape / indexing ops needed by the real Qwen MLIR subgraphs
+LOWERING_ADA300(Slice)
+LOWERING_ADA300(Permute)
+LOWERING_ADA300(TopK)
 
 // SiLU lowers to tpu::ActiveOp (not tpu::SiLUOp), so it cannot use the macro.
 struct SiLULowering : public TopLowering<top::SiLUOp> {
@@ -64,6 +68,41 @@ struct SiLULowering : public TopLowering<top::SiLUOp> {
   void LoweringINT8(PatternRewriter &rewriter, top::SiLUOp op,
                     bool asymmetric) const override {
     op.emitError("Ada300 M2: INT8 SiLU not supported");
+  }
+};
+
+// Sigmoid lowers to tpu::ActiveOp[SIGMOID], similar to SiLU.
+struct SigmoidLowering : public TopLowering<top::SigmoidOp> {
+  SigmoidLowering(MLIRContext *ctx) : TopLowering<top::SigmoidOp>(ctx) {}
+  void LoweringF16(PatternRewriter &rewriter, top::SigmoidOp op) const override;
+  void LoweringF32(PatternRewriter &rewriter,
+                   top::SigmoidOp op) const override {
+    LoweringF16(rewriter, op);
+  }
+  void LoweringBF16(PatternRewriter &rewriter,
+                    top::SigmoidOp op) const override {
+    LoweringF16(rewriter, op);
+  }
+  void LoweringINT8(PatternRewriter &rewriter, top::SigmoidOp op,
+                    bool asymmetric) const override {
+    op.emitError("Ada300: INT8 Sigmoid not supported");
+  }
+};
+
+// Gather: custom struct because weight cloning logic differs from the macro.
+struct GatherLowering : public TopLowering<top::GatherOp> {
+  GatherLowering(MLIRContext *ctx) : TopLowering<top::GatherOp>(ctx) {}
+  void LoweringF16(PatternRewriter &rewriter, top::GatherOp op) const override;
+  void LoweringF32(PatternRewriter &rewriter, top::GatherOp op) const override {
+    LoweringF16(rewriter, op);
+  }
+  void LoweringBF16(PatternRewriter &rewriter,
+                    top::GatherOp op) const override {
+    LoweringF16(rewriter, op);
+  }
+  void LoweringINT8(PatternRewriter &rewriter, top::GatherOp op,
+                    bool asymmetric) const override {
+    LoweringF16(rewriter, op);
   }
 };
 

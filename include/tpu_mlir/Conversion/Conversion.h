@@ -22,6 +22,7 @@ namespace mlir {
 namespace tpu_mlir {
 
 std::unique_ptr<Pass> createConvertTopToTpu();
+std::unique_ptr<Pass> createConvertTpuToRxOps();
 std::unique_ptr<Pass> createConvertTopToTosa();
 std::unique_ptr<Pass> createConvertTopToLinalg();
 
