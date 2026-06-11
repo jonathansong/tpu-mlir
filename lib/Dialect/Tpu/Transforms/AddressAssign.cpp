@@ -22,7 +22,7 @@ namespace tpu {
 
 extern void populateGlobalBufferBM168xPatterns(RewritePatternSet *patterns);
 
-static LogicalResult assignAda300Flat(ModuleOp &m) {
+static LogicalResult assignAda300Flat(ModuleOp &m, bool skip_check = false) {
   const auto &device = backend::getDevice(m);
   const int64_t alignment = device.getAlignmentBytes();
 
@@ -35,7 +35,7 @@ static LogicalResult assignAda300Flat(ModuleOp &m) {
   });
   module::setCoeffAddr(m, weightStart);
   module::setCoeffSize(m, weightAddr - weightStart);
-  if (device.getWeightMemoryBytes() > 0 &&
+  if (!skip_check && device.getWeightMemoryBytes() > 0 &&
       weightAddr - weightStart > device.getWeightMemoryBytes()) {
     m.emitError("weight memory allocation exceeds target capacity");
     return failure();
@@ -215,7 +215,7 @@ public:
     auto modules = module::getAllModules();
     for (auto s : *modules) {
       if (module::isChip(module::Chip::Ada300) || module::isTarget("ada300")) {
-        if (failed(assignAda300Flat(s))) {
+        if (failed(assignAda300Flat(s, skip_weight_check))) {
           signalPassFailure();
           return;
         }

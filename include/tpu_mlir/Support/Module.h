@@ -23,6 +23,14 @@ using namespace tpu_mlir;
 
 namespace tpu_mlir {
 
+// Explicitly prefer mlir::Value over llvm::Value (the latter leaks in via
+// headers that use `using namespace llvm;` at global scope, e.g. TopLowering.h
+// pulled in through TpuToRxOpsPass.cpp -> Conversion.h -> TopLowering.h).
+using mlir::Value;
+// Similarly disambiguate mlir::Type vs llvm::Type (forward-declared by
+// mlir/Dialect/LLVMIR/LLVMDialect.h) for the same reason.
+using mlir::Type;
+
 typedef enum {
   /* 1. 3D group if this group has CONV3D/DECONV3D/POOL3D
    * for 1684 float32, data in local memory storage as {d * n, c, h, w}

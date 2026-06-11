@@ -1164,3 +1164,52 @@ int _mlir_ciface_rxops_bridge_matmul_f32(float *C, const float *A,
   return rxops_bridge_matmul_f32(C, A, B, M, N, K);
 }
 
+/* ── _mlir_ciface_ aliases ──────────────────────────────────────────────────
+ * mlir-translate emits calls to @_mlir_ciface_<fn> for functions whose
+ * operands are passed as pointers.  Provide strong-alias definitions so the
+ * linker resolves them directly to the implementations above.
+ * Only add aliases for functions that do NOT already have an explicit
+ * _mlir_ciface_ definition in this file.
+ * ─────────────────────────────────────────────────────────────────────────── */
+#define CIFACE_ALIAS(fn) \
+  __attribute__((alias(#fn))) \
+  extern __typeof__(fn) _mlir_ciface_##fn
+
+CIFACE_ALIAS(rxops_bridge_mul_f32);
+CIFACE_ALIAS(rxops_bridge_rms_norm_f32);
+CIFACE_ALIAS(rxops_bridge_a16matmul_f32);
+CIFACE_ALIAS(rxops_bridge_reshape_bytes);
+CIFACE_ALIAS(rxops_bridge_slice_nd);
+CIFACE_ALIAS(rxops_bridge_gather_nd);
+CIFACE_ALIAS(rxops_bridge_transpose_nd);
+CIFACE_ALIAS(rxops_bridge_concat2_nd);
+CIFACE_ALIAS(rxops_bridge_concat3_nd);
+CIFACE_ALIAS(rxops_bridge_concat4_nd);
+CIFACE_ALIAS(rxops_bridge_rope_contiguous_f32);
+CIFACE_ALIAS(rxops_bridge_fattention_f32);
+CIFACE_ALIAS(rxops_bridge_silu_f32);
+CIFACE_ALIAS(rxops_bridge_sigmoid_f32);
+CIFACE_ALIAS(rxops_bridge_relu_f32);
+CIFACE_ALIAS(rxops_bridge_tanh_f32);
+CIFACE_ALIAS(rxops_bridge_gelu_f32);
+CIFACE_ALIAS(rxops_bridge_topk_f32);
+CIFACE_ALIAS(rxops_bridge_exp_f32);
+CIFACE_ALIAS(rxops_bridge_sqrt_f32);
+CIFACE_ALIAS(rxops_bridge_log_f32);
+CIFACE_ALIAS(rxops_bridge_rsqrt_f32);
+CIFACE_ALIAS(rxops_bridge_cast_f16_to_f32);
+CIFACE_ALIAS(rxops_bridge_cast_f32_to_f16);
+CIFACE_ALIAS(rxops_bridge_add_f16);
+CIFACE_ALIAS(rxops_bridge_mul_f16);
+CIFACE_ALIAS(rxops_bridge_matmul_f16);
+CIFACE_ALIAS(rxops_bridge_rms_norm_f16);
+CIFACE_ALIAS(rxops_bridge_a16matmul_f16);
+CIFACE_ALIAS(rxops_bridge_silu_f16);
+CIFACE_ALIAS(rxops_bridge_sigmoid_f16);
+CIFACE_ALIAS(rxops_bridge_relu_f16);
+CIFACE_ALIAS(rxops_bridge_tanh_f16);
+CIFACE_ALIAS(rxops_bridge_gelu_f16);
+CIFACE_ALIAS(rxops_bridge_rope_contiguous_f16);
+CIFACE_ALIAS(rxops_bridge_fattention_f16);
+CIFACE_ALIAS(rxops_bridge_topk_f16);
+

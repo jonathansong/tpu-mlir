@@ -109,6 +109,8 @@ def AddressAssign : Pass<"address-assign", "ModuleOp"> {
            "set special input/output as io memory">,
     Option<"same_addr", "same_addr", "std::string", /*default=*/"",
            "use same address for the specified tensor.">,
+    Option<"skip_weight_check", "skip_weight_check", "bool", /*default=*/"false",
+           "skip hardware weight memory capacity check (useful for QEMU / simulation)">,
   ];
 }
 

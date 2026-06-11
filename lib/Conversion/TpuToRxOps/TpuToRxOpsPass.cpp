@@ -16,7 +16,16 @@
 #include "mlir/IR/BuiltinOps.h"
 #include "mlir/Pass/PassManager.h"
 #include "mlir/Pass/PassRegistry.h"
-#include "tpu_mlir/Conversion/Conversion.h"
+// Avoid including Conversion.h here: it transitively pulls in
+// TopToLinalg/TopLowering.h and TopToTosa/TopLowering.h, both of which have
+// `using namespace llvm;` at global scope.  That leaks llvm::Value / llvm::Type
+// into the global namespace and conflicts with mlir::Value / mlir::Type when
+// mlir/Dialect/LLVMIR/LLVMDialect.h is also in scope.  Include only what this
+// translation unit actually needs.
+namespace mlir {
+#define GEN_PASS_DECL
+#include "tpu_mlir/Conversion/Passes.h.inc"
+} // namespace mlir
 #include "tpu_mlir/Dialect/Top/IR/TopOps.h"
 #include "tpu_mlir/Dialect/Tpu/IR/TpuOps.h"
 #include "tpu_mlir/Support/Module.h"
@@ -142,6 +151,12 @@ struct RxOpsBuilder {
 
   mlir::Value toTensor(mlir::Location loc, mlir::Value memref,
                        RankedTensorType tensorTy) {
+    // Strip any TPU-specific encoding (e.g. address attributes like `192 :
+    // i64`) so the result type matches the plain memref produced by alloc().
+    if (tensorTy.getEncoding()) {
+      tensorTy =
+          RankedTensorType::get(tensorTy.getShape(), tensorTy.getElementType());
+    }
     return builder.create<bufferization::ToTensorOp>(loc, tensorTy, memref,
                                                      true, false);
   }
@@ -536,16 +551,39 @@ struct ConvertTpuToRxOps
       // ── Return ──────────────────────────────────────────────────────────
       if (auto ret = dyn_cast<func::ReturnOp>(op)) {
         SmallVector<mlir::Value> returns;
+        SmallVector<mlir::Type> actualResultTypes;
         for (auto indexed : llvm::enumerate(ret.getOperands())) {
           auto mapped = valueMap.lookup(indexed.value());
           if (!mapped)
             return ret.emitError(
                 "convert-tpu-to-rxops cannot map return operand");
           auto expected = funcType.getResult(indexed.index());
-          if (mapped.getType() != expected)
-            mapped =
-                builder.create<tensor::CastOp>(ret.getLoc(), expected, mapped);
+          if (mapped.getType() != expected) {
+            auto mappedRanked = dyn_cast<RankedTensorType>(mapped.getType());
+            auto expectedRanked = dyn_cast<RankedTensorType>(expected);
+            // If only the element type changed (e.g. f32->f16 after chip
+            // lowering), tensor.cast is not valid.  Update the function
+            // return type to the actual lowered type instead.
+            if (mappedRanked && expectedRanked &&
+                mappedRanked.getShape() == expectedRanked.getShape() &&
+                mappedRanked.getElementType() !=
+                    expectedRanked.getElementType()) {
+              // Use the actual lowered type; update the function signature
+              // below.
+            } else {
+              mapped = builder.create<tensor::CastOp>(ret.getLoc(), expected,
+                                                      mapped);
+            }
+          }
+          actualResultTypes.push_back(mapped.getType());
           returns.push_back(mapped);
+        }
+        // If any result type changed due to chip-mode lowering, update the
+        // FuncOp signature to match so no incompatible tensor.cast is emitted.
+        if (actualResultTypes != llvm::to_vector(funcType.getResults())) {
+          auto newFuncType = mlir::FunctionType::get(
+              module.getContext(), funcType.getInputs(), actualResultTypes);
+          func.setType(newFuncType);
         }
         builder.create<func::ReturnOp>(ret.getLoc(), returns);
         continue;
@@ -558,6 +596,24 @@ struct ConvertTpuToRxOps
       }
       if (isa<top::NoneOp>(op))
         continue;
+      // Weight ops: lower to tensor.empty (zero-initialized placeholder).
+      // The rx-ops baremetal demo zero-initializes weight memory at runtime;
+      // mlir-opt (next step) does not have the top dialect registered, so
+      // top.Weight cannot survive past this pass.
+      if (auto weightOp = dyn_cast<top::WeightOp>(op)) {
+        auto origTy =
+            dyn_cast<RankedTensorType>(weightOp.getResult().getType());
+        if (!origTy)
+          return weightOp.emitError(
+              "convert-tpu-to-rxops: Weight result is not ranked tensor");
+        // Strip any TPU address encoding so the type is plain.
+        auto plainElt = origTy.getElementType();
+        auto shape = origTy.getShape();
+        auto emptyTensor =
+            builder.create<tensor::EmptyOp>(genLoc, shape, plainElt);
+        valueMap[weightOp.getResult()] = emptyTensor.getResult();
+        continue;
+      }
       if (auto castOp = dyn_cast<tpu::CastOp>(op)) {
         valueMap[castOp.getResult()] = valueMap.lookup(castOp.getOperand());
         continue;
@@ -710,7 +766,7 @@ struct ConvertTpuToRxOps
         auto inShape = inTy.getShape();
         int64_t hidden = inShape.back();
         int64_t batch = getNumElements(inShape) / hidden;
-        double eps = rmsNorm.getEps();
+        double eps = rmsNorm.getEps().convertToDouble();
         auto eltTy = inTy.getElementType();
 
         auto inMem = rx.toMemRef(genLoc, in);
@@ -1077,7 +1133,7 @@ struct ConvertTpuToRxOps
         int64_t np_q = fattn.getQHead();
         int64_t np_kv = fattn.getKvHead();
         int64_t d_head = fattn.getDim();
-        double scale = fattn.getScale();
+        double scale = fattn.getScale().convertToDouble();
 
         rx.callFAttention(genLoc, outMem, qMem, kMem, vMem, maskMem, batch, mq,
                           mk, np_q, np_kv, d_head, scale, hasMask ? 1 : 0,
@@ -1165,7 +1221,8 @@ struct ConvertTpuToRxOps
 
         // k=1 for argmax
         rx.callTopK(genLoc, valMem, idxMem, inMem,
-                    /*k=*/1, n_before, axis_size, n_after);
+                    /*k=*/1, n_before, axis_size, n_after,
+                    inTy.getElementType());
         // Arg returns indices as primary result, values as secondary
         valueMap[argOp.getIndices()] = rx.toTensor(genLoc, idxMem, idxTy);
         if (argOp.getValues() && !argOp.getValues().getType().isa<NoneType>())

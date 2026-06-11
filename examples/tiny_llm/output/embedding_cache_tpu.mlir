@@ -1,0 +1,20 @@
+#loc = loc(unknown)
+module @embedding_cache attributes {module.FLOPs = 0 : i64, module.addr_mode = "basic", module.asymmetric = false, module.chip = "ada300", module.cores = 1 : i64, module.devices = 1 : i64, module.high_precision = false, module.mode = "F16", module.platform = "LLM_QUANTIZED", module.q_group_size = 0 : i64, module.q_symmetric = false, module.state = "TPU_LOWERED", module.top_run_mode = "STATIC", module.weight_file = "embedding_cache_tpu_lowered_ada300_f16_weight.npz", tpu.gmem_bytes = 536870912 : i64, tpu.sram_bank_bytes = 262144 : i64, tpu.sram_bank_count = 5 : i64, tpu.target = "ada300", tpu.weight_memory_bytes = 268435456 : i64} {
+  func.func @main(%arg0: tensor<1x1xsi32> loc(unknown)) -> tensor<1x1x2048xf32> {
+    %0 = "top.None"() : () -> none loc(#loc)
+    %1 = "top.Input"(%arg0) {do_preprocess = false} : (tensor<1x1xsi32>) -> tensor<1x1xsi32> loc(#loc1)
+    %2 = "tpu.Cast"(%1) {round_mode = #tpu<round_mode HalfAwayFromZero>, with_scale = true} : (tensor<1x1xsi32>) -> tensor<1x1xf32> loc(#loc2)
+    %3 = "tpu.Cast"(%2) {round_mode = #tpu<round_mode HalfAwayFromZero>, with_scale = true} : (tensor<1x1xf32>) -> tensor<1x1xi32> loc(#loc3)
+    %4 = "top.Weight"() : () -> tensor<248320x2048xf16> loc(#loc4)
+    %5 = "tpu.Gather"(%4, %3, %0) {axis = 0 : si32, if_neg_index = true, is_lora = false, is_scalar = false, keepdims = true} : (tensor<248320x2048xf16>, tensor<1x1xi32>, none) -> tensor<1x1x2048xf16> loc(#loc5)
+    %6 = "tpu.Cast"(%5) {round_mode = #tpu<round_mode HalfAwayFromZero>, with_scale = true} : (tensor<1x1x2048xf16>) -> tensor<1x1x2048xf32> loc(#loc6)
+    return %6 : tensor<1x1x2048xf32> loc(#loc)
+  } loc(#loc)
+} loc(#loc)
+#loc1 = loc("input_ids")
+#loc2 = loc("input_ids_f32")
+#loc3 = loc("input_ids_f32embedding_cache_si32")
+#loc4 = loc("model.language_model.embed_tokens.weight_f16")
+#loc5 = loc("embedding_cache")
+#loc6 = loc("embedding_cache_f32")
+

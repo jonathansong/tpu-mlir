@@ -1411,6 +1411,8 @@ class LlmConverter(BaseConverter):
                           q_op,
                           sin_op,
                           cos_op,
+                          mlir_gen.none_op,
+                          mlir_gen.none_op,
                           rope_mode=StringAttr.get("contiguous_halves"),
                           loc=self.get_loc("q_proj", mlir_gen),
                           ip=mlir_gen.insert_point).output
@@ -1419,6 +1421,8 @@ class LlmConverter(BaseConverter):
                           k_op,
                           sin_op,
                           cos_op,
+                          mlir_gen.none_op,
+                          mlir_gen.none_op,
                           rope_mode=StringAttr.get("contiguous_halves"),
                           loc=self.get_loc("k_cache", mlir_gen),
                           ip=mlir_gen.insert_point).output

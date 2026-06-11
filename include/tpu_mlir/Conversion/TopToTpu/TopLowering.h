@@ -431,14 +431,20 @@ static OpTy lowering_common(PatternRewriter &rewriter, Operation *from,
     if (module::isWeight(in)) {
       [[maybe_unused]] auto wOp = in.getDefiningOp<top::WeightOp>();
       [[maybe_unused]] auto wtype = module::getStorageType(in);
-      if (stype.isF16()) {
+      // Only convert float weights to the target type.  Integer/quantized
+      // weights (e.g. the ui8 packed tensor in A16MatMul) must pass through
+      // as-is regardless of the target activation type.
+      if (stype.isF16() && wtype.isF32()) {
         operands.push_back(wOp.clone_f16(from));
-      } else if (stype.isBF16()) {
+      } else if (stype.isBF16() && wtype.isF32()) {
         operands.push_back(wOp.clone_bf16(from));
-      } else if (stype.isFloat8E5M2()) {
+      } else if (stype.isFloat8E5M2() && wtype.isF32()) {
         operands.push_back(wOp.clone_f8e5m2(from));
-      } else if (stype.isFloat8E4M3FN()) {
+      } else if (stype.isFloat8E4M3FN() && wtype.isF32()) {
         operands.push_back(wOp.clone_f8e4m3(from, false, true));
+      } else if (stype.isF16() && !wtype.isF32()) {
+        // Non-float weight (e.g. ui8 A16MatMul scale/qweight) — pass through.
+        operands.push_back(in);
       } else {
         operands.push_back(in);
       }

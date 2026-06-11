@@ -1,5 +1,5 @@
 #loc = loc(unknown)
-module @lm_head attributes {module.chip = "ALL", module.platform = "LLM_QUANTIZED", module.state = "TOP_F32", module.top_run_mode = "STATIC", module.weight_file = "../lm_head_top_weights.npz"} {
+module @lm_head attributes {module.addr_mode = "basic", module.chip = "ada300", module.cores = 1 : i64, module.devices = 1 : i64, module.high_precision = false, module.mode = "F16", module.platform = "LLM_QUANTIZED", module.state = "TOP_F32", module.top_run_mode = "STATIC", module.weight_file = "lm_head_top_f32_ada300_f16_weight.npz", tpu.gmem_bytes = 536870912 : i64, tpu.sram_bank_bytes = 262144 : i64, tpu.sram_bank_count = 5 : i64, tpu.target = "ada300", tpu.weight_memory_bytes = 268435456 : i64} {
   func.func @main(%arg0: tensor<1x2048xf32> loc(unknown)) -> tensor<1x1xf32> {
     %0 = "top.None"() : () -> none loc(#loc)
     %1 = "top.Input"(%arg0) {do_preprocess = false} : (tensor<1x2048xf32>) -> tensor<1x2048xf32> loc(#loc1)
@@ -17,3 +17,4 @@ module @lm_head attributes {module.chip = "ALL", module.platform = "LLM_QUANTIZE
 #loc5 = loc("token_value")
 #loc6 = loc("token_id")
 #loc7 = loc(fused[#loc5, #loc6])
+
